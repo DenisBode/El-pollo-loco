@@ -1,204 +1,171 @@
-🐔 El Pollo Loco
+El Pollo Loco 🐔
 
-Ein browserbasiertes Jump-&-Run-Spiel, inspiriert vom klassischen Arcade- und Plattformspiel-Genre.
+El Pollo Loco is a browser-based Jump & Run game developed with HTML, CSS and JavaScript.
 
-In El Pollo Loco übernimmt der Spieler die Rolle eines kleinen Cowboys, der sich durch eine mexikanisch inspirierte Spielwelt bewegt, Gegner bekämpft, Münzen und Flaschen sammelt und sich schließlich dem Endgegner stellt.
+The player takes on the role of a cowboy who has to fight his way through a Mexican-inspired world, collect items, defeat enemies and ultimately face the final boss.
 
-🎮 Spiel
+🎮 Play the Game
 
-Das Ziel des Spiels ist es, sich durch die verschiedenen Level zu bewegen, Gegner zu besiegen und möglichst viele Gegenstände zu sammeln.
+Play El Pollo Loco →
 
-Features
+📸 Preview
+<!-- Add a screenshot or GIF of your game here -->
 
-🕹️ Klassisches Jump-&-Run-Gameplay
+✨ Features
 
-🐔 Gegner mit unterschiedlichen Verhaltensweisen
+🏃 Jump & Run gameplay
 
-👾 Endgegner
+🐔 Different enemies
 
-🪙 Sammelbare Münzen
+👹 Final boss fight
 
-🍾 Sammelbare Flaschen
+🪙 Collectible coins
 
-❤️ Lebens- und Energieleiste
+🍾 Throwable bottles
 
-🔊 Soundeffekte und Hintergrundmusik
+❤️ Health system
 
-🎬 Intro-, Game- und Endscreen
+🔊 Sound effects and background music
 
-📱 Responsive Darstellung
+🎬 Start, game and end screens
 
-🛠️ Technologien
+📱 Responsive controls for mobile devices
 
-Das Projekt wurde mit klassischen Webtechnologien umgesetzt:
+🕹️ Controls
+Key	Action
+←	Move left
+→	Move right
+↑	Jump
+D	Throw bottle
+ENTER	Start / confirm
+🛠️ Technologies
 
-HTML5 – Struktur der Anwendung
+HTML5
 
-CSS3 – Styling und Layout
+CSS3
 
-JavaScript – Spiellogik und Interaktionen
+JavaScript
 
-HTML Canvas – Darstellung des Spiels
+HTML Canvas
 
-📁 Projektstruktur
+📂 Project Structure
 El-Pollo-Loco/
-│
-├── img/
-│   ├── characters/
-│   ├── enemies/
-│   ├── backgrounds/
-│   ├── objects/
-│   └── ...
-│
 ├── audio/
-│   ├── background.mp3
-│   ├── collect.mp3
-│   ├── jump.mp3
-│   └── ...
-│
-├── models/
-│   ├── character.class.js
-│   ├── chicken.class.js
-│   ├── level.class.js
-│   └── ...
-│
+├── img/
 ├── js/
-│   ├── game.js
-│   ├── keyboard.class.js
-│   └── ...
-│
+├── models/
 ├── index.html
 ├── style.css
 └── README.md
 
-
-Die genaue Ordnerstruktur kann je nach Projektstand abweichen.
-
 🚀 Installation
+1. Clone the repository
+git clone <repository-url>
 
-Da es sich um ein browserbasiertes JavaScript-Projekt handelt, sind keine umfangreichen Abhängigkeiten erforderlich.
+2. Open the project
 
-1. Repository klonen
-git clone <REPOSITORY-URL>
+Navigate into the project directory:
 
-2. In das Projektverzeichnis wechseln
 cd El-Pollo-Loco
 
-3. Projekt starten
+3. Start the game
 
-Öffne die index.html über einen lokalen Webserver.
+The game can be started using a local development server.
 
-Beispielsweise mit VS Code und der Erweiterung Live Server:
+For example, with Visual Studio Code and the Live Server extension:
 
-Projekt in VS Code öffnen
+Open the project in Visual Studio Code.
 
-index.html auswählen
+Open index.html.
 
-Rechtsklick auf die Datei
+Right-click the file.
 
-Open with Live Server auswählen
+Select Open with Live Server.
 
-🎯 Steuerung
-Taste	Aktion
-← / →	Nach links / rechts bewegen
-↑	Springen
-D	Objekt werfen
-ENTER	Spiel starten / bestätigen
+🎯 Gameplay
 
-Die tatsächliche Tastenbelegung kann je nach Implementierung abweichen.
+The objective is to reach the end of the level while collecting items and defeating enemies.
 
-🧩 Spielmechanik
+Enemies
 
-Der Spieler bewegt sich durch die Level und muss verschiedene Hindernisse und Gegner überwinden.
+Enemies move through the level and can damage the player on contact.
 
-Gegner
+Depending on the enemy, they can be defeated by jumping on them or by throwing bottles.
 
-Im Spiel gibt es unterschiedliche Gegnertypen. Diese bewegen sich innerhalb des Levels und können dem Spieler Schaden zufügen.
+Collectibles
 
-Sammelobjekte
+During the game, the player can collect different items:
 
-Während des Spiels können verschiedene Gegenstände gesammelt werden.
+🪙 Coins
 
-Dazu gehören unter anderem:
+🍾 Bottles
 
-🪙 Münzen
+Health
 
-🍾 Flaschen
+The player has a limited amount of health.
 
-Gesammelte Gegenstände können für den Spielfortschritt relevant sein.
+Taking damage reduces the player's health. If all health is lost, the game ends.
 
-Kämpfe
+Final Boss
 
-Gegner können abhängig von ihrer Position und dem jeweiligen Gegnertyp beispielsweise durch einen Sprung oder durch geworfene Flaschen besiegt werden.
+At the end of the level, the player faces the final boss.
 
-❤️ Lebenssystem
-
-Der Spieler verfügt über eine bestimmte Anzahl an Lebenspunkten.
-
-Bei einer Kollision mit einem Gegner verliert der Spieler Lebensenergie. Sobald keine Lebenspunkte mehr vorhanden sind, endet das Spiel.
-
-👹 Endgegner
-
-Am Ende des Levels wartet ein Bossgegner.
-
-Der Kampf gegen den Endgegner stellt die letzte Herausforderung des Spiels dar. Wird der Boss besiegt, erreicht der Spieler den erfolgreichen Abschluss des Levels.
+Defeating the boss completes the game.
 
 📱 Responsive Design
 
-Das Spiel ist für verschiedene Bildschirmgrößen ausgelegt.
+The game supports different screen sizes and includes controls for mobile devices.
 
-Für kleinere Displays werden unter anderem Touch-Steuerelemente verwendet, sodass das Spiel auch auf mobilen Geräten gespielt werden kann.
+🧑‍💻 Development
 
-🧑‍💻 Entwicklung
+This project was created as part of a web development training project.
 
-Das Projekt wurde im Rahmen eines Web-Development-Projekts umgesetzt.
+The main focus was on:
 
-Dabei lag der Fokus insbesondere auf:
+Object-oriented JavaScript
 
-objektorientierter Programmierung mit JavaScript
+JavaScript classes
 
-Klassen und Vererbung
+Inheritance
 
-Canvas-basierter Spieleentwicklung
+Canvas-based game development
 
-Kollisionserkennung
+Collision detection
 
-Animationen
+Character and enemy animations
 
-Audiointegration
+Audio integration
 
-DOM-Manipulation
+Responsive web design
 
-Responsive Webdesign
+📌 Future Improvements
 
-🔧 Mögliche Erweiterungen
+Possible future improvements include:
 
-Das Projekt kann zukünftig beispielsweise um folgende Funktionen erweitert werden:
+ Additional levels
 
-weitere Level
+ More enemy types
 
-zusätzliche Gegnertypen
+ Additional characters
 
-neue Charaktere
+ High-score system
 
-Highscore-System
+ More animations
 
-weitere Animationen
+ Additional sound effects
 
-zusätzliche Soundeffekte
+ Save system
 
-Speichersystem
+ Multiplayer mode
 
-Multiplayer-Modus
+📄 License
 
-📄 Lizenz
+This project was created for educational purposes.
 
-Dieses Projekt wurde zu Lern- und Ausbildungszwecken erstellt.
+All third-party assets such as images, graphics and sounds remain the property of their respective owners and are subject to their respective licenses.
 
-Verwendete Grafiken, Sounds und weitere Assets unterliegen den jeweiligen Lizenzbedingungen und Copyrights ihrer Urheber.
-
-👨‍💻 Autor
+👨‍💻 Author
 
 Denis Bode
 
-Web Development Projekt – El Pollo Loco
+Web Development Project — El Pollo Loco
