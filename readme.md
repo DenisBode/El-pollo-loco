@@ -1,171 +1,267 @@
-El Pollo Loco 🐔
+<!--
+  ================================================================
+  README-TEMPLATE
+  Alle Stellen in {{GROSSBUCHSTABEN}} ersetzen. Abschnitte, die für
+  ein Projekt nicht passen, komplett löschen.
+  Suchen nach "{{" zeigt alle offenen Platzhalter.
+  ================================================================
+-->
 
-El Pollo Loco is a browser-based Jump & Run game developed with HTML, CSS and JavaScript.
+<div align="center">
 
-The player takes on the role of a cowboy who has to fight his way through a Mexican-inspired world, collect items, defeat enemies and ultimately face the final boss.
+<img src="{{PFAD_ZUM_LOGO_ODER_TITELBILD}}" alt="El Pollo Loco Titelbid" width="720">
 
-🎮 Play the Game
+# El Pollo Loco
 
-Play El Pollo Loco →
+**Jump-and-Run-Browsergame in objektorientiertem Vanilla-JavaScript und HTML5 Canvas**
 
-📸 Preview
-<!-- Add a screenshot or GIF of your game here -->
+[![Live Demo](https://img.shields.io/badge/Live_Demo-spielen-F4A300?style=for-the-badge)]({{LIVE_URL}})
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](#technologien)
+[![HTML5](https://img.shields.io/badge/HTML5-Canvas-E34F26?style=for-the-badge&logo=html5&logoColor=white)](#technologien)
+[![CSS3](https://img.shields.io/badge/CSS3-responsive-1572B6?style=for-the-badge&logo=css3&logoColor=white)](#technologien)
 
-✨ Features
+[Live Demo]({{LIVE_URL}}) · [Features](#features) · [Steuerung](#steuerung) · [Architektur](#architektur) · [Installation](#installation)
 
-🏃 Jump & Run gameplay
+</div>
 
-🐔 Different enemies
+---
 
-👹 Final boss fight
+## Inhaltsverzeichnis
 
-🪙 Collectible coins
+1. [Über das Projekt](#über-das-projekt)
+2. [Screenshots](#screenshots)
+3. [Features](#features)
+4. [Steuerung](#steuerung)
+5. [Technologien](#technologien)
+6. [Architektur](#architektur)
+7. [Projektstruktur](#projektstruktur)
+8. [Installation](#installation)
+9. [Coding Standards](#coding-standards)
+10. [Was ich gelernt habe](#was-ich-gelernt-habe)
+11. [Roadmap](#roadmap)
+12. [Credits](#credits)
+13. [Autor](#autor)
 
-🍾 Throwable bottles
+---
 
-❤️ Health system
+## Über das Projekt
 
-🔊 Sound effects and background music
+**El Pollo Loco** ist ein 2D-Side-Scroller, entstanden als Einzelprojekt im Rahmen der Weiterbildung zum Frontend-Entwickler an der **Developer Akademie**.
 
-🎬 Start, game and end screens
+Der Spieler steuert **Pepe** durch die mexikanische Wüste, sammelt Münzen und Salsa-Flaschen und kämpft sich an Hühnern vorbei bis zur verrückten Riesenhenne – dem Endboss.
 
-📱 Responsive controls for mobile devices
+Schwerpunkt des Projekts ist **objektorientierte Programmierung (OOP)** mit JavaScript-Klassen und Vererbung, eine eigene Game-Loop auf dem HTML5 Canvas sowie Kollisionserkennung – ohne Framework oder Game-Engine.
 
-🕹️ Controls
-Key	Action
-←	Move left
-→	Move right
-↑	Jump
-D	Throw bottle
-ENTER	Start / confirm
-🛠️ Technologies
+---
 
-HTML5
+## Screenshots
 
-CSS3
+| Startscreen | Gameplay | Endboss |
+|:---:|:---:|:---:|
+| <img src="{{SCREENSHOT_START}}" width="260" alt="Startscreen"> | <img src="{{SCREENSHOT_GAMEPLAY}}" width="260" alt="Gameplay"> | <img src="{{SCREENSHOT_ENDBOSS}}" width="260" alt="Endboss-Kampf"> |
 
-JavaScript
+> Tipp: Ein kurzes GIF (5–10 Sekunden Gameplay) wirkt stärker als drei Standbilder.
 
-HTML Canvas
+---
 
-📂 Project Structure
-El-Pollo-Loco/
-├── audio/
-├── img/
-├── js/
-├── models/
+## Features
+
+**Gameplay**
+- Spielfigur mit Animationszuständen: Idle, Long-Idle, Laufen, Springen, Verletzt, Tod
+- Zwei Gegnertypen (Huhn, Küken) – besiegbar durch Draufspringen
+- Werfbare Salsa-Flaschen mit Splash-Animation
+- Endboss mit eigenen Zuständen (Alarm, Angriff, Verletzt, Tod) und Lebensbalken
+- Sammelbare Münzen und Flaschen
+
+**Interface**
+- Statusleisten für Leben, Münzen, Flaschen und Endboss
+- Start-, Gewinn- und Game-Over-Screen mit Neustart
+- Parallax-Hintergrund mit Kamera-Verfolgung
+- Hintergrundmusik und Soundeffekte mit Mute-Funktion (Zustand bleibt gespeichert)
+- Vollbildmodus
+
+**Responsive**
+- Spielbar von Desktop bis 320 px Breite
+- Touch-Buttons auf mobilen Geräten
+- Hinweis zum Drehen des Geräts im Hochformat
+
+---
+
+## Steuerung
+
+### Tastatur
+
+| Aktion | Taste |
+|---|---|
+| Nach links laufen | <kbd>←</kbd> |
+| Nach rechts laufen | <kbd>→</kbd> |
+| Springen | <kbd>Space</kbd> |
+| Flasche werfen | <kbd>{{WURF_TASTE}}</kbd> |
+| {{WEITERE_AKTION}} | <kbd>{{TASTE}}</kbd> |
+
+### Mobil
+
+Auf Touch-Geräten erscheinen Buttons für Laufen, Springen und Werfen am unteren Bildschirmrand.
+
+---
+
+## Technologien
+
+| Bereich | Einsatz |
+|---|---|
+| **JavaScript (ES6)** | Klassen, Vererbung, Game-Loop, Kollisionslogik |
+| **HTML5 Canvas** | Rendering aller Spielobjekte |
+| **CSS3** | Layout, Media Queries, Overlays |
+| **JSDoc** | Dokumentation aller Funktionen und Methoden |
+
+Keine externen Bibliotheken, kein Build-Tool.
+
+---
+
+## Architektur
+
+Alle Spielobjekte erben von einer gemeinsamen Basisklasse. `World` hält den Zustand, zeichnet jedes Frame und prüft Kollisionen.
+
+```mermaid
+classDiagram
+    DrawableObject <|-- MovableObject
+    DrawableObject <|-- StatusBar
+    DrawableObject <|-- Coin
+    DrawableObject <|-- Bottle
+    MovableObject <|-- Character
+    MovableObject <|-- Chicken
+    MovableObject <|-- SmallChicken
+    MovableObject <|-- Endboss
+    MovableObject <|-- ThrowableObject
+    MovableObject <|-- Cloud
+    World o-- Character
+    World o-- Level
+    World o-- StatusBar
+    Level o-- Chicken
+    Level o-- Endboss
+
+    class DrawableObject {
+        +x, y, width, height
+        +img
+        +loadImage(path)
+        +draw(ctx)
+    }
+    class MovableObject {
+        +speed, speedY
+        +energy
+        +applyGravity()
+        +isColliding(obj)
+        +hit()
+        +isDead()
+    }
+    class World {
+        +canvas, ctx
+        +keyboard
+        +draw()
+        +checkCollisions()
+    }
+```
+
+> Klassennamen an das eigene Projekt anpassen. GitHub rendert Mermaid-Diagramme automatisch.
+
+---
+
+## Projektstruktur
+
+```
+elPolloLoco/
 ├── index.html
+├── impressum.html
 ├── style.css
-└── README.md
+├── img/                     # Sprites, Hintergründe, Icons
+├── audio/                   # Musik und Soundeffekte
+├── js/
+│   ├── game.js              # Init, Tastatur-Events, UI
+│   └── keyboard.js
+├── models/
+│   ├── drawableObject.js
+│   ├── movableObject.js
+│   ├── character.js
+│   ├── chicken.js
+│   ├── smallChicken.js
+│   ├── endboss.js
+│   ├── throwableObject.js
+│   ├── statusBar.js
+│   ├── level.js
+│   └── world.js
+└── levels/
+    └── level1.js
+```
 
-🚀 Installation
-1. Clone the repository
-git clone <repository-url>
+---
 
-2. Open the project
+## Installation
 
-Navigate into the project directory:
+Das Spiel läuft ohne Installation direkt im Browser: **[{{LIVE_URL}}]({{LIVE_URL}})**
 
-cd El-Pollo-Loco
+Lokal starten:
 
-3. Start the game
+```bash
+git clone {{REPO_URL}}
+cd {{REPO_ORDNER}}
+```
 
-The game can be started using a local development server.
+Anschließend `index.html` mit einem lokalen Server öffnen, z. B. der VS-Code-Erweiterung **Live Server**.
 
-For example, with Visual Studio Code and the Live Server extension:
+> Direktes Öffnen per Doppelklick (`file://`) kann je nach Browser beim Laden von Bildern und Audio Probleme verursachen.
 
-Open the project in Visual Studio Code.
+---
 
-Open index.html.
+## Coding Standards
 
-Right-click the file.
+Das Projekt folgt den Clean-Code-Vorgaben der Developer Akademie:
 
-Select Open with Live Server.
+- Funktionen maximal 14 Zeilen, eine Aufgabe pro Funktion
+- Dateien maximal 400 Zeilen
+- camelCase für Funktionen, Variablen und Dateinamen
+- Alle Funktionen nach JSDoc dokumentiert
+- Kein Inline-JavaScript im HTML
+- Keine Konsolenfehler oder `console.log()`-Ausgaben
+- Responsive bis 320 px ohne horizontales Scrollen
 
-🎯 Gameplay
+---
 
-The objective is to reach the end of the level while collecting items and defeating enemies.
+## Was ich gelernt habe
 
-Enemies
+- {{LERNPUNKT_1 – z. B. Vererbung und Klassenhierarchien sinnvoll schneiden}}
+- {{LERNPUNKT_2 – z. B. Game-Loop mit setInterval und requestAnimationFrame}}
+- {{LERNPUNKT_3 – z. B. Kollisionserkennung mit Offsets}}
+- {{LERNPUNKT_4 – z. B. Intervalle sauber stoppen beim Neustart}}
 
-Enemies move through the level and can damage the player on contact.
+---
 
-Depending on the enemy, they can be defeated by jumping on them or by throwing bottles.
+## Roadmap
 
-Collectibles
+- [ ] {{GEPLANTES_FEATURE_1 – z. B. weiteres Level}}
+- [ ] {{GEPLANTES_FEATURE_2 – z. B. Highscore}}
+- [ ] {{GEPLANTES_FEATURE_3}}
 
-During the game, the player can collect different items:
+---
 
-🪙 Coins
+## Credits
 
-🍾 Bottles
+- Grafiken und Spielkonzept: **Developer Akademie**
+- Sounds: {{QUELLE_DER_SOUNDS}}
+- Schriftart: {{SCHRIFTART_UND_QUELLE}}
 
-Health
+Dieses Projekt ist ein Lernprojekt und steht in keiner Verbindung zur gleichnamigen Restaurantkette.
 
-The player has a limited amount of health.
+---
 
-Taking damage reduces the player's health. If all health is lost, the game ends.
+## Autor
 
-Final Boss
+**{{DEIN_NAME}}**
+Frontend-Entwickler
 
-At the end of the level, the player faces the final boss.
+[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=flat-square&logo=About.me&logoColor=white)]({{PORTFOLIO_URL}})
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)]({{LINKEDIN_URL}})
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)]({{GITHUB_PROFIL_URL}})
 
-Defeating the boss completes the game.
-
-📱 Responsive Design
-
-The game supports different screen sizes and includes controls for mobile devices.
-
-🧑‍💻 Development
-
-This project was created as part of a web development training project.
-
-The main focus was on:
-
-Object-oriented JavaScript
-
-JavaScript classes
-
-Inheritance
-
-Canvas-based game development
-
-Collision detection
-
-Character and enemy animations
-
-Audio integration
-
-Responsive web design
-
-📌 Future Improvements
-
-Possible future improvements include:
-
- Additional levels
-
- More enemy types
-
- Additional characters
-
- High-score system
-
- More animations
-
- Additional sound effects
-
- Save system
-
- Multiplayer mode
-
-📄 License
-
-This project was created for educational purposes.
-
-All third-party assets such as images, graphics and sounds remain the property of their respective owners and are subject to their respective licenses.
-
-👨‍💻 Author
-
-Denis Bode
-
-Web Development Project — El Pollo Loco
+<div align="center">
+<sub>Entstanden {{JAHR}} im Rahmen der Frontend-Weiterbildung der Developer Akademie.</sub>
+</div>
