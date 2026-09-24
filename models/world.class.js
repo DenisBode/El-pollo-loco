@@ -1,6 +1,6 @@
 class World {
-  character = new Character();
-  enemies = [new Chicken(), new Chicken(), new Chicken()];
+  // let character = new Character();
+  // let enemies = [new Chicken(), new Chicken(), new Chicken()];
 
   draw() {}
 }
