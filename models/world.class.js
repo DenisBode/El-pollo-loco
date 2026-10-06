@@ -1,6 +1,21 @@
 class World {
-  // let character = new Character();
-  // let enemies = [new Chicken(), new Chicken(), new Chicken()];
 
-  draw() {}
+    character = new Character();
+    enemies = [
+        new Chicken(),
+        new Chicken(),
+        new Chicken()
+    ];
+
+    ctx;
+
+    constructor(canvas) {
+        this.ctx = canvas.getContext('2d');
+        this.draw();
+    }
+
+    draw() {
+        this.ctx.drawImage(this.character.img, this.character.x, this.character.y, 100, 150);
 }
+}
+
