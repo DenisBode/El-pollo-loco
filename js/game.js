@@ -6,7 +6,7 @@ function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas);
 
-  console.log('My Character is: ', world.character);
+  console.log('Initializing the game...');
 }
 
 window.addEventListener('keypress', (e) => {

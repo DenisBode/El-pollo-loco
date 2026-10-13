@@ -1,6 +1,8 @@
 class Character extends MovableObject {
   height = 300;
   y = 140; // Set a fixed y position
+  speed = 10;
+
   IMAGES_WALKING = [
     'img/2_character_pepe/2_walk/W-21.png',
     'img/2_character_pepe/2_walk/W-22.png',
@@ -22,8 +24,9 @@ class Character extends MovableObject {
       let i = this.currentImage % this.IMAGES_WALKING.length;
       let path = this.IMAGES_WALKING[i];
       this.img = this.imageCache[path];
+
       this.currentImage++;
-    }, 100); // 10 frames per second
+    }, 1000 / 10); // 10 frames per second
   }
 
   jump() {
