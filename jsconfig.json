@@ -1,0 +1,4 @@
+{
+  "compilerOptions": { "checkJs": false },
+  "include": ["models/**/*.js", "js/**/*.js"]
+}
