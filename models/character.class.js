@@ -52,7 +52,7 @@ class Character extends MovableObject {
 
       // console.log('this.speetY', this.speedY);
 
-      if (this.world.keyboard.UP) {
+      if (this.world.keyboard.UP && !this.isAboveGround()) {
         this.speedY = 20;
       }
 
