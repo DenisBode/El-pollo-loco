@@ -40,7 +40,7 @@ class Character extends MovableObject {
 
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
-        this.walking_sound.play();
+        // this.walking_sound.play();
       }
     }, 1000 / 60);
 
