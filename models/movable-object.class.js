@@ -9,6 +9,7 @@ class MovableObject {
   acceleration = 2;
 
   otherDirection = false;
+  walking_sound = new Audio('audio/walking.mp3');
 
   imageCache = {};
   currentImage = 0;
@@ -52,12 +53,15 @@ class MovableObject {
   }
 
   moveRight() {
-    console.log('moving right');
+    this.otherDirection = false;
+    this.x += this.speed;
   }
 
   moveLeft() {
-    setInterval(() => {
-      this.x -= this.speed; // Move the cloud to the left
-    }, 1000 / 60); // 60 frames per second
+    this.x -= this.speed;
+  }
+
+  jump() {
+    this.speedY = 30;
   }
 }

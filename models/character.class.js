@@ -39,21 +39,19 @@ class Character extends MovableObject {
       }
 
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.otherDirection = false;
-        this.x += this.speed;
+        this.moveRight();
+        this.walking_sound.play();
       }
     }, 1000 / 60);
 
     setInterval(() => {
       if (this.world.keyboard.LEFT && this.x > 0) {
-        this.x -= this.speed;
+        this.moveLeft();
         this.otherDirection = true;
       }
 
-      // console.log('this.speetY', this.speedY);
-
-      if (this.world.keyboard.UP && !this.isAboveGround()) {
-        this.speedY = 20;
+      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+        this.jump();
       }
 
       this.world.camera_x = -this.x + 100;
@@ -64,9 +62,5 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_WALKING);
       }
     }, 50); // 10 frames per second
-  }
-
-  jump() {
-    console.log('Character is jumping');
   }
 }
