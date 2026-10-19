@@ -34,10 +34,6 @@ class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
-      if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-      }
-
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         // this.walking_sound.play();
@@ -58,9 +54,11 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      if (this.isAboveGround()) {
+        this.playAnimation(this.IMAGES_JUMPING);
+      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
       }
-    }, 50); // 10 frames per second
+    }, 50); // 20 frames per second
   }
 }

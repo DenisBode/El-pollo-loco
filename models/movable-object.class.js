@@ -85,5 +85,6 @@ class MovableObject {
 
   jump() {
     this.speedY = 30;
+    this.currentImage = 0;
   }
 }
