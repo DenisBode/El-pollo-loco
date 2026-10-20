@@ -1,0 +1,265 @@
+/** The game world: draws everything, throws bottles and checks all collisions. */
+class World {
+  character = new Character();
+  level = level1;
+  hud = new Hud(this.character.lives);
+  gameOverScreen = new GameOverScreen();
+  winScreen = new WinScreen();
+  throwableObjects = [];
+  throwKeyPressed = false;
+  gameWon = false;
+  gameEnded = false;
+  stopped = false;
+  cameraX = 0;
+  ctx;
+  canvas;
+  keyboard;
+  onGameEnd;
+
+
+  /**
+   * @param {HTMLCanvasElement} canvas
+   * @param {Keyboard} keyboard
+   * @param {Function} onGameEnd - called once when the game is won or lost
+   */
+  constructor(canvas, keyboard, onGameEnd) {
+    this.canvas = canvas;
+    this.keyboard = keyboard;
+    this.onGameEnd = onGameEnd;
+    this.ctx = canvas.getContext('2d');
+    this.draw();
+    this.character.world = this;
+    this.run();
+  }
+
+
+  /** Starts the loops for throwing, collisions and new bottles. */
+  run() {
+    setInterval(() => this.checkThrowObjects(), 1000 / 60);
+    setInterval(() => this.runChecks(), 200);
+    setInterval(() => this.spawnBottle(), 5000);
+  }
+
+
+  /** Stops the drawing loop; the intervals are cleared by the caller. */
+  stop() {
+    this.stopped = true;
+  }
+
+
+  /** All checks that need to run only five times a second. */
+  runChecks() {
+    this.checkEnemyCollisions();
+    this.checkBottleCollisions();
+    this.checkCoinCollisions();
+    this.checkEndboss();
+    this.checkChickensInView();
+    this.checkGameEnd();
+  }
+
+
+  /** The endboss of the level (undefined if there is none). */
+  get endboss() {
+    return this.level.enemies.find((enemy) => enemy instanceof Endboss);
+  }
+
+
+  /** Tells the page once that the game is over (won, or Pepe's death animation is finished). */
+  checkGameEnd() {
+    if (!this.gameEnded && (this.gameWon || this.character.isLost())) {
+      this.gameEnded = true;
+      this.onGameEnd();
+    }
+  }
+
+
+  /** Every 5 seconds a new bottle appears at a random spot, as long as fewer than 5 lie on the ground. */
+  spawnBottle() {
+    if (this.level.bottles.length < this.character.maxBottles) {
+      this.level.bottles.push(new Bottle());
+    }
+  }
+
+
+  /** One key press throws exactly one bottle; the key must be released before the next throw. */
+  checkThrowObjects() {
+    let pressed = this.keyboard.D;
+    if (pressed && !this.throwKeyPressed && this.canThrow()) {
+      this.throwBottle();
+    }
+    this.throwKeyPressed = pressed;
+    this.updateThrownBottles();
+  }
+
+
+  /** @returns {boolean} true when Pepe has a bottle and the game is still running */
+  canThrow() {
+    return this.character.bottles > 0 && !this.character.isDead() && !this.gameWon;
+  }
+
+
+  throwBottle() {
+    let direction = this.character.otherDirection ? -1 : 1;
+    let x = direction === 1 ? this.character.x + 60 : this.character.x - 20;
+    this.throwableObjects.push(new ThrowableObject(x, this.character.y + 100, direction));
+    soundManager.play('throwBottle');
+    this.character.bottles--;
+    this.hud.updateBottles(this.character.bottles, this.character.maxBottles);
+  }
+
+
+  /** A hit bottle disappears, a missed bottle stays lying on the ground where it landed. */
+  updateThrownBottles() {
+    this.throwableObjects.forEach((thrown) => {
+      if (!thrown.landed && !thrown.hasHit) this.checkBottleHit(thrown);
+      if (thrown.landed) this.dropBottle(thrown.x);
+    });
+    this.throwableObjects = this.throwableObjects.filter((thrown) => !thrown.landed && !thrown.hasHit);
+    this.level.enemies = this.level.enemies.filter((enemy) => !enemy.isRemovable());
+  }
+
+
+  /**
+   * A flying bottle damages the first living enemy it touches and is used up.
+   * @param {ThrowableObject} thrown
+   */
+  checkBottleHit(thrown) {
+    let enemy = this.level.enemies.find((e) => !e.isDead() && thrown.isColliding(e));
+    if (!enemy) return;
+    enemy.hit(enemy.bottleDamage);
+    thrown.hitEnemy();
+    soundManager.play('bottleHit');
+    if (enemy instanceof Endboss) this.hud.updateEndboss(enemy.energy);
+  }
+
+
+  /**
+   * Lays a bottle on the ground where a thrown bottle missed.
+   * @param {number} x
+   */
+  dropBottle(x) {
+    let bottle = new Bottle();
+    bottle.x = x;
+    this.level.bottles.push(bottle);
+  }
+
+
+  /** Every living enemy that touches Pepe hurts him. */
+  checkEnemyCollisions() {
+    this.level.enemies.forEach((enemy) => {
+      if (!this.gameWon && !this.character.isDead() && !enemy.isDead() && this.character.isColliding(enemy)) {
+        this.character.hit();
+        this.hud.updateHealth(this.character.energy);
+      }
+    });
+  }
+
+
+  /**
+   * Removes the items Pepe touches (if he may collect them) and returns the remaining ones.
+   * @param {DrawableObject[]} items
+   * @param {Function} canCollect - asked for every item, returns true if Pepe may collect it now
+   * @param {Function} onCollect - called for every collected item
+   * @returns {DrawableObject[]}
+   */
+  collectItems(items, canCollect, onCollect) {
+    return items.filter((item) => {
+      if (!canCollect() || !this.character.isColliding(item)) return true;
+      onCollect();
+      return false;
+    });
+  }
+
+
+  /** Collects bottles as long as Pepe can carry more. */
+  checkBottleCollisions() {
+    let canCollect = () => !this.character.isDead() && this.character.bottles < this.character.maxBottles;
+    this.level.bottles = this.collectItems(this.level.bottles, canCollect, () => {
+      this.character.collectBottle();
+      this.hud.updateBottles(this.character.bottles, this.character.maxBottles);
+    });
+  }
+
+
+  /** Collects coins; a full coin bar refills the health and starts again. */
+  checkCoinCollisions() {
+    this.level.coins = this.collectItems(this.level.coins, () => !this.character.isDead(), () => {
+      soundManager.playRandom(['getCoin1', 'getCoin2'], false);
+      let isFull = this.character.collectCoin();
+      this.hud.updateCoins(this.character.coins, this.character.maxCoins);
+      if (isFull) this.refillHealth();
+    });
+  }
+
+
+  /** Gives Pepe full health and empties the coin bar after a short moment. */
+  refillHealth() {
+    this.character.energy = 100;
+    this.hud.updateHealth(100);
+    this.character.coins = 0;
+    setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500);
+  }
+
+
+  /** The endboss bar and the alert start when he comes into view; the attack when Pepe is close. */
+  checkEndboss() {
+    let boss = this.endboss;
+    if (!boss) return;
+    if (boss.hasComeIntoView(this.character)) {
+      this.hud.showEndbossBar();
+      boss.startAlert();
+    }
+    boss.updateAttack(this.character);
+    if (boss.isDead() && boss.isDeathAnimationFinished()) this.gameWon = true;
+  }
+
+
+  /** One shared cluck sound plays as long as at least one living chicken is in view. */
+  checkChickensInView() {
+    let isChickenInView = this.level.enemies.some(
+      (enemy) => enemy instanceof Chicken && !enemy.isDead() && enemy.isNear(this.character, enemy.viewDistance),
+    );
+    if (isChickenInView) {
+      soundManager.loop('chickenCluck');
+    } else {
+      soundManager.stop('chickenCluck');
+    }
+  }
+
+
+  /** Draws one frame and asks for the next one until the world is stopped. */
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.drawWorldObjects();
+    this.drawOverlays();
+    if (this.stopped) return;
+    requestAnimationFrame(() => this.draw());
+  }
+
+
+  /** Draws everything that moves with the camera. */
+  drawWorldObjects() {
+    this.ctx.translate(this.cameraX, 0);
+    [this.level.backgroundObjects, this.level.clouds, this.level.bottles, this.level.coins].forEach((objects) =>
+      this.addObjectsToMap(objects),
+    );
+    this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.throwableObjects);
+    if (!this.character.isLost()) this.character.render(this.ctx);
+    this.ctx.translate(-this.cameraX, 0);
+  }
+
+
+  /** Draws everything that stays on the screen: end screens and the hud. */
+  drawOverlays() {
+    if (this.character.isLost()) this.gameOverScreen.render(this.ctx);
+    if (this.gameWon) this.winScreen.render(this.ctx);
+    this.hud.render(this.ctx);
+  }
+
+
+  /** @param {DrawableObject[]} objects */
+  addObjectsToMap(objects) {
+    objects.forEach((object) => object.render(this.ctx));
+  }
+}

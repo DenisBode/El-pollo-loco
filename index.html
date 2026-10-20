@@ -72,6 +72,135 @@
         justify-content: center;
       }
 
+      /* Wrapper, so the buttons sit under the canvas without moving the canvas off the center */
+      .game-area {
+        position: relative;
+      }
+
+      .menu-buttons {
+        position: absolute;
+        top: calc(100% + 16px);
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 16px;
+      }
+
+      .menu-buttons[hidden] {
+        display: none; /* display: flex above would otherwise override the hidden attribute */
+      }
+
+      .menu-button {
+        font-family: inherit;
+        font-size: 24px;
+        letter-spacing: 2px;
+        padding: 4px 24px;
+        color: #ffd500;
+        background: #a0300a;
+        border: 3px solid #ffd500;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .menu-button:hover {
+        background: #c2410c;
+      }
+
+      .mute-button {
+        position: absolute;
+        top: calc(100% + 16px);
+        right: 0;
+        width: 46px;
+        height: 46px;
+        padding: 6px;
+        background: #a0300a;
+        border: 3px solid #ffd500;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .mute-button:hover {
+        background: #c2410c;
+      }
+
+      .mute-button svg {
+        width: 100%;
+        height: 100%;
+        fill: #ffd500;
+        stroke: #ffd500;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .mute-button .waves {
+        fill: none;
+      }
+
+      .mute-button .slash,
+      .mute-button.muted .waves {
+        display: none;
+      }
+
+      .mute-button.muted .slash {
+        display: block;
+      }
+
+      .impressum-link {
+        position: fixed;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #ffd500;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        cursor: pointer;
+      }
+
+      .impressum-link:hover {
+        color: white;
+      }
+
+      .info-dialog {
+        font-family: inherit;
+        color: #ffd500;
+        background: rgba(60, 20, 5, 0.95);
+        border: 4px solid #a0300a;
+        border-radius: 12px;
+        padding: 0; /* the padding lives in .info-content, so a click on the dialog itself means a click next to the content */
+        text-align: center;
+      }
+
+      .info-content {
+        position: relative;
+        padding: 24px 56px;
+      }
+
+      .info-close {
+        position: absolute;
+        top: 4px;
+        right: 12px;
+        font-family: inherit;
+        font-size: 32px;
+        color: #ffd500;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .info-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .info-dialog table {
+        margin: 16px auto 0;
+        text-align: left;
+      }
+
+      .info-dialog td {
+        padding: 4px 20px;
+      }
+
       canvas {
         border-radius: 8px;
         --hover-scale: 1.02;
@@ -79,30 +208,77 @@
     </style>
     <link rel="stylesheet" href="style.css" />
     <title>El Pollo Loco</title>
-    <script src="models/drawable-object.class.js"></script>
-    <script src="models/movable-object.class.js"></script>
-    <script src="models/character.class.js"></script>
-    <script src="models/background-object.class.js"></script>
-    <script src="models/chicken.class.js"></script>
-    <script src="models/bottle.class.js"></script>
-    <script src="models/coin.class.js"></script>
-    <script src="models/throwable-object.class.js"></script>
-    <script src="models/status-bar.class.js"></script>
-    <script src="models/counter-icon.class.js"></script>
-    <script src="models/game-over-screen.class.js"></script>
-    <script src="models/win-screen.class.js"></script>
-    <script src="models/start-screen.class.js"></script>
-    <script src="models/world.class.js"></script>
-    <script src="models/cloud.class.js"></script>
-    <script src="models/keyboard.class.js"></script>
-    <script src="models/level.class.js"></script>
-    <script src="models/endboss.class.js"></script>
-    <script src="models/levels/level1.js"></script>
-    <script src="js/game.js"></script>
+    <script src="classes/drawable-object.class.js"></script>
+    <script src="classes/movable-object.class.js"></script>
+    <script src="classes/enemy.class.js"></script>
+    <script src="classes/chicken.class.js"></script>
+    <script src="classes/endboss.class.js"></script>
+    <script src="classes/character.class.js"></script>
+    <script src="classes/collectable.class.js"></script>
+    <script src="classes/bottle.class.js"></script>
+    <script src="classes/coin.class.js"></script>
+    <script src="classes/throwable-object.class.js"></script>
+    <script src="classes/cloud.class.js"></script>
+    <script src="classes/background-object.class.js"></script>
+    <script src="classes/status-bar.class.js"></script>
+    <script src="classes/counter-icon.class.js"></script>
+    <script src="classes/hud.class.js"></script>
+    <script src="classes/start-screen.class.js"></script>
+    <script src="classes/game-over-screen.class.js"></script>
+    <script src="classes/win-screen.class.js"></script>
+    <script src="classes/level.class.js"></script>
+    <script src="classes/keyboard.class.js"></script>
+    <script src="classes/sound-manager.class.js"></script>
+    <script src="classes/world.class.js"></script>
+    <script src="levels/level1.js"></script>
+    <script src="js/script.js"></script>
   </head>
   <body onload="init()">
     <h1><span class="hover-effect" style="--hover-scale: 1.04">El Pollo loco</span></h1>
 
-    <canvas class="hover-effect" id="canvas" width="720" height="480"> </canvas>
+    <div class="game-area">
+      <canvas class="hover-effect" id="canvas" width="720" height="480"> </canvas>
+      <!-- Only available before the game starts -->
+      <div id="menuButtons" class="menu-buttons">
+        <button class="menu-button" onclick="startGame()">Start</button>
+        <button class="menu-button" onclick="openInfo()">Info</button>
+      </div>
+      <!-- Only visible when the game is won or lost -->
+      <div id="endButtons" class="menu-buttons" hidden>
+        <button class="menu-button" onclick="restartGame()">Restart</button>
+        <button class="menu-button" onclick="leaveGame()">Leave game</button>
+      </div>
+      <!-- Always visible: mutes all sounds, the state is saved in the local storage -->
+      <button id="muteButton" class="mute-button" onclick="toggleMute()" aria-label="Mute sounds">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="speaker" d="M3 9v6h4l5 4V5L7 9H3z" />
+          <path class="waves" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" />
+          <line class="slash" x1="3" y1="3" x2="21" y2="21" />
+        </svg>
+      </button>
+    </div>
+
+    <a class="impressum-link" href="impressum.html">Impressum</a>
+
+    <dialog id="infoDialog" class="info-dialog" onclick="closeInfoOnBackdrop(event)">
+      <div class="info-content">
+        <button class="info-close" onclick="closeInfo()" aria-label="Close">&times;</button>
+        <h2>Controls</h2>
+        <table>
+          <tr>
+            <td>&larr; / &rarr;</td>
+            <td>Run</td>
+          </tr>
+          <tr>
+            <td>Space</td>
+            <td>Jump</td>
+          </tr>
+          <tr>
+            <td>D</td>
+            <td>Throw bottle</td>
+          </tr>
+        </table>
+      </div>
+    </dialog>
   </body>
 </html>
