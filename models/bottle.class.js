@@ -10,6 +10,6 @@ class Bottle extends DrawableObject {
 
   constructor() {
     super().loadImage(this.IMAGES_GROUND[Math.floor(Math.random() * this.IMAGES_GROUND.length)]);
-    this.x = 200 + Math.random() * 2000; // Random x position along the level
+    this.x = 200 + Math.random() * 6200; // Random x position along the level
   }
 }

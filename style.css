@@ -6,4 +6,28 @@ body {
 
 canvas {
   background-color: black;
+  display: block;
+}
+
+/* Smartphones ----------- */
+@media only screen and (max-width: 720px) {
+  canvas {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-height: 480px) {
+  canvas {
+    height: 100vh;
+    width: auto; /* keeps the 3:2 ratio when both queries apply */
+  }
+
+}
+
+/* Rotated phone (landscape and low): no room for the heading above the canvas.
+   Not for desktop, which is landscape too but much higher. */
+@media only screen and (orientation: landscape) and (max-height: 600px) {
+  h1 {
+    display: none;
+  }
 }

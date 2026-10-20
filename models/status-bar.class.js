@@ -102,9 +102,19 @@ class EndbossStatusBar extends StatusBar {
         'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
         'img/7_statusbars/2_statusbar_endboss/orange/orange100.png',
       ],
-      540,
-      0,
+      460,
+      410,
       100,
     );
+    this.width = 240; // bigger than the other bars, same 4:1 ratio
+    this.height = 60;
+  }
+
+  /** At 20 % or less the bar blinks to show that the endboss is almost defeated. */
+  draw(ctx) {
+    let blinkOff = this.percentage <= 20 && this.percentage > 0 && Math.floor(Date.now() / 300) % 2 === 1;
+    if (!blinkOff) {
+      super.draw(ctx);
+    }
   }
 }

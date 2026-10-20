@@ -1,6 +1,6 @@
 class DrawableObject {
   /** Switch for the collision frames (blue = image, red = hitbox). true = visible, false = hidden. */
-  static showFrames = true;
+  static showFrames = false;
 
   x = 200;
   y = 300;

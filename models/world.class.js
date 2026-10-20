@@ -10,6 +10,8 @@ class World {
   gameOverScreen = new GameOverScreen();
   winScreen = new WinScreen();
   gameWon = false;
+  endbossBarVisible = false;
+  endbossViewDistance = 620; // Pepe stands 100 px from the left edge, so the boss enters the screen at 620 px
   throwableObjects = [];
   throwKeyPressed = false;
   ctx;
@@ -103,7 +105,19 @@ class World {
       this.checkBottleCollisions();
       this.checkCoinCollisions();
       this.checkWin();
+      this.checkEndbossInView();
     }, 200);
+  }
+
+  /** The endboss bar appears once the endboss comes into view and stays visible from then on. */
+  checkEndbossInView() {
+    let boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+    if (!boss) return;
+    if (boss.x - this.character.x < this.endbossViewDistance) {
+      this.endbossBarVisible = true;
+      boss.startAlert();
+    }
+    boss.attacking = Math.abs(boss.x - this.character.x) < boss.attackDistance;
   }
 
   /** The game is won as soon as the endboss has finished his death animation. */
@@ -188,7 +202,9 @@ class World {
     this.addToMap(this.statusBar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
-    this.addToMap(this.endbossBar);
+    if (this.endbossBarVisible) {
+      this.addToMap(this.endbossBar);
+    }
     this.addToMap(this.livesIcon);
     this.addToMap(this.bottlesIcon);
 
