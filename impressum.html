@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impressum - El Pollo Loco</title>
+    <style>
+      @font-face {
+        font-family: 'Zabars';
+        src: url('fonts/Zabars.ttf') format('truetype');
+      }
+
+      body {
+        margin: 0;
+        padding: 40px 16px;
+        min-height: 100vh;
+        box-sizing: border-box;
+        font-family: 'Zabars', Arial, sans-serif;
+        font-size: 20px;
+        letter-spacing: 1px;
+        line-height: 1.5;
+        color: #ffd500;
+      }
+
+      /* Same blurred, darkened game background as on the start page */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: url('img/5_background/second_half_background.png') center / cover no-repeat;
+        filter: blur(8px) brightness(0.6);
+        transform: scale(1.05);
+      }
+
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 24px 32px;
+        background: rgba(60, 20, 5, 0.9);
+        border: 4px solid #a0300a;
+        border-radius: 12px;
+      }
+
+      h1 {
+        margin-top: 0;
+        text-align: center;
+        font-size: 48px;
+        color: #ffd500;
+        -webkit-text-stroke: 5px #a0300a;
+        paint-order: stroke fill;
+      }
+
+      h2 {
+        margin-bottom: 4px;
+        font-size: 26px;
+      }
+
+      p {
+        margin-top: 0;
+      }
+
+      a {
+        color: #ffd500;
+        cursor: pointer;
+      }
+
+      .note {
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 2px dashed #ffd500;
+        border-radius: 8px;
+      }
+
+      .back-link {
+        display: block;
+        margin-top: 32px;
+        text-align: center;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Impressum</h1>
+
+      <p class="note">
+        Hinweis: Dies ist ein Lernprojekt. Alle Angaben auf dieser Seite sind frei erfunden Beispieldaten und
+        keine echten Personen-, Adress- oder Kontaktdaten.
+      </p>
+
+      <h2>Angaben gemäß § 5 DDG</h2>
+      <p>
+        Max Mustermann<br />
+        Beispielstraße 1<br />
+        12345 Musterstadt<br />
+        Deutschland
+      </p>
+
+      <h2>Kontakt</h2>
+      <p>
+        Telefon: 01234 567890<br />
+        E-Mail: <a href="mailto:beispiel@example.com">beispiel@example.com</a>
+      </p>
+
+      <h2>Verantwortlich für den Inhalt</h2>
+      <p>
+        Max Mustermann<br />
+        Beispielstraße 1<br />
+        12345 Musterstadt
+      </p>
+
+      <h2>Haftung für Inhalte</h2>
+      <p>
+        „El Pollo Loco“ ist ein nicht-kommerzielles Browserspiel, das im Rahmen einer Weiterbildung entstanden
+        ist. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte wird keine Gewähr übernommen.
+      </p>
+
+      <h2>Urheberrecht und Quellen</h2>
+      <p>
+        Grafiken und Spielfiguren stammen aus dem Lernmaterial der Weiterbildung. Sounds und Musik wurden von
+        Anbietern bezogen, die eine kostenlose Nutzung erlauben. Alle Rechte liegen bei den jeweiligen
+        Urhebern.
+      </p>
+
+      <h2>Datenschutz</h2>
+      <p>
+        Das Spiel erhebt und überträgt keine personenbezogenen Daten. Im lokalen Speicher des Browsers wird
+        nur gespeichert, ob der Ton stummgeschaltet ist.
+      </p>
+
+      <a class="back-link" href="index.html">Zurück zum Spiel</a>
+    </main>
+  </body>
+</html>
