@@ -1,4 +1,7 @@
 class DrawableObject {
+  /** Switch for the collision frames (blue = image, red = hitbox). true = visible, false = hidden. */
+  static showFrames = true;
+
   x = 200;
   y = 300;
   img;
@@ -15,7 +18,7 @@ class DrawableObject {
   }
 
   drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Chicken) {
+    if (DrawableObject.showFrames && (this instanceof Character || this instanceof Chicken)) {
       ctx.beginPath();
       ctx.lineWidth = 5;
       ctx.strokeStyle = 'blue';
