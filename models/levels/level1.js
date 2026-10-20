@@ -1,4 +1,8 @@
-const level1 = new Level(
+let level1;
+
+/** Creates the level at game start, so enemies and clouds don't move while the start screen is shown. */
+function initLevel() {
+  level1 = new Level(
   [new Chicken(), new Chicken(), new Chicken(), new Endboss()],
   (clouds = [new Cloud()]),
   [
@@ -44,5 +48,8 @@ const level1 = new Level(
       'img/5_background/layers/1_first_layer/2.png',
       719 * 3
     ),
-  ]
-);
+  ],
+  [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
+  [new Coin(), new Coin(), new Coin(), new Coin(), new Coin()]
+  );
+}

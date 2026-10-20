@@ -41,6 +41,16 @@ class Character extends MovableObject {
   ];
 
   lives = 5;
+  bottles = 0;
+  maxBottles = 5;
+  coins = 0;
+  maxCoins = 5;
+
+  collectBottle() {
+    if (this.bottles < this.maxBottles) {
+      this.bottles++;
+    }
+  }
   deathFrame = 0;
   deathAnimationFinished = false;
 
@@ -57,7 +67,7 @@ class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
-      if (this.isDead()) return;
+      if (this.isDead() || this.world.gameWon) return;
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         // this.walking_sound.play();
@@ -65,7 +75,7 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.isDead()) return;
+      if (this.isDead() || this.world.gameWon) return;
       if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
         this.otherDirection = true;
@@ -79,7 +89,7 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.isDead()) return;
+      if (this.isDead() || this.world.gameWon) return;
       if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()) {

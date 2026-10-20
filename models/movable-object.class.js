@@ -24,12 +24,17 @@ class MovableObject extends DrawableObject {
     );
   }
 
-  /** Removes 5 energy as long as energy is above 0. */
-  hit() {
+  /** Removes energy (default 5) as long as energy is above 0. */
+  hit(damage = 5) {
     if (this.energy > 0) {
-      this.energy -= 5;
+      this.energy = Math.max(0, this.energy - damage);
       this.lastHit = new Date().getTime();
     }
+  }
+
+  /** Dead objects that should vanish from the level override this. */
+  isRemovable() {
+    return false;
   }
 
   /** True for 1000 ms after the last hit (only used for the hurt animation). */

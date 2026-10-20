@@ -1,26 +1,110 @@
 class StatusBar extends DrawableObject {
-  IMAGES_HEALTH = [
-    'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
-    'img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
-    'img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
-    'img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
-    'img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
-    'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png',
-  ];
+  images = [];
+  percentage = 100;
 
-  constructor() {
+  constructor(images, x, y, percentage = 100) {
     super();
-    this.loadImages(this.IMAGES_HEALTH);
-    this.x = 20;
-    this.y = 0;
-    this.width = 200;
-    this.height = 60;
-    this.setPercentage(100);
+    this.images = images;
+    this.loadImages(this.images);
+    this.x = x;
+    this.y = y;
+    this.width = 160;
+    this.height = 40; // images are 4:1
+    this.setPercentage(percentage);
   }
 
-  /** Shows the image matching the health percentage (0-100). */
   setPercentage(percentage) {
-    let index = Math.max(0, Math.min(5, Math.ceil(percentage / 20)));
-    this.img = this.imageCache[this.IMAGES_HEALTH[index]];
+    this.percentage = percentage;
+    let path = this.images[this.resolveImageIndex()];
+    this.img = this.imageCache[path];
+  }
+
+  /** Maps the percentage (0-100) to the index of the matching image. */
+  resolveImageIndex() {
+    if (this.percentage > 80) {
+      return 5;
+    } else if (this.percentage > 60) {
+      return 4;
+    } else if (this.percentage > 40) {
+      return 3;
+    } else if (this.percentage > 20) {
+      return 2;
+    } else if (this.percentage > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+}
+
+class HealthStatusBar extends StatusBar {
+  constructor() {
+    super(
+      [
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
+        'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png',
+      ],
+      20,
+      0,
+      100,
+    );
+  }
+}
+
+class CoinStatusBar extends StatusBar {
+  constructor() {
+    super(
+      [
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/40.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/60.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png',
+        'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png',
+      ],
+      20,
+      45,
+      0,
+    );
+  }
+}
+
+class BottleStatusBar extends StatusBar {
+  constructor() {
+    super(
+      [
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png',
+        'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png',
+      ],
+      20,
+      90,
+      0,
+    );
+  }
+}
+
+class EndbossStatusBar extends StatusBar {
+  constructor() {
+    super(
+      [
+        'img/7_statusbars/2_statusbar_endboss/orange/orange0.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange20.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange40.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange60.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
+        'img/7_statusbars/2_statusbar_endboss/orange/orange100.png',
+      ],
+      540,
+      0,
+      100,
+    );
   }
 }
