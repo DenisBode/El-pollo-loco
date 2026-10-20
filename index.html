@@ -256,29 +256,55 @@
           <line class="slash" x1="3" y1="3" x2="21" y2="21" />
         </svg>
       </button>
+      <!-- Switches the game area to fullscreen and back (hidden if the browser cannot do it) -->
+      <button id="fullscreenButton" class="mute-button fullscreen-button" onclick="toggleFullscreen()" aria-label="Fullscreen" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="waves" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+        </svg>
+      </button>
+      <!-- Only on tablets and phones, and only while the game runs -->
+      <div id="touchControls" class="touch-controls" oncontextmenu="return false" hidden>
+        <div class="touch-group">
+          <button class="touch-button" data-key="LEFT" aria-label="Run left">&larr;</button>
+          <button class="touch-button" data-key="RIGHT" aria-label="Run right">&rarr;</button>
+        </div>
+        <div class="touch-group">
+          <button class="touch-button" data-key="D" aria-label="Throw bottle">
+            <img src="img/6_salsa_bottle/salsa_bottle.png" alt="" draggable="false" />
+          </button>
+          <button class="touch-button" data-key="SPACE" aria-label="Jump">&uarr;</button>
+        </div>
+      </div>
+      <!-- Inside the game area, so it is also visible in fullscreen -->
+      <dialog id="infoDialog" class="info-dialog" onclick="closeInfoOnBackdrop(event)">
+        <div class="info-content">
+          <button class="info-close" onclick="closeInfo()" aria-label="Close">&times;</button>
+          <h2>Controls</h2>
+          <table>
+            <tr>
+              <td>&larr; / &rarr;</td>
+              <td>Run</td>
+            </tr>
+            <tr>
+              <td>Space</td>
+              <td>Jump</td>
+            </tr>
+            <tr>
+              <td>D</td>
+              <td>Throw bottle</td>
+            </tr>
+          </table>
+          <a class="impressum-link-dialog" href="impressum.html">Impressum</a>
+        </div>
+      </dialog>
+    </div>
+
+    <!-- Portrait mode on tablets and phones: the game only works in landscape -->
+    <div class="rotate-message">
+      <span>&#8635;</span>
+      Turn your device to play
     </div>
 
     <a class="impressum-link" href="impressum.html">Impressum</a>
-
-    <dialog id="infoDialog" class="info-dialog" onclick="closeInfoOnBackdrop(event)">
-      <div class="info-content">
-        <button class="info-close" onclick="closeInfo()" aria-label="Close">&times;</button>
-        <h2>Controls</h2>
-        <table>
-          <tr>
-            <td>&larr; / &rarr;</td>
-            <td>Run</td>
-          </tr>
-          <tr>
-            <td>Space</td>
-            <td>Jump</td>
-          </tr>
-          <tr>
-            <td>D</td>
-            <td>Throw bottle</td>
-          </tr>
-        </table>
-      </div>
-    </dialog>
   </body>
 </html>

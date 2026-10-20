@@ -4,6 +4,8 @@ let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
 
+const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
+
 const KEY_MAP = {
   ArrowRight: 'RIGHT',
   ArrowLeft: 'LEFT',
@@ -19,7 +21,51 @@ const KEY_MAP = {
 function init() {
   canvas = document.getElementById('canvas');
   updateMuteButton();
+  bindTouchButtons();
+  setupFullscreen();
   drawStartScreen(new StartScreen());
+}
+
+
+/** Shows the fullscreen button if the browser can do fullscreen and keeps the layout up to date. */
+function setupFullscreen() {
+  document.getElementById('fullscreenButton').hidden = !document.fullscreenEnabled;
+  compactQuery.addEventListener('change', updateLayout);
+  document.addEventListener('fullscreenchange', updateLayout);
+  updateLayout();
+}
+
+
+/** The compact layout (buttons on top of the game) is used on a rotated phone and in fullscreen. */
+function updateLayout() {
+  let isCompact = compactQuery.matches || !!document.fullscreenElement;
+  document.documentElement.classList.toggle('compact', isCompact);
+}
+
+
+/** Switches the game area (canvas, buttons, touch buttons) to fullscreen or back. */
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    document.querySelector('.game-area').requestFullscreen().catch(() => {});
+  }
+  document.getElementById('fullscreenButton').blur(); // otherwise the space bar (jump) would press the button again
+}
+
+
+/** Lets every touch button press and release the key named in its data-key attribute. */
+function bindTouchButtons() {
+  document.querySelectorAll('.touch-button').forEach((button) => {
+    let key = button.dataset.key;
+    button.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      keyboard[key] = true;
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach((type) => {
+      button.addEventListener(type, () => (keyboard[key] = false));
+    });
+  });
 }
 
 
@@ -74,9 +120,20 @@ function startGame() {
   if (world) return;
   document.getElementById('menuButtons').hidden = true; // start and info are only for before the game
   document.getElementById('endButtons').hidden = true;
+  document.getElementById('touchControls').hidden = false;
   initLevel();
   world = new World(canvas, keyboard, showEndButtons);
   soundManager.startMusic();
+  enterFullscreenOnTouchDevice();
+}
+
+
+/** On phones and tablets the game starts in fullscreen (the start button click allows it). */
+function enterFullscreenOnTouchDevice() {
+  let isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+  if (isTouchDevice && document.fullscreenEnabled && !document.fullscreenElement) {
+    document.querySelector('.game-area').requestFullscreen().catch(() => {});
+  }
 }
 
 
@@ -107,6 +164,7 @@ function restartGame() {
 function leaveGame() {
   stopGame();
   document.getElementById('endButtons').hidden = true;
+  document.getElementById('touchControls').hidden = true;
   document.getElementById('menuButtons').hidden = false;
   drawStartScreen(new StartScreen());
 }
