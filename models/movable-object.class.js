@@ -1,17 +1,11 @@
-class MovableObject {
-  x = 200;
-  y = 300;
-  img;
-  height = 150;
-  width = 100;
+class MovableObject extends DrawableObject {
   speed = 0.15;
   speedY = 0;
   acceleration = 2;
+  energy = 100;
+  lastHit = 0;
 
   otherDirection = false;
-
-  imageCache = {};
-  currentImage = 0;
 
   applyGravity() {
     setInterval(() => {
@@ -22,49 +16,33 @@ class MovableObject {
     }, 1000 / 25);
   }
 
-  draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  isColliding(movabaleObject) {
+    let a = this.getHitbox();
+    let b = movabaleObject.getHitbox();
+    return (
+      a.x + a.width > b.x && a.x < b.x + b.width && a.y + a.height > b.y && a.y < b.y + b.height
+    );
   }
 
-  drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Chicken) {
-      ctx.beginPath();
-      ctx.lineWidth = 5;
-      ctx.strokeStyle = 'blue';
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
+  /** Removes 5 energy as long as energy is above 0. */
+  hit() {
+    if (this.energy > 0) {
+      this.energy -= 5;
+      this.lastHit = new Date().getTime();
     }
   }
 
-  isColliding(movabaleObject) {
-    return (
-      this.x + this.width > movabaleObject.x &&
-      this.y + this.height > movabaleObject.y &&
-      this.x < movabaleObject.x &&
-      this.y < movabaleObject.y + movabaleObject.height
-    );
+  /** True for 1000 ms after the last hit (only used for the hurt animation). */
+  isHurt() {
+    return new Date().getTime() - this.lastHit < 1000;
+  }
+
+  isDead() {
+    return this.energy <= 0;
   }
 
   isAboveGround() {
     return this.y < 130;
-  }
-
-  loadImage(path) {
-    this.img = new Image();
-    this.img.src = path;
-  }
-
-  /**
-   * Loads multiple images into the cache.
-   * @param {Array} arr - An array of image paths.
-   */
-
-  loadImages(arr) {
-    arr.forEach((path) => {
-      let img = new Image();
-      img.src = path;
-      this.imageCache[path] = img;
-    });
   }
 
   playAnimation(images) {

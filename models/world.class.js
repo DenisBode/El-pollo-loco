@@ -1,6 +1,8 @@
 class World {
   character = new Character();
   level = level1;
+  statusBar = new StatusBar();
+  gameOverScreen = new GameOverScreen();
   ctx;
   canvas;
   keyboard;
@@ -12,10 +14,24 @@ class World {
     this.ctx = canvas.getContext('2d');
     this.draw();
     this.setWorld();
+    this.checkcollisions();
   }
 
   setWorld() {
     this.character.world = this;
+  }
+
+  checkcollisions() {
+    setInterval(() => {
+      this.level.enemies.forEach((enemy) => {
+        if (!this.character.isDead() && this.character.isColliding(enemy)) {
+          console.log('Collision with Character', enemy);
+          this.character.hit();
+          this.statusBar.setPercentage(this.character.energy);
+          console.log('Collission with Character, energy', this.character.energy);
+        }
+      });
+    }, 200);
   }
 
   draw() {
@@ -28,9 +44,16 @@ class World {
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
 
-    this.addToMap(this.character);
+    if (!this.character.deathAnimationFinished) {
+      this.addToMap(this.character);
+    }
 
     this.ctx.translate(-this.camera_x, 0);
+
+    if (this.character.deathAnimationFinished) {
+      this.addToMap(this.gameOverScreen);
+    }
+    this.addToMap(this.statusBar);
 
     let self = this;
     requestAnimationFrame(function () {

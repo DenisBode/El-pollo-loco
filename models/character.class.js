@@ -24,16 +24,40 @@ class Character extends MovableObject {
     'img/2_character_pepe/3_jump/J-39.png',
   ];
 
+  IMAGES_HURT = [
+    'img/2_character_pepe/4_hurt/H-41.png',
+    'img/2_character_pepe/4_hurt/H-42.png',
+    'img/2_character_pepe/4_hurt/H-43.png',
+  ];
+
+  IMAGES_DEAD = [
+    'img/2_character_pepe/5_dead/D-51.png',
+    'img/2_character_pepe/5_dead/D-52.png',
+    'img/2_character_pepe/5_dead/D-53.png',
+    'img/2_character_pepe/5_dead/D-54.png',
+    'img/2_character_pepe/5_dead/D-55.png',
+    'img/2_character_pepe/5_dead/D-56.png',
+    'img/2_character_pepe/5_dead/D-57.png',
+  ];
+
+  lives = 5;
+  deathFrame = 0;
+  deathAnimationFinished = false;
+
   constructor() {
     super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
+    this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_DEAD);
+    this.setOffset(110, 20, 10, 20);
     this.applyGravity();
     this.animate();
   }
 
   animate() {
     setInterval(() => {
+      if (this.isDead()) return;
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         // this.walking_sound.play();
@@ -41,6 +65,7 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
+      if (this.isDead()) return;
       if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
         this.otherDirection = true;
@@ -54,11 +79,27 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.isAboveGround()) {
+      if (this.isDead()) return;
+      if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+      } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
       }
     }, 50); // 20 frames per second
+
+    setInterval(() => this.playDeathAnimation(), 150);
+  }
+
+  /** Plays the dead images once and keeps the last frame; afterwards deathAnimationFinished is true. */
+  playDeathAnimation() {
+    if (!this.isDead() || this.deathAnimationFinished) return;
+    if (this.deathFrame < this.IMAGES_DEAD.length) {
+      this.img = this.imageCache[this.IMAGES_DEAD[this.deathFrame]];
+      this.deathFrame++;
+    } else {
+      this.deathAnimationFinished = true;
+    }
   }
 }
