@@ -1,0 +1,276 @@
+/* Base styles of the game page (desktop). Phones and tablets: mobile.css, fullscreen: fullscreen.css */
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Zabars', Arial, sans-serif;
+  font-size: 24px;
+  letter-spacing: 2px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* An author rule like display: flex must never override the hidden attribute */
+[hidden] {
+  display: none !important;
+}
+
+/* Heading sits in the top third of the window, the canvas stays in the middle */
+h1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 33.333vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  letter-spacing: 4px;
+  /* Same yellow with brown outline as the game title */
+  color: #ffd500;
+  -webkit-text-stroke: 6px #a0300a;
+  paint-order: stroke fill;
+}
+
+/* Big desktop screens: the heading is twice as big */
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 112px;
+    letter-spacing: 8px;
+  }
+}
+
+/* Global hover effect: add class="hover-effect" to any element.
+   Optional: set --hover-scale on the element to change the zoom (default 1.03). */
+.hover-effect {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.hover-effect:hover {
+  transform: scale(var(--hover-scale, 1.03));
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+}
+
+/* Wrapper, so the buttons sit under the canvas without moving the canvas off the center */
+.game-area {
+  position: relative;
+}
+
+canvas {
+  background-color: black;
+  display: block;
+  border-radius: 8px;
+  --hover-scale: 1.02;
+}
+
+/* Buttons --------------------------------------------- */
+.menu-buttons {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+}
+
+/* Under the canvas: Start in the middle, Info and Story at the left (the compact layout is in mobile.css) */
+html:not(.compact) #menuButtons {
+  left: 0;
+  width: 100%;
+  transform: none;
+  justify-content: center;
+}
+
+.menu-side {
+  display: flex;
+  gap: 16px;
+}
+
+html:not(.compact) .menu-side {
+  position: absolute;
+  left: 0;
+}
+
+.menu-button--primary {
+  font-size: 32px;
+  padding: 6px 40px;
+}
+
+.menu-button {
+  font-family: inherit;
+  font-size: 24px;
+  letter-spacing: 2px;
+  padding: 4px 24px;
+  color: #ffd500;
+  background: #a0300a;
+  border: 3px solid #ffd500;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.menu-button:hover {
+  background: #c2410c;
+}
+
+/* The main button (Start, or Restart after the game) pulses to show what to press */
+.menu-button--primary {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.menu-button--primary:hover {
+  animation-play-state: paused;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* Language switch: top right corner of the start screen */
+.language-switch {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.language-button {
+  font-family: inherit;
+  font-size: 18px;
+  letter-spacing: 1px;
+  padding: 2px 10px;
+  color: #ffd500;
+  background: rgba(160, 48, 10, 0.85);
+  border: 2px solid #ffd500;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.language-button:hover,
+.language-button.active {
+  background: #c2410c;
+  border-color: #fff;
+}
+
+/* Mute and fullscreen button: small square buttons with an icon */
+.mute-button {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  width: 46px;
+  height: 46px;
+  padding: 6px;
+  background: #a0300a;
+  border: 3px solid #ffd500;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mute-button:hover {
+  background: #c2410c;
+}
+
+.mute-button svg {
+  width: 100%;
+  height: 100%;
+  fill: #ffd500;
+  stroke: #ffd500;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mute-button .waves {
+  fill: none;
+}
+
+.mute-button .slash,
+.mute-button.muted .waves {
+  display: none;
+}
+
+.mute-button.muted .slash {
+  display: block;
+}
+
+/* Next to the mute button below the canvas */
+.fullscreen-button {
+  right: 62px;
+}
+
+/* Impressum link ---------------------------------------- */
+.impressum-link {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  color: #ffd500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
+.impressum-link:hover {
+  color: white;
+}
+
+/* Info dialog ------------------------------------------- */
+.info-dialog {
+  font-family: inherit;
+  color: #ffd500;
+  background: rgba(60, 20, 5, 0.95);
+  border: 4px solid #a0300a;
+  border-radius: 12px;
+  padding: 0; /* the padding lives in .info-content, so a click on the dialog itself means a click next to the content */
+  text-align: center;
+}
+
+.info-content {
+  position: relative;
+  padding: 24px 56px;
+}
+
+.info-close {
+  position: absolute;
+  top: 4px;
+  right: 12px;
+  font-family: inherit;
+  font-size: 32px;
+  color: #ffd500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.info-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.info-dialog table {
+  margin: 16px auto 0;
+  text-align: left;
+}
+
+.info-dialog td {
+  padding: 4px 20px;
+}
+
+/* Elements that only exist for phones and tablets: hidden here, shown in mobile.css */
+.touch-controls,
+.rotate-message,
+.impressum-link-dialog {
+  display: none;
+}

@@ -1,0 +1,11 @@
+/* Blurred, darkened game background as page background (own layer, so only the image is blurred).
+   Used by the game page and the impressum. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url('../img/5_background/second_half_background.png') center / cover no-repeat;
+  filter: blur(8px) brightness(0.6);
+  transform: scale(1.05); /* hides the soft blur edges */
+}

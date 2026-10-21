@@ -1,0 +1,5 @@
+/* The title font of the game, loaded from the project (used by the game page and the impressum) */
+@font-face {
+  font-family: 'Zabars';
+  src: url('../fonts/Zabars.ttf') format('truetype');
+}

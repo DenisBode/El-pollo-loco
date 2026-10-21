@@ -1,0 +1,31 @@
+/* Fullscreen: the game area fills the screen, the canvas keeps its 3:2 ratio */
+.game-area:fullscreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+}
+
+.game-area:fullscreen canvas {
+  width: min(100vw, 150vh);
+  height: auto;
+  border-radius: 0;
+}
+
+.game-area:fullscreen canvas.hover-effect:hover {
+  transform: none;
+}
+
+/* Restart and leave are twice as big in fullscreen */
+.game-area:fullscreen #endButtons {
+  gap: 32px;
+}
+
+.game-area:fullscreen #endButtons .menu-button {
+  font-size: 32px;
+  padding: 4px 28px;
+  border-width: 6px;
+  border-radius: 16px;
+}
