@@ -194,11 +194,22 @@ class World {
   /** Every living enemy that touches Pepe hurts him. */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
-      if (!this.gameWon && !this.character.isDead() && !enemy.isDead() && this.character.isColliding(enemy)) {
+      if (this.canHurtPepe(enemy)) {
         this.character.hit();
         this.hud.updateHealth(this.character.energy);
       }
     });
+  }
+
+
+  /**
+   * An enemy hurts Pepe when both are alive, the game is not won and they touch each other.
+   * @param {Enemy} enemy
+   * @returns {boolean}
+   */
+  canHurtPepe(enemy) {
+    let isGameOn = !this.gameWon && !this.character.isDead();
+    return isGameOn && !enemy.isDead() && this.character.isColliding(enemy);
   }
 
 
