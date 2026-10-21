@@ -20,6 +20,36 @@ class StartScreen extends DrawableObject {
   draw(ctx) {
     super.draw(ctx);
     if (this.showsStory) this.drawStory(ctx);
+    else if (!areAssetsReady()) this.drawLoadingBar(ctx);
+  }
+
+
+  /**
+   * A bar with the percentage at the bottom of the start image, as long as the images are loading.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  drawLoadingBar(ctx) {
+    let progress = DrawableObject.loadProgress();
+    ctx.fillStyle = 'rgba(40, 14, 4, 0.85)';
+    ctx.fillRect(150, 396, 420, 64);
+    this.drawLoadingText(ctx, progress);
+    ctx.strokeStyle = '#ffd500';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(170, 438, 380, 14);
+    ctx.fillRect(170, 438, 380 * progress, 14);
+  }
+
+
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} progress - from 0 to 1
+   */
+  drawLoadingText(ctx, progress) {
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffd500';
+    ctx.font = '24px Zabars, Arial, sans-serif';
+    ctx.fillText(`${t('loading')} ${Math.round(progress * 100)} %`, 360, 428);
+    ctx.textAlign = 'start';
   }
 
 

@@ -17,6 +17,35 @@ class DrawableObject {
   imageCache = {};
   currentImage = 0;
 
+  /** Every image is loaded only once and shared by path, so a new game does not load them again. */
+  static imagePool = {};
+  static imagesTotal = 0;
+  static imagesDone = 0;
+
+
+  /** @returns {number} the share of the requested images that are loaded and decoded, from 0 to 1 */
+  static loadProgress() {
+    return DrawableObject.imagesTotal === 0 ? 0 : DrawableObject.imagesDone / DrawableObject.imagesTotal;
+  }
+
+
+  /**
+   * Returns the shared image of a path; the first request starts loading and decoding it.
+   * A broken image counts as done, so it cannot block the start for ever.
+   * @param {string} path
+   * @returns {HTMLImageElement}
+   */
+  static getImage(path) {
+    let pool = DrawableObject.imagePool;
+    if (!pool[path]) {
+      pool[path] = new Image();
+      pool[path].src = path;
+      DrawableObject.imagesTotal++;
+      pool[path].decode().catch(() => {}).finally(() => DrawableObject.imagesDone++);
+    }
+    return pool[path];
+  }
+
 
   /**
    * Draws the object (mirrored if it looks to the left) and the optional collision frames.
@@ -154,9 +183,7 @@ class DrawableObject {
    * @param {string} path
    */
   loadImage(path) {
-    this.img = new Image();
-    this.img.src = path;
-    this.decodeImage(this.img);
+    this.img = DrawableObject.getImage(path);
   }
 
 
@@ -165,21 +192,7 @@ class DrawableObject {
    * @param {string[]} paths - an array of image paths
    */
   loadImages(paths) {
-    paths.forEach((path) => {
-      let img = new Image();
-      img.src = path;
-      this.decodeImage(img);
-      this.imageCache[path] = img;
-    });
-  }
-
-
-  /**
-   * Decodes an image in the background, so the first time it is drawn does not cause a short freeze.
-   * @param {HTMLImageElement} img
-   */
-  decodeImage(img) {
-    img.decode().catch(() => {});
+    paths.forEach((path) => (this.imageCache[path] = DrawableObject.getImage(path)));
   }
 
 

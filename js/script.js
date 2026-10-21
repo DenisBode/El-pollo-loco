@@ -2,6 +2,7 @@ let canvas;
 let world;
 let startScreen;
 let isFlipping = false;
+let isPreloaded = false; // true when all images are requested (their loading is shown by the loading bar)
 let intervalIds = []; // every timer of the game, so stopGame can stop them all
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
@@ -45,6 +46,13 @@ function preloadAssets() {
   [new Character(), new Hud(5), new GameOverScreen(), new WinScreen(), new ThrowableObject(0, 0, 1)];
   clearGameIntervals();
   soundManager.preload(START_SOUNDS);
+  isPreloaded = true;
+}
+
+
+/** @returns {boolean} true when all images are loaded and decoded, so the game can start without gaps */
+function areAssetsReady() {
+  return isPreloaded && DrawableObject.loadProgress() >= 1;
 }
 
 
@@ -149,6 +157,7 @@ function updateMuteButton() {
  */
 function drawStartScreen(startScreen) {
   if (world) return;
+  document.getElementById('startButton').disabled = !areAssetsReady();
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   startScreen.render(ctx);
@@ -158,7 +167,8 @@ function drawStartScreen(startScreen) {
 
 /** Starts the game: hides the menu buttons, creates the level and the world, starts the music. */
 function startGame() {
-  if (world) return;
+  if (world || !areAssetsReady()) return;
+  document.getElementById('abortButton').hidden = false;
   document.getElementById('menuButtons').hidden = true; // start, info and story are only for before the game
   document.getElementById('languageSwitch').hidden = true;
   document.getElementById('endButtons').hidden = true;
@@ -182,6 +192,7 @@ function enterFullscreenOnTouchDevice() {
 
 /** Shows the buttons for restart and leaving after the game is won or lost. */
 function showEndButtons() {
+  document.getElementById('abortButton').hidden = true;
   document.getElementById('endButtons').hidden = false;
 }
 
@@ -205,6 +216,7 @@ function restartGame() {
 /** Back to the start screen. */
 function leaveGame() {
   stopGame();
+  document.getElementById('abortButton').hidden = true;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = true;
   document.getElementById('menuButtons').hidden = false;

@@ -130,6 +130,10 @@
   right: 52px;
 }
 
+.compact .abort-button {
+  right: 96px;
+}
+
 /* The impressum link moves into the info dialog */
 .compact .impressum-link {
   display: none;

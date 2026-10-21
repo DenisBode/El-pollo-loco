@@ -1,7 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" translate="no">
   <head>
     <meta charset="UTF-8" />
+    <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/fonts.css" />
     <link rel="stylesheet" href="styles/background.css" />
@@ -44,7 +45,7 @@
       <canvas class="hover-effect" id="canvas" width="720" height="480"> </canvas>
       <!-- Only available before the game starts -->
       <div id="menuButtons" class="menu-buttons">
-        <button class="menu-button menu-button--primary" data-i18n="start" onclick="startGame()">Start</button>
+        <button id="startButton" class="menu-button menu-button--primary" data-i18n="start" onclick="startGame()" disabled>Start</button>
         <div class="menu-side">
           <button class="menu-button" data-i18n="info" onclick="openInfo()">Info</button>
           <button id="storyButton" class="menu-button" data-i18n="story" onclick="toggleStory()">Story</button>
@@ -67,6 +68,12 @@
           <path class="speaker" d="M3 9v6h4l5 4V5L7 9H3z" />
           <path class="waves" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" />
           <line class="slash" x1="3" y1="3" x2="21" y2="21" />
+        </svg>
+      </button>
+      <!-- Only while the game runs: back to the start screen -->
+      <button id="abortButton" class="mute-button abort-button" onclick="leaveGame()" data-i18n-aria="abort" aria-label="Abort game" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="waves" d="M5 5l14 14M19 5L5 19" />
         </svg>
       </button>
       <!-- Switches the game area to fullscreen and back (hidden if the browser cannot do it) -->

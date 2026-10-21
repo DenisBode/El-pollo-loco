@@ -211,6 +211,20 @@ html:not(.compact) .menu-side {
   right: 62px;
 }
 
+.abort-button {
+  right: 124px;
+}
+
+.menu-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+  animation: none;
+}
+
+.menu-button:disabled:hover {
+  background: #a0300a;
+}
+
 /* Impressum link ---------------------------------------- */
 .impressum-link {
   position: fixed;
