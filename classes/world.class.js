@@ -85,12 +85,19 @@ class World {
   /** Pepe jumping onto a stompable enemy from above defeats it and bounces off. */
   checkStomp() {
     if (this.character.isDead() || this.gameWon) return;
-    let enemy = this.level.enemies.find(
-      (e) => e.canBeStomped && !e.isDead() && this.character.isColliding(e) && this.character.isStomping(e),
-    );
+    let enemy = this.level.enemies.find((e) => this.canStomp(e));
     if (!enemy) return;
     enemy.hit(enemy.stompDamage);
     this.character.bounce();
+  }
+
+
+  /**
+   * @param {Enemy} enemy
+   * @returns {boolean} true when the enemy can be stomped, is alive and Pepe falls onto it
+   */
+  canStomp(enemy) {
+    return enemy.canBeStomped && !enemy.isDead() && this.character.isColliding(enemy) && this.character.isStomping(enemy);
   }
 
 
