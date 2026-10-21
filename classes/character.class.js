@@ -99,10 +99,10 @@ class Character extends MovableObject {
 
   /** Starts the loops for control, images, idle and death. */
   animate() {
-    setInterval(() => this.handleJump(), 1000 / 60);
-    setInterval(() => this.updateImage(), 50); // 20 frames per second
-    setInterval(() => this.playIdleAnimation(), 200); // idle runs slower
-    setInterval(() => this.updateDeathAnimation(), 150);
+    setGameInterval(() => this.handleJump(), 1000 / 60);
+    setGameInterval(() => this.updateImage(), 50); // 20 frames per second
+    setGameInterval(() => this.playIdleAnimation(), 200); // idle runs slower
+    setGameInterval(() => this.updateDeathAnimation(), 150);
   }
 
 

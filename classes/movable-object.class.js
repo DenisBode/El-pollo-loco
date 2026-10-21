@@ -12,7 +12,7 @@ class MovableObject extends DrawableObject {
 
   /** Lets the object fall until it stands on the ground; a jump (speedY > 0) lifts it first. */
   applyGravity() {
-    setInterval(() => {
+    setGameInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;

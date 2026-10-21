@@ -22,4 +22,10 @@ class Level {
     this.bottles = bottles;
     this.coins = coins;
   }
+
+
+  /** Lets enemies, clouds and coins start moving; called when the world is ready, not when they are created. */
+  start() {
+    [...this.enemies, ...this.clouds, ...this.coins].forEach((object) => object.animate());
+  }
 }

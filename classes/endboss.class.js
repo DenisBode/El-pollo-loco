@@ -69,7 +69,6 @@ class Endboss extends Enemy {
     this.loadImages(this.IMAGES_DEAD);
     this.x = 6800;
     this.speed = 0.15 + Math.random() * 0.3;
-    this.animate();
   }
 
 

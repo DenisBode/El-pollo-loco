@@ -12,7 +12,6 @@ class Coin extends Collectable {
     this.loadImages(this.IMAGES_COIN);
     this.setOffset(20, 20, 20, 20);
     this.y = 150 + Math.random() * 100; // in the air, reachable with a jump
-    this.animate();
   }
 
 
@@ -30,6 +29,6 @@ class Coin extends Collectable {
 
   /** Switches between the two coin images. */
   animate() {
-    setInterval(() => this.playAnimation(this.IMAGES_COIN), 300);
+    setGameInterval(() => this.playAnimation(this.IMAGES_COIN), 300);
   }
 }

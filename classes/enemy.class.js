@@ -12,8 +12,8 @@ class Enemy extends MovableObject {
 
   /** Starts the movement loop and the image loop. */
   animate() {
-    setInterval(() => this.move(), 1000 / 60);
-    setInterval(() => this.updateImage(), this.animationInterval);
+    setGameInterval(() => this.move(), 1000 / 60);
+    setGameInterval(() => this.updateImage(), this.animationInterval);
   }
 
 

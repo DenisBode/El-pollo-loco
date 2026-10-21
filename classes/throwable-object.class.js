@@ -34,8 +34,8 @@ class ThrowableObject extends MovableObject {
   /** Flies in an arc until the ground is reached; the rotation runs in its own interval. */
   throw() {
     this.speedY = 25;
-    this.flightInterval = setInterval(() => this.fly(), 1000 / 25);
-    this.rotationInterval = setInterval(() => this.playAnimation(this.IMAGES_ROTATION), 100);
+    this.flightInterval = setGameInterval(() => this.fly(), 1000 / 25);
+    this.rotationInterval = setGameInterval(() => this.playAnimation(this.IMAGES_ROTATION), 100);
   }
 
 
@@ -63,9 +63,10 @@ class ThrowableObject extends MovableObject {
   }
 
 
-  /** Stops the flight and the rotation. */
+  /** Stops the flight and the rotation (and takes them off the list of the game's intervals). */
   stop() {
     clearInterval(this.flightInterval);
     clearInterval(this.rotationInterval);
+    intervalIds = intervalIds.filter((id) => id !== this.flightInterval && id !== this.rotationInterval);
   }
 }

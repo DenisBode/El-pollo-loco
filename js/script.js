@@ -2,9 +2,13 @@ let canvas;
 let world;
 let startScreen;
 let isFlipping = false;
+let intervalIds = []; // every timer of the game, so stopGame can stop them all
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
+
+/** The short sounds that are needed right at the start; the long ones follow when the game starts. */
+const START_SOUNDS = ['jump', 'landing', 'footsteps', 'getCoin1', 'getCoin2', 'ouch1', 'ouch2', 'throwBottle', 'bottleHit', 'chickenCluck'];
 
 const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
 
@@ -28,6 +32,39 @@ function init() {
   setupFullscreen();
   startScreen = new StartScreen();
   drawStartScreen(startScreen);
+  setTimeout(preloadAssets, 0); // after the first picture of the start screen
+}
+
+
+/**
+ * Loads all images and the first sounds while the start screen is shown, so the game starts quickly.
+ * The objects are only created to load their images (the browser keeps them), their intervals are stopped at once.
+ */
+function preloadAssets() {
+  initLevel();
+  [new Character(), new Hud(5), new GameOverScreen(), new WinScreen(), new ThrowableObject(0, 0, 1)];
+  clearGameIntervals();
+  soundManager.preload(START_SOUNDS);
+}
+
+
+/**
+ * Starts an interval of the game; stopGame stops it.
+ * @param {Function} callback
+ * @param {number} delay - in milliseconds
+ * @returns {number} the interval id
+ */
+function setGameInterval(callback, delay) {
+  let id = setInterval(callback, delay);
+  intervalIds.push(id);
+  return id;
+}
+
+
+/** Stops all intervals (and timeouts) of the game. */
+function clearGameIntervals() {
+  intervalIds.forEach((id) => clearInterval(id));
+  intervalIds = [];
 }
 
 
@@ -129,6 +166,7 @@ function startGame() {
   initLevel();
   world = new World(canvas, keyboard, showEndButtons);
   soundManager.startMusic();
+  soundManager.preload(); // the long sounds (e.g. snoring) load while Pepe runs
   enterFullscreenOnTouchDevice();
 }
 
@@ -151,8 +189,7 @@ function showEndButtons() {
 /** Stops the running game completely: drawing loop, all intervals and all sounds. */
 function stopGame() {
   world.stop();
-  let lastId = setInterval(() => {}, 1000000);
-  for (let id = 1; id <= lastId; id++) clearInterval(id);
+  clearGameIntervals();
   world = null;
   soundManager.stopAll();
 }

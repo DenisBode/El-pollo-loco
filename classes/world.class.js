@@ -28,6 +28,7 @@ class World {
     this.onGameEnd = onGameEnd;
     this.ctx = canvas.getContext('2d');
     this.character.world = this;
+    this.level.start();
     this.draw();
     this.run();
   }
@@ -35,9 +36,9 @@ class World {
 
   /** Starts the loops for throwing, collisions and new bottles. */
   run() {
-    setInterval(() => this.runFastChecks(), 1000 / 60);
-    setInterval(() => this.runChecks(), 200);
-    setInterval(() => this.spawnBottle(), 5000);
+    setGameInterval(() => this.runFastChecks(), 1000 / 60);
+    setGameInterval(() => this.runChecks(), 200);
+    setGameInterval(() => this.spawnBottle(), 5000);
   }
 
 
@@ -243,7 +244,7 @@ class World {
     this.character.energy = 100;
     this.hud.updateHealth(100);
     this.character.coins = 0;
-    setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500);
+    intervalIds.push(setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500));
   }
 
 
@@ -278,12 +279,12 @@ class World {
    * @param {number} time - time stamp of the frame (given by requestAnimationFrame)
    */
   draw(time = performance.now()) {
+    if (this.stopped) return; // a frame that was already requested must not move Pepe or play sounds after the stop
     this.character.handleMovement(this.frameFactor(time));
     this.cameraX = -this.character.x + 100;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawWorldObjects();
     this.drawOverlays();
-    if (this.stopped) return;
     requestAnimationFrame((nextTime) => this.draw(nextTime));
   }
 

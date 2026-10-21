@@ -33,6 +33,20 @@ class SoundManager {
     Object.values(this.effects).forEach((sound) => (sound.volume = 0.5));
     this.effects.chickenCluck.volume = 0.2;
     this.effects.gameOver.volume = 1;
+    [this.music, ...Object.values(this.effects)].forEach((sound) => (sound.preload = 'none')); // the page does not wait for the sounds
+  }
+
+
+  /**
+   * Starts loading sounds in the background, so they are ready when they are needed.
+   * @param {string[]} names - keys in effects; without names all effects are loaded (the music always)
+   */
+  preload(names = Object.keys(this.effects)) {
+    [this.music, ...names.map((name) => this.effects[name])].forEach((sound) => {
+      if (sound.preload === 'auto') return;
+      sound.preload = 'auto';
+      sound.load();
+    });
   }
 
 

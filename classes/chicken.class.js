@@ -26,7 +26,6 @@ class Chicken extends Enemy {
     this.loadImages([this.deadImage()]);
     this.x = minX + Math.random() * (maxX - minX);
     this.speed = this.randomSpeed();
-    this.animate();
   }
 
 
