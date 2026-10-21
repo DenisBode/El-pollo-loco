@@ -1,16 +1,17 @@
-/** A normal chicken: walks to the left and dies from one bottle. */
+/** A normal chicken: walks to the left and dies from one bottle or when Pepe jumps on it. */
 class Chicken extends Enemy {
-  y = 350;
-  height = 80;
-  hasFrame = true;
-
-  IMAGES_WALKING = [
+  static IMAGES_WALKING = [
     'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
     'img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
     'img/3_enemies_chicken/chicken_normal/1_walk/3_w.png',
   ];
 
-  IMAGE_DEAD = 'img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
+  static IMAGE_DEAD = 'img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
+
+  y = 350;
+  height = 80;
+  hasFrame = true;
+  canBeStomped = true;
 
 
   /**
@@ -18,21 +19,47 @@ class Chicken extends Enemy {
    * @param {number} maxX - rightmost spawn position
    */
   constructor(minX = 720, maxX = 6200) {
-    super().loadImage(this.IMAGES_WALKING[0]);
-    this.loadImages(this.IMAGES_WALKING);
-    this.loadImages([this.IMAGE_DEAD]);
+    super();
+    this.applyType();
+    this.loadImage(this.walkingImages()[0]);
+    this.loadImages(this.walkingImages());
+    this.loadImages([this.deadImage()]);
     this.x = minX + Math.random() * (maxX - minX);
-    this.speed = 0.15 + Math.random() * 0.5;
+    this.speed = this.randomSpeed();
     this.animate();
+  }
+
+
+  /** Size and hitbox of this chicken type; the hitbox covers the body, not the empty corners of the image. */
+  applyType() {
+    this.setOffset(4, 6, 8, 6);
+  }
+
+
+  /** @returns {string[]} the walking images of this chicken type */
+  walkingImages() {
+    return Chicken.IMAGES_WALKING;
+  }
+
+
+  /** @returns {string} the image of the defeated chicken of this type */
+  deadImage() {
+    return Chicken.IMAGE_DEAD;
+  }
+
+
+  /** @returns {number} a random walking speed for this chicken type */
+  randomSpeed() {
+    return 0.15 + Math.random() * 0.5;
   }
 
 
   /** Walking images while alive, the flat chicken when dead. */
   updateImage() {
     if (this.isDead()) {
-      this.img = this.imageCache[this.IMAGE_DEAD];
+      this.img = this.imageCache[this.deadImage()];
     } else {
-      this.playAnimation(this.IMAGES_WALKING);
+      this.playAnimation(this.walkingImages());
     }
   }
 

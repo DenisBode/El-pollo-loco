@@ -6,6 +6,7 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
   deathFrame = 0;
+  jumpSpeed = 30; // the upward speed at the start of a jump
   groundLevel = 140; // the height at which a falling object comes to rest
 
 
@@ -93,19 +94,21 @@ class MovableObject extends DrawableObject {
   }
 
 
-  moveRight() {
+  /** @param {number} frameFactor - 1 is one step of 1/60 s; the step is longer if a frame took longer */
+  moveRight(frameFactor = 1) {
     this.otherDirection = false;
-    this.x += this.speed;
+    this.x += this.speed * frameFactor;
   }
 
 
-  moveLeft() {
-    this.x -= this.speed;
+  /** @param {number} frameFactor - see moveRight */
+  moveLeft(frameFactor = 1) {
+    this.x -= this.speed * frameFactor;
   }
 
 
   jump() {
-    this.speedY = 30;
+    this.speedY = this.jumpSpeed;
     this.currentImage = 0;
   }
 }

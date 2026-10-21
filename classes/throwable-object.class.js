@@ -5,6 +5,7 @@ class ThrowableObject extends MovableObject {
   groundY = 360;
   landed = false;
   hasHit = false;
+  canHitThrower = false; // true as soon as the bottle has left Pepe, so it does not hit him at the throw
 
   IMAGES_ROTATION = [
     'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',

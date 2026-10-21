@@ -32,9 +32,11 @@ function createBackgroundObjects() {
 }
 
 
-/** @returns {Chicken[]} 10 chickens, spread randomly from the end of the first screen (x 720) to shortly before the endboss */
+/** @returns {Chicken[]} 7 chickens and 5 small chicks, spread randomly from the end of the first screen (x 720) to shortly before the endboss */
 function createChickens() {
-  return Array.from({ length: 10 }, () => new Chicken(720, 6200));
+  let chickens = Array.from({ length: 7 }, () => new Chicken(720, 6200));
+  let chicks = Array.from({ length: 5 }, () => new SmallChicken(720, 6200));
+  return [...chickens, ...chicks];
 }
 
 
@@ -44,7 +46,7 @@ function initLevel() {
     [...createChickens(), new Endboss()],
     [new Cloud()],
     createBackgroundObjects(),
-    [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
+    Array.from({ length: 8 }, () => new Bottle()),
     [new Coin(), new Coin(), new Coin(), new Coin(), new Coin()],
   );
 }
