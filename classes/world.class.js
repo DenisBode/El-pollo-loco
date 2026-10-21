@@ -27,15 +27,15 @@ class World {
     this.keyboard = keyboard;
     this.onGameEnd = onGameEnd;
     this.ctx = canvas.getContext('2d');
-    this.draw();
     this.character.world = this;
+    this.draw();
     this.run();
   }
 
 
   /** Starts the loops for throwing, collisions and new bottles. */
   run() {
-    setInterval(() => this.checkThrowObjects(), 1000 / 60);
+    setInterval(() => this.runFastChecks(), 1000 / 60);
     setInterval(() => this.runChecks(), 200);
     setInterval(() => this.spawnBottle(), 5000);
   }
@@ -44,6 +44,52 @@ class World {
   /** Stops the drawing loop; the intervals are cleared by the caller. */
   stop() {
     this.stopped = true;
+  }
+
+
+  /** Checks that must be quick: Pepe falls fast, so a stomp would be missed at five checks a second. */
+  runFastChecks() {
+    this.checkThrowObjects();
+    this.checkStomp();
+    this.checkSelfHit();
+  }
+
+
+  /** A bottle that is still flying hurts Pepe if he runs into it; one lying on the ground is harmless. */
+  checkSelfHit() {
+    this.throwableObjects.forEach((thrown) => {
+      if (thrown.landed || thrown.hasHit) return;
+      if (!this.character.isColliding(thrown)) {
+        thrown.canHitThrower = true;
+      } else if (thrown.canHitThrower) {
+        this.hitByOwnBottle(thrown);
+      }
+    });
+  }
+
+
+  /**
+   * Pepe takes damage (unless he is dead or invulnerable) and the bottle breaks.
+   * @param {ThrowableObject} thrown
+   */
+  hitByOwnBottle(thrown) {
+    if (this.character.isDead() || this.character.isInvulnerable()) return;
+    this.character.hit();
+    this.hud.updateHealth(this.character.energy);
+    thrown.hitEnemy();
+    soundManager.play('bottleHit');
+  }
+
+
+  /** Pepe jumping onto a stompable enemy from above defeats it and bounces off. */
+  checkStomp() {
+    if (this.character.isDead() || this.gameWon) return;
+    let enemy = this.level.enemies.find(
+      (e) => e.canBeStomped && !e.isDead() && this.character.isColliding(e) && this.character.isStomping(e),
+    );
+    if (!enemy) return;
+    enemy.hit(enemy.stompDamage);
+    this.character.bounce();
   }
 
 
@@ -184,7 +230,7 @@ class World {
   /** Collects coins; a full coin bar refills the health and starts again. */
   checkCoinCollisions() {
     this.level.coins = this.collectItems(this.level.coins, () => !this.character.isDead(), () => {
-      soundManager.playRandom(['getCoin1', 'getCoin2'], false);
+      soundManager.playRandomOverlapping(['getCoin1', 'getCoin2']);
       let isFull = this.character.collectCoin();
       this.hud.updateCoins(this.character.coins, this.character.maxCoins);
       if (isFull) this.refillHealth();
@@ -227,13 +273,30 @@ class World {
   }
 
 
-  /** Draws one frame and asks for the next one until the world is stopped. */
-  draw() {
+  /**
+   * Moves Pepe, places the camera and draws one frame; asks for the next frame until the world is stopped.
+   * @param {number} time - time stamp of the frame (given by requestAnimationFrame)
+   */
+  draw(time = performance.now()) {
+    this.character.handleMovement(this.frameFactor(time));
+    this.cameraX = -this.character.x + 100;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawWorldObjects();
     this.drawOverlays();
     if (this.stopped) return;
-    requestAnimationFrame(() => this.draw());
+    requestAnimationFrame((nextTime) => this.draw(nextTime));
+  }
+
+
+  /**
+   * How long the last frame took, in units of 1/60 s (limited to 3, so a lag does not make Pepe jump).
+   * @param {number} time - time stamp of the current frame
+   * @returns {number}
+   */
+  frameFactor(time) {
+    let factor = this.lastFrameTime ? Math.min(3, (time - this.lastFrameTime) / (1000 / 60)) : 1;
+    this.lastFrameTime = time;
+    return factor;
   }
 
 
@@ -258,8 +321,13 @@ class World {
   }
 
 
-  /** @param {DrawableObject[]} objects */
+  /**
+   * Draws the objects that are (nearly) inside the screen; the others would only cost time.
+   * @param {DrawableObject[]} objects
+   */
   addObjectsToMap(objects) {
-    objects.forEach((object) => object.render(this.ctx));
+    objects
+      .filter((object) => object.isOnScreen(this.cameraX, this.canvas.width))
+      .forEach((object) => object.render(this.ctx));
   }
 }

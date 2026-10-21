@@ -73,6 +73,20 @@ class SoundManager {
 
 
   /**
+   * Plays one random effect of the list on a copy, so quick repeats do not cut each other off
+   * (e.g. coins collected one after the other).
+   * @param {string[]} names - keys in effects
+   */
+  playRandomOverlapping(names) {
+    let original = this.effects[names[Math.floor(Math.random() * names.length)]];
+    let copy = original.cloneNode();
+    copy.volume = original.volume;
+    copy.muted = this.isMuted;
+    copy.play().catch(() => {});
+  }
+
+
+  /**
    * Starts a looping effect (e.g. snoring) if it is not already running.
    * @param {string} name - key in effects
    */

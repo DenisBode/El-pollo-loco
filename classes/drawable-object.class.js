@@ -138,12 +138,25 @@ class DrawableObject {
 
 
   /**
+   * True if the object is inside the visible part of the world (with a margin, for turned or big objects).
+   * @param {number} cameraX - the camera offset (negative while Pepe runs to the right)
+   * @param {number} screenWidth
+   * @param {number} margin - extra distance in pixels
+   * @returns {boolean}
+   */
+  isOnScreen(cameraX, screenWidth, margin = 200) {
+    return this.x + this.width > -cameraX - margin && this.x < -cameraX + screenWidth + margin;
+  }
+
+
+  /**
    * Loads a single image.
    * @param {string} path
    */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
+    this.decodeImage(this.img);
   }
 
 
@@ -155,8 +168,18 @@ class DrawableObject {
     paths.forEach((path) => {
       let img = new Image();
       img.src = path;
+      this.decodeImage(img);
       this.imageCache[path] = img;
     });
+  }
+
+
+  /**
+   * Decodes an image in the background, so the first time it is drawn does not cause a short freeze.
+   * @param {HTMLImageElement} img
+   */
+  decodeImage(img) {
+    img.decode().catch(() => {});
   }
 
 

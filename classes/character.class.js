@@ -99,7 +99,7 @@ class Character extends MovableObject {
 
   /** Starts the loops for control, images, idle and death. */
   animate() {
-    setInterval(() => this.handleControls(), 1000 / 60);
+    setInterval(() => this.handleJump(), 1000 / 60);
     setInterval(() => this.updateImage(), 50); // 20 frames per second
     setInterval(() => this.playIdleAnimation(), 200); // idle runs slower
     setInterval(() => this.updateDeathAnimation(), 150);
@@ -112,21 +112,24 @@ class Character extends MovableObject {
   }
 
 
-  /** Moves, jumps and lets the camera follow. */
-  handleControls() {
+  /** Jumps when the jump key is pressed and Pepe stands on the ground. */
+  handleJump() {
     if (this.isFrozen()) return;
-    this.handleMovement();
     if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
-    this.world.cameraX = -this.x + 100;
   }
 
 
-  /** Runs to the right or to the left, but not out of the level. */
-  handleMovement() {
+  /**
+   * Runs to the right or to the left, but not out of the level. The world calls this once per drawn
+   * frame, so the movement is smooth and does not depend on interval timing.
+   * @param {number} frameFactor - 1 for a frame of 1/60 s, more if the frame took longer
+   */
+  handleMovement(frameFactor) {
+    if (this.isFrozen()) return;
     let keyboard = this.world.keyboard;
-    if (keyboard.RIGHT && this.x < this.world.level.levelEndX) this.moveRight();
+    if (keyboard.RIGHT && this.x < this.world.level.levelEndX) this.moveRight(frameFactor);
     if (keyboard.LEFT && this.x > 0) {
-      this.moveLeft();
+      this.moveLeft(frameFactor);
       this.otherDirection = true;
     }
   }
@@ -147,6 +150,25 @@ class Character extends MovableObject {
     if (this.isInvulnerable()) return;
     super.hit(damage);
     soundManager.playRandom(['ouch1', 'ouch2']);
+  }
+
+
+  /**
+   * True when Pepe is falling onto the upper part of the enemy (not when he only touches it from the side).
+   * @param {Enemy} enemy
+   * @returns {boolean}
+   */
+  isStomping(enemy) {
+    let pepe = this.getHitbox();
+    let target = enemy.getHitbox();
+    let feet = pepe.y + pepe.height;
+    return this.isAboveGround() && this.speedY < 0 && feet < target.y + target.height * 0.6;
+  }
+
+
+  /** Pepe bounces off a defeated enemy with a small jump. */
+  bounce() {
+    this.speedY = 15;
   }
 
 
@@ -197,10 +219,22 @@ class Character extends MovableObject {
     if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()) {
-      this.playAnimation(this.IMAGES_JUMPING);
+      this.playJumpAnimation();
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
       this.playAnimation(this.IMAGES_WALKING);
     }
+  }
+
+
+  /**
+   * The jump images follow the flight: take-off, apex and landing, once each, whatever the duration.
+   * The speed falls from +jumpSpeed (take-off) to -jumpSpeed (landing), which selects the image.
+   */
+  playJumpAnimation() {
+    let progress = (this.jumpSpeed - this.speedY) / (2 * this.jumpSpeed);
+    let last = this.IMAGES_JUMPING.length - 1;
+    let index = Math.min(last, Math.max(0, Math.floor(progress * this.IMAGES_JUMPING.length)));
+    this.img = this.imageCache[this.IMAGES_JUMPING[index]];
   }
 
 
