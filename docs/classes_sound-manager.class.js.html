@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: classes/sound-manager.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: classes/sound-manager.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Plays the background music and all sound effects; mute switches everything off at once. */
+class SoundManager {
+  music = new Audio('audio/background_music.mp3');
+
+  effects = {
+    throwBottle: new Audio('audio/throwing_bottle.mp3'),
+    bottleHit: new Audio('audio/hit_bottle.mp3'),
+    chickenDead: new Audio('audio/glucking_chicken.mp3'),
+    bossHurt: new Audio('audio/angry_chicken.mp3'),
+    snoring: new Audio('audio/snoring_character.mp3'),
+    ouch1: new Audio('audio/ouch1_character.mp3'),
+    ouch2: new Audio('audio/outch2_charcter.mp3'),
+    chickenCluck: new Audio('audio/glucking1_chicken.mp3'),
+    gameOver: new Audio('audio/game_over.mp3'),
+    getCoin1: new Audio('audio/getcoin1.mp3'),
+    getCoin2: new Audio('audio/getcoin2.mp3'),
+    footsteps: new Audio('audio/foodsteps_character.mp3'),
+    jump: new Audio('audio/jump_charcter.mp3'),
+    landing: new Audio('audio/landing_character.mp3'),
+    characterDead: new Audio('audio/dead_character.mp3'),
+  };
+
+  isMuted = false;
+
+
+  /** Sets loops and volumes: the cluck is quiet, the game over jingle is loud. */
+  constructor() {
+    this.music.loop = true;
+    this.music.volume = 0.3;
+    this.effects.snoring.loop = true;
+    this.effects.chickenCluck.loop = true;
+    this.effects.footsteps.loop = true;
+    Object.values(this.effects).forEach((sound) => (sound.volume = 0.5));
+    this.effects.chickenCluck.volume = 0.2;
+    this.effects.gameOver.volume = 1;
+  }
+
+
+  /** Starts the background music; must be called after a user action (e.g. the start button). */
+  startMusic() {
+    this.music.play().catch(() => {});
+  }
+
+
+  stopMusic() {
+    this.music.pause();
+    this.music.currentTime = 0;
+  }
+
+
+  /**
+   * Plays an effect once from the beginning.
+   * @param {string} name - key in effects
+   */
+  play(name) {
+    let sound = this.effects[name];
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+  }
+
+
+  /**
+   * Plays one random effect of the list.
+   * With waitForEnd it is skipped while one of them is still playing (no sound pile-up).
+   * @param {string[]} names - keys in effects
+   * @param {boolean} waitForEnd
+   */
+  playRandom(names, waitForEnd = true) {
+    let isPlaying = names.some((name) => !this.effects[name].paused);
+    if (waitForEnd &amp;&amp; isPlaying) return;
+    this.play(names[Math.floor(Math.random() * names.length)]);
+  }
+
+
+  /**
+   * Plays one random effect of the list on a copy, so quick repeats do not cut each other off
+   * (e.g. coins collected one after the other).
+   * @param {string[]} names - keys in effects
+   */
+  playRandomOverlapping(names) {
+    let original = this.effects[names[Math.floor(Math.random() * names.length)]];
+    let copy = original.cloneNode();
+    copy.volume = original.volume;
+    copy.muted = this.isMuted;
+    copy.play().catch(() => {});
+  }
+
+
+  /**
+   * Starts a looping effect (e.g. snoring) if it is not already running.
+   * @param {string} name - key in effects
+   */
+  loop(name) {
+    let sound = this.effects[name];
+    if (sound.paused) sound.play().catch(() => {});
+  }
+
+
+  /**
+   * Stops an effect and rewinds it.
+   * @param {string} name - key in effects
+   */
+  stop(name) {
+    let sound = this.effects[name];
+    if (sound.paused) return;
+    sound.pause();
+    sound.currentTime = 0;
+  }
+
+
+  /** Stops the music and every effect; the next start begins from the beginning. */
+  stopAll() {
+    this.stopMusic();
+    Object.keys(this.effects).forEach((name) => this.stop(name));
+  }
+
+
+  /**
+   * Mutes or unmutes all sounds without stopping them.
+   * @param {boolean} isMuted
+   */
+  setMuted(isMuted) {
+    this.isMuted = isMuted;
+    this.music.muted = isMuted;
+    Object.values(this.effects).forEach((sound) => (sound.muted = isMuted));
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

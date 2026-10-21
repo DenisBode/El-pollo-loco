@@ -1,0 +1,17 @@
+{
+  "source": {
+    "include": ["classes", "js", "levels"],
+    "includePattern": ".+\\.js$"
+  },
+  "opts": {
+    "destination": "docs",
+    "recurse": true
+  },
+  "templates": {
+    "default": {
+      "staticFiles": {
+        "include": ["jsdoc-theme"]
+      }
+    }
+  }
+}

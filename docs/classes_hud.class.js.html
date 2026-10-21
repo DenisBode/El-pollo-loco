@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: classes/hud.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: classes/hud.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** The display on top of the game: status bars and the counters for lives and bottles. */
+class Hud {
+  healthBar = new HealthStatusBar();
+  coinBar = new CoinStatusBar();
+  bottleBar = new BottleStatusBar();
+  endbossBar = new EndbossStatusBar();
+  livesIcon;
+  bottlesIcon = new CounterIcon('img/7_statusbars/3_icons/icon_salsa_bottle.png', 375, 0, 0);
+  endbossBarVisible = false;
+
+
+  /** @param {number} lives - the start value of the lives counter */
+  constructor(lives) {
+    this.livesIcon = new CounterIcon('img/7_statusbars/3_icons/icon_health.png', 255, 0, lives);
+  }
+
+
+  /** @param {number} lives - the lives Pepe has left */
+  updateLives(lives) {
+    this.livesIcon.setCount(lives);
+  }
+
+
+  /** @param {number} energy - 0 to 100 */
+  updateHealth(energy) {
+    this.healthBar.setPercentage(energy);
+  }
+
+
+  /**
+   * @param {number} coins - collected coins
+   * @param {number} maxCoins
+   */
+  updateCoins(coins, maxCoins) {
+    this.coinBar.setPercentage((coins / maxCoins) * 100);
+  }
+
+
+  /**
+   * @param {number} bottles - carried bottles
+   * @param {number} maxBottles
+   */
+  updateBottles(bottles, maxBottles) {
+    this.bottlesIcon.setCount(bottles);
+    this.bottleBar.setPercentage((bottles / maxBottles) * 100);
+  }
+
+
+  /** @param {number} energy - the energy of the endboss, 0 to 100 */
+  updateEndboss(energy) {
+    this.endbossBar.setPercentage(energy);
+  }
+
+
+  /** The endboss bar appears with the endboss and stays visible from then on. */
+  showEndbossBar() {
+    this.endbossBarVisible = true;
+  }
+
+
+  /**
+   * Draws all bars and counters.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  render(ctx) {
+    let items = [this.healthBar, this.coinBar, this.bottleBar, this.livesIcon, this.bottlesIcon];
+    if (this.endbossBarVisible) items.push(this.endbossBar);
+    items.forEach((item) => item.render(ctx));
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

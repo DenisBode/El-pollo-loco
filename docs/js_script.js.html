@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/script.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/script.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>let canvas;
+let world;
+let keyboard = new Keyboard();
+let soundManager = new SoundManager();
+let isMuted = loadMuted();
+
+const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
+
+const KEY_MAP = {
+  ArrowRight: 'RIGHT',
+  ArrowLeft: 'LEFT',
+  ' ': 'SPACE',
+  ArrowDown: 'DOWN',
+  ArrowUp: 'UP',
+  d: 'D',
+  D: 'D',
+};
+
+
+/** Called when the page is loaded: shows the start screen. */
+function init() {
+  canvas = document.getElementById('canvas');
+  updateMuteButton();
+  bindTouchButtons();
+  setupFullscreen();
+  drawStartScreen(new StartScreen());
+}
+
+
+/** Shows the fullscreen button if the browser can do fullscreen and keeps the layout up to date. */
+function setupFullscreen() {
+  document.getElementById('fullscreenButton').hidden = !document.fullscreenEnabled;
+  compactQuery.addEventListener('change', updateLayout);
+  document.addEventListener('fullscreenchange', updateLayout);
+  updateLayout();
+}
+
+
+/** The compact layout (buttons on top of the game) is used on a rotated phone and in fullscreen. */
+function updateLayout() {
+  let isCompact = compactQuery.matches || !!document.fullscreenElement;
+  document.documentElement.classList.toggle('compact', isCompact);
+}
+
+
+/** Switches the game area (canvas, buttons, touch buttons) to fullscreen or back. */
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    document.querySelector('.game-area').requestFullscreen().catch(() => {});
+  }
+  document.getElementById('fullscreenButton').blur(); // otherwise the space bar (jump) would press the button again
+}
+
+
+/** Lets every touch button press and release the key named in its data-key attribute. */
+function bindTouchButtons() {
+  document.querySelectorAll('.touch-button').forEach((button) => {
+    let key = button.dataset.key;
+    button.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      keyboard[key] = true;
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach((type) => {
+      button.addEventListener(type, () => (keyboard[key] = false));
+    });
+  });
+}
+
+
+/**
+ * Reads the saved mute state; falls back to "not muted" if the local storage is not available.
+ * @returns {boolean}
+ */
+function loadMuted() {
+  try {
+    return localStorage.getItem('muted') === 'true';
+  } catch {
+    return false;
+  }
+}
+
+
+/** Switches the sound on or off and saves the state in the local storage. */
+function toggleMute() {
+  isMuted = !isMuted;
+  try {
+    localStorage.setItem('muted', isMuted);
+  } catch {}
+  updateMuteButton();
+  document.getElementById('muteButton').blur(); // otherwise the space bar (jump) would press the button again
+}
+
+
+/** Applies the mute state to all sounds and to the look of the mute button. */
+function updateMuteButton() {
+  soundManager.setMuted(isMuted);
+  let button = document.getElementById('muteButton');
+  button.classList.toggle('muted', isMuted);
+  button.setAttribute('aria-pressed', isMuted);
+}
+
+
+/**
+ * Redraws the start screen until the game has started.
+ * @param {StartScreen} startScreen
+ */
+function drawStartScreen(startScreen) {
+  if (world) return;
+  let ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  startScreen.render(ctx);
+  requestAnimationFrame(() => drawStartScreen(startScreen));
+}
+
+
+/** Starts the game: hides the menu buttons, creates the level and the world, starts the music. */
+function startGame() {
+  if (world) return;
+  document.getElementById('menuButtons').hidden = true; // start and info are only for before the game
+  document.getElementById('endButtons').hidden = true;
+  document.getElementById('touchControls').hidden = false;
+  initLevel();
+  world = new World(canvas, keyboard, showEndButtons);
+  soundManager.startMusic();
+  enterFullscreenOnTouchDevice();
+}
+
+
+/** On phones and tablets the game starts in fullscreen (the start button click allows it). */
+function enterFullscreenOnTouchDevice() {
+  let isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+  if (isTouchDevice &amp;&amp; document.fullscreenEnabled &amp;&amp; !document.fullscreenElement) {
+    document.querySelector('.game-area').requestFullscreen().catch(() => {});
+  }
+}
+
+
+/** Shows the buttons for restart and leaving after the game is won or lost. */
+function showEndButtons() {
+  document.getElementById('endButtons').hidden = false;
+}
+
+
+/** Stops the running game completely: drawing loop, all intervals and all sounds. */
+function stopGame() {
+  world.stop();
+  let lastId = setInterval(() => {}, 1000000);
+  for (let id = 1; id &lt;= lastId; id++) clearInterval(id);
+  world = null;
+  soundManager.stopAll();
+}
+
+
+/** Starts a new game without reloading the page. */
+function restartGame() {
+  stopGame();
+  startGame();
+}
+
+
+/** Back to the start screen. */
+function leaveGame() {
+  stopGame();
+  document.getElementById('endButtons').hidden = true;
+  document.getElementById('touchControls').hidden = true;
+  document.getElementById('menuButtons').hidden = false;
+  drawStartScreen(new StartScreen());
+}
+
+
+function openInfo() {
+  document.getElementById('infoDialog').showModal();
+}
+
+
+function closeInfo() {
+  document.getElementById('infoDialog').close();
+}
+
+
+/**
+ * A click on the dialog itself (not on its content) is a click next to it, so the dialog closes.
+ * @param {MouseEvent} event
+ */
+function closeInfoOnBackdrop(event) {
+  if (event.target === event.currentTarget) closeInfo();
+}
+
+
+/**
+ * Remembers whether a game key is pressed or released.
+ * @param {KeyboardEvent} event
+ * @param {boolean} isPressed
+ */
+function setKey(event, isPressed) {
+  let key = KEY_MAP[event.key];
+  if (key) keyboard[key] = isPressed;
+}
+
+
+window.addEventListener('keydown', (event) => setKey(event, true));
+window.addEventListener('keyup', (event) => setKey(event, false));
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
