@@ -231,7 +231,7 @@ class Character extends MovableObject {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()) {
       this.playJumpAnimation();
-    } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+    } else if (this.isMoveKeyPressed()) {
       this.playAnimation(this.IMAGES_WALKING);
     }
   }
@@ -252,8 +252,7 @@ class Character extends MovableObject {
   /** Footsteps while running on the ground; a landing sound when a jump ends. */
   playMovementSounds() {
     let isOnGround = !this.isAboveGround();
-    let isRunning = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
-    if (isRunning && isOnGround) {
+    if (this.isMoveKeyPressed() && isOnGround) {
       soundManager.loop('footsteps');
     } else {
       soundManager.stop('footsteps');
@@ -279,7 +278,13 @@ class Character extends MovableObject {
 
   /** Standing on the ground, not moving and not hurt. */
   isIdle() {
-    return !this.isHurt() && !this.isAboveGround() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT;
+    return !this.isHurt() && !this.isAboveGround() && !this.isMoveKeyPressed();
+  }
+
+
+  /** @returns {boolean} true when the left or the right key is pressed */
+  isMoveKeyPressed() {
+    return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
   }
 
 
