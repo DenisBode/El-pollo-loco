@@ -126,12 +126,23 @@ class Character extends MovableObject {
    */
   handleMovement(frameFactor) {
     if (this.isFrozen()) return;
-    let keyboard = this.world.keyboard;
-    if (keyboard.RIGHT && this.x < this.world.level.levelEndX) this.moveRight(frameFactor);
-    if (keyboard.LEFT && this.x > 0) {
+    if (this.canMoveRight()) this.moveRight(frameFactor);
+    if (this.canMoveLeft()) {
       this.moveLeft(frameFactor);
       this.otherDirection = true;
     }
+  }
+
+
+  /** @returns {boolean} true when the right key is pressed and the end of the level is not reached */
+  canMoveRight() {
+    return this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX;
+  }
+
+
+  /** @returns {boolean} true when the left key is pressed and Pepe is not at the start of the level */
+  canMoveLeft() {
+    return this.world.keyboard.LEFT && this.x > 0;
   }
 
 
