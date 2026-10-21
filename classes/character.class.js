@@ -170,10 +170,24 @@ class Character extends MovableObject {
    * @returns {boolean}
    */
   isStomping(enemy) {
+    return this.isFalling() && this.isFootAboveEnemyMiddle(enemy);
+  }
+
+
+  /** @returns {boolean} true while Pepe is in the air and moving downwards */
+  isFalling() {
+    return this.isAboveGround() && this.speedY < 0;
+  }
+
+
+  /**
+   * @param {Enemy} enemy
+   * @returns {boolean} true when Pepe's feet are above the lower 40% of the enemy
+   */
+  isFootAboveEnemyMiddle(enemy) {
     let pepe = this.getHitbox();
     let target = enemy.getHitbox();
-    let feet = pepe.y + pepe.height;
-    return this.isAboveGround() && this.speedY < 0 && feet < target.y + target.height * 0.6;
+    return pepe.y + pepe.height < target.y + target.height * 0.6;
   }
 
 
