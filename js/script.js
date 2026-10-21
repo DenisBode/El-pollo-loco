@@ -192,21 +192,47 @@ function toggleStory() {
 
 
 /**
- * Turns the canvas by 90 degrees, calls the function while it stands edge-on, and turns it on to the front.
+ * Turns the canvas and the language buttons by 90 degrees, calls the function while they stand edge-on,
+ * and turns them on to the front. All turn around the middle of the canvas, so they look like one card.
  * @param {Function} onHalfway - changes what is drawn on the canvas
  */
 async function flipCanvas(onHalfway) {
   isFlipping = true;
-  let turn = (from, to, fill) => {
-    let frames = [from, to].map((deg) => ({ transform: `perspective(900px) rotateY(${deg}deg)` }));
-    return canvas.animate(frames, { duration: 250, easing: 'ease-in-out', fill });
-  };
-  let first = turn(0, 90, 'forwards');
-  await first.finished;
+  let elements = [canvas, document.getElementById('languageSwitch')];
+  let origins = elements.map(getFlipOrigin);
+  let first = elements.map((element, i) => turn(element, origins[i], 0, 90, 'forwards'));
+  await first[0].finished;
   onHalfway();
-  await turn(-90, 0, 'none').finished;
-  first.cancel();
+  await Promise.all(elements.map((element, i) => turn(element, origins[i], -90, 0, 'none').finished));
+  first.forEach((animation) => animation.cancel());
   isFlipping = false;
+}
+
+
+/**
+ * The middle of the canvas, measured from the top left corner of the element.
+ * @param {HTMLElement} element
+ * @returns {string} a transform-origin value
+ */
+function getFlipOrigin(element) {
+  let canvasBox = canvas.getBoundingClientRect();
+  let box = element.getBoundingClientRect();
+  return `${canvasBox.left + canvasBox.width / 2 - box.left}px ${canvasBox.top + canvasBox.height / 2 - box.top}px`;
+}
+
+
+/**
+ * Starts a turn around the vertical axis.
+ * @param {HTMLElement} element
+ * @param {string} origin - the point it turns around
+ * @param {number} from - start angle in degrees
+ * @param {number} to - end angle in degrees
+ * @param {string} fill - 'forwards' keeps the end angle after the turn
+ * @returns {Animation}
+ */
+function turn(element, origin, from, to, fill) {
+  let frames = [from, to].map((deg) => ({ transform: `perspective(900px) rotateY(${deg}deg)`, transformOrigin: origin }));
+  return element.animate(frames, { duration: 250, easing: 'ease-in-out', fill });
 }
 
 
