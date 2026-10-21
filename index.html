@@ -3,215 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      @font-face {
-        font-family: 'Zabars';
-        src: url('fonts/Zabars.ttf') format('truetype');
-      }
-
-      body {
-        font-family: 'Zabars', Arial, sans-serif;
-        font-size: 24px;
-        letter-spacing: 2px;
-        min-height: 100vh;
-        margin: 0;
-      }
-
-      /* Blurred, darkened game background as page background (own layer, so only the image is blurred) */
-      body::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        background: url('img/5_background/second_half_background.png') center / cover no-repeat;
-        filter: blur(8px) brightness(0.6);
-        transform: scale(1.05); /* hides the soft blur edges */
-      }
-
-      /* Heading sits in the top third of the window, the canvas stays in the middle */
-      h1 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 33.333vh;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 56px;
-        letter-spacing: 4px;
-        /* Same yellow with brown outline as the game title */
-        color: #ffd500;
-        -webkit-text-stroke: 6px #a0300a;
-        paint-order: stroke fill;
-      }
-
-      /* Global hover effect: add class="hover-effect" to any element.
-         Optional: set --hover-scale on the element to change the zoom (default 1.03). */
-      .hover-effect {
-        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
-        transition:
-          transform 0.3s ease,
-          filter 0.3s ease;
-      }
-
-      .hover-effect:hover {
-        transform: scale(var(--hover-scale, 1.03));
-        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
-      }
-
-      @media (min-width: 1024px) {
-        h1 {
-          font-size: 112px;
-          letter-spacing: 8px;
-        }
-      }
-
-      body {
-        justify-content: center;
-      }
-
-      /* Wrapper, so the buttons sit under the canvas without moving the canvas off the center */
-      .game-area {
-        position: relative;
-      }
-
-      .menu-buttons {
-        position: absolute;
-        top: calc(100% + 16px);
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 16px;
-      }
-
-      .menu-buttons[hidden] {
-        display: none; /* display: flex above would otherwise override the hidden attribute */
-      }
-
-      .menu-button {
-        font-family: inherit;
-        font-size: 24px;
-        letter-spacing: 2px;
-        padding: 4px 24px;
-        color: #ffd500;
-        background: #a0300a;
-        border: 3px solid #ffd500;
-        border-radius: 8px;
-        cursor: pointer;
-      }
-
-      .menu-button:hover {
-        background: #c2410c;
-      }
-
-      .mute-button {
-        position: absolute;
-        top: calc(100% + 16px);
-        right: 0;
-        width: 46px;
-        height: 46px;
-        padding: 6px;
-        background: #a0300a;
-        border: 3px solid #ffd500;
-        border-radius: 8px;
-        cursor: pointer;
-      }
-
-      .mute-button:hover {
-        background: #c2410c;
-      }
-
-      .mute-button svg {
-        width: 100%;
-        height: 100%;
-        fill: #ffd500;
-        stroke: #ffd500;
-        stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .mute-button .waves {
-        fill: none;
-      }
-
-      .mute-button .slash,
-      .mute-button.muted .waves {
-        display: none;
-      }
-
-      .mute-button.muted .slash {
-        display: block;
-      }
-
-      .impressum-link {
-        position: fixed;
-        bottom: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 20px;
-        color: #ffd500;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-        cursor: pointer;
-      }
-
-      .impressum-link:hover {
-        color: white;
-      }
-
-      .info-dialog {
-        font-family: inherit;
-        color: #ffd500;
-        background: rgba(60, 20, 5, 0.95);
-        border: 4px solid #a0300a;
-        border-radius: 12px;
-        padding: 0; /* the padding lives in .info-content, so a click on the dialog itself means a click next to the content */
-        text-align: center;
-      }
-
-      .info-content {
-        position: relative;
-        padding: 24px 56px;
-      }
-
-      .info-close {
-        position: absolute;
-        top: 4px;
-        right: 12px;
-        font-family: inherit;
-        font-size: 32px;
-        color: #ffd500;
-        background: none;
-        border: none;
-        cursor: pointer;
-      }
-
-      .info-dialog::backdrop {
-        background: rgba(0, 0, 0, 0.6);
-      }
-
-      .info-dialog table {
-        margin: 16px auto 0;
-        text-align: left;
-      }
-
-      .info-dialog td {
-        padding: 4px 20px;
-      }
-
-      canvas {
-        border-radius: 8px;
-        --hover-scale: 1.02;
-      }
-    </style>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styles/fonts.css" />
+    <link rel="stylesheet" href="styles/background.css" />
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/mobile.css" />
+    <link rel="stylesheet" href="styles/fullscreen.css" />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
     <title>El Pollo Loco</title>
     <script src="classes/drawable-object.class.js"></script>
     <script src="classes/movable-object.class.js"></script>
     <script src="classes/enemy.class.js"></script>
     <script src="classes/chicken.class.js"></script>
+    <script src="classes/small-chicken.class.js"></script>
     <script src="classes/endboss.class.js"></script>
     <script src="classes/character.class.js"></script>
     <script src="classes/collectable.class.js"></script>
@@ -231,6 +34,7 @@
     <script src="classes/sound-manager.class.js"></script>
     <script src="classes/world.class.js"></script>
     <script src="levels/level1.js"></script>
+    <script src="js/language.js"></script>
     <script src="js/script.js"></script>
   </head>
   <body onload="init()">
@@ -240,16 +44,25 @@
       <canvas class="hover-effect" id="canvas" width="720" height="480"> </canvas>
       <!-- Only available before the game starts -->
       <div id="menuButtons" class="menu-buttons">
-        <button class="menu-button" onclick="startGame()">Start</button>
-        <button class="menu-button" onclick="openInfo()">Info</button>
+        <button class="menu-button menu-button--primary" data-i18n="start" onclick="startGame()">Start</button>
+        <div class="menu-side">
+          <button class="menu-button" data-i18n="info" onclick="openInfo()">Info</button>
+          <button id="storyButton" class="menu-button" data-i18n="story" onclick="toggleStory()">Story</button>
+        </div>
       </div>
       <!-- Only visible when the game is won or lost -->
       <div id="endButtons" class="menu-buttons" hidden>
-        <button class="menu-button" onclick="restartGame()">Restart</button>
-        <button class="menu-button" onclick="leaveGame()">Leave game</button>
+        <button class="menu-button menu-button--primary" data-i18n="restart" onclick="restartGame()">Restart</button>
+        <button class="menu-button" data-i18n="leave" onclick="leaveGame()">Leave game</button>
+      </div>
+      <!-- Only on the start screen: language of all texts, saved in the local storage -->
+      <div id="languageSwitch" class="language-switch" role="group" data-i18n-aria="language" aria-label="Language">
+        <button class="language-button" data-lang="en" onclick="setLanguage('en')">EN</button>
+        <button class="language-button" data-lang="de" onclick="setLanguage('de')">DE</button>
+        <button class="language-button" data-lang="es" onclick="setLanguage('es')">ES</button>
       </div>
       <!-- Always visible: mutes all sounds, the state is saved in the local storage -->
-      <button id="muteButton" class="mute-button" onclick="toggleMute()" aria-label="Mute sounds">
+      <button id="muteButton" class="mute-button" onclick="toggleMute()" data-i18n-aria="mute" aria-label="Mute sounds">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path class="speaker" d="M3 9v6h4l5 4V5L7 9H3z" />
           <path class="waves" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" />
@@ -257,7 +70,7 @@
         </svg>
       </button>
       <!-- Switches the game area to fullscreen and back (hidden if the browser cannot do it) -->
-      <button id="fullscreenButton" class="mute-button fullscreen-button" onclick="toggleFullscreen()" aria-label="Fullscreen" hidden>
+      <button id="fullscreenButton" class="mute-button fullscreen-button" onclick="toggleFullscreen()" data-i18n-aria="fullscreen" aria-label="Fullscreen" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path class="waves" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
         </svg>
@@ -265,46 +78,46 @@
       <!-- Only on tablets and phones, and only while the game runs -->
       <div id="touchControls" class="touch-controls" oncontextmenu="return false" hidden>
         <div class="touch-group">
-          <button class="touch-button" data-key="LEFT" aria-label="Run left">&larr;</button>
-          <button class="touch-button" data-key="RIGHT" aria-label="Run right">&rarr;</button>
+          <button class="touch-button" data-key="LEFT" data-i18n-aria="runLeft" aria-label="Run left">&larr;</button>
+          <button class="touch-button" data-key="RIGHT" data-i18n-aria="runRight" aria-label="Run right">&rarr;</button>
         </div>
         <div class="touch-group">
-          <button class="touch-button" data-key="D" aria-label="Throw bottle">
+          <button class="touch-button" data-key="D" data-i18n-aria="throwBottle" aria-label="Throw bottle">
             <img src="img/6_salsa_bottle/salsa_bottle.png" alt="" draggable="false" />
           </button>
-          <button class="touch-button" data-key="SPACE" aria-label="Jump">&uarr;</button>
+          <button class="touch-button" data-key="SPACE" data-i18n-aria="jumpUp" aria-label="Jump">&uarr;</button>
         </div>
       </div>
       <!-- Inside the game area, so it is also visible in fullscreen -->
       <dialog id="infoDialog" class="info-dialog" onclick="closeInfoOnBackdrop(event)">
         <div class="info-content">
-          <button class="info-close" onclick="closeInfo()" aria-label="Close">&times;</button>
-          <h2>Controls</h2>
+          <button class="info-close" onclick="closeInfo()" data-i18n-aria="close" aria-label="Close">&times;</button>
+          <h2 data-i18n="controls">Controls</h2>
           <table>
             <tr>
               <td>&larr; / &rarr;</td>
-              <td>Run</td>
+              <td data-i18n="run">Run</td>
             </tr>
             <tr>
               <td>Space</td>
-              <td>Jump</td>
+              <td data-i18n="jump">Jump</td>
             </tr>
             <tr>
               <td>D</td>
-              <td>Throw bottle</td>
+              <td data-i18n="throw">Throw bottle</td>
             </tr>
           </table>
-          <a class="impressum-link-dialog" href="impressum.html">Impressum</a>
+          <a class="impressum-link-dialog" href="impressum.html" data-i18n="impressum">Impressum</a>
         </div>
       </dialog>
     </div>
 
     <!-- Portrait mode on tablets and phones: the game only works in landscape -->
     <div class="rotate-message">
-      <span>&#8635;</span>
-      Turn your device to play
+      <span class="rotate-arrow">&#8635;</span>
+      <span data-i18n="rotate">Turn your device to play</span>
     </div>
 
-    <a class="impressum-link" href="impressum.html">Impressum</a>
+    <a class="impressum-link" href="impressum.html" data-i18n="impressum">Impressum</a>
   </body>
 </html>

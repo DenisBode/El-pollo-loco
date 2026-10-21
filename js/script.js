@@ -1,5 +1,7 @@
 let canvas;
 let world;
+let startScreen;
+let isFlipping = false;
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
@@ -20,10 +22,12 @@ const KEY_MAP = {
 /** Called when the page is loaded: shows the start screen. */
 function init() {
   canvas = document.getElementById('canvas');
+  applyLanguage();
   updateMuteButton();
   bindTouchButtons();
   setupFullscreen();
-  drawStartScreen(new StartScreen());
+  startScreen = new StartScreen();
+  drawStartScreen(startScreen);
 }
 
 
@@ -118,7 +122,8 @@ function drawStartScreen(startScreen) {
 /** Starts the game: hides the menu buttons, creates the level and the world, starts the music. */
 function startGame() {
   if (world) return;
-  document.getElementById('menuButtons').hidden = true; // start and info are only for before the game
+  document.getElementById('menuButtons').hidden = true; // start, info and story are only for before the game
+  document.getElementById('languageSwitch').hidden = true;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = false;
   initLevel();
@@ -166,7 +171,42 @@ function leaveGame() {
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = true;
   document.getElementById('menuButtons').hidden = false;
-  drawStartScreen(new StartScreen());
+  startScreen = new StartScreen();
+  document.getElementById('storyButton').dataset.i18n = 'story';
+  document.getElementById('languageSwitch').hidden = false;
+  applyLanguage();
+  drawStartScreen(startScreen);
+}
+
+
+/** Turns the canvas around to show the story on its back, or back to the start image. */
+function toggleStory() {
+  document.getElementById('storyButton').blur(); // otherwise the space bar (jump) would press the button again
+  if (isFlipping) return;
+  flipCanvas(() => {
+    startScreen.showsStory = !startScreen.showsStory;
+    document.getElementById('storyButton').dataset.i18n = startScreen.showsStory ? 'back' : 'story';
+    applyLanguage();
+  });
+}
+
+
+/**
+ * Turns the canvas by 90 degrees, calls the function while it stands edge-on, and turns it on to the front.
+ * @param {Function} onHalfway - changes what is drawn on the canvas
+ */
+async function flipCanvas(onHalfway) {
+  isFlipping = true;
+  let turn = (from, to, fill) => {
+    let frames = [from, to].map((deg) => ({ transform: `perspective(900px) rotateY(${deg}deg)` }));
+    return canvas.animate(frames, { duration: 250, easing: 'ease-in-out', fill });
+  };
+  let first = turn(0, 90, 'forwards');
+  await first.finished;
+  onHalfway();
+  await turn(-90, 0, 'none').finished;
+  first.cancel();
+  isFlipping = false;
 }
 
 

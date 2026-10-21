@@ -1,5 +1,9 @@
-/** The start screen with the blinking "press start" text. */
+/** The start screen; the 16:9 image is squeezed to the 3:2 canvas, so the whole image stays visible. */
 class StartScreen extends DrawableObject {
+  /** true = the back side of the canvas (the story) is shown instead of the start image. */
+  showsStory = false;
+
+
   constructor() {
     super().loadImage('img/9_intro_outro_screens/start/startscreen_1.png');
     this.x = 0;
@@ -10,31 +14,48 @@ class StartScreen extends DrawableObject {
 
 
   /**
-   * The 16:9 image is squeezed to the 3:2 canvas, so the whole image stays visible.
+   * Draws the start image, or the story on a dark panel if the canvas is turned around.
    * @param {CanvasRenderingContext2D} ctx
    */
   draw(ctx) {
     super.draw(ctx);
-    if (Math.floor(Date.now() / 600) % 2 === 0) {
-      this.drawStartText(ctx);
-    }
+    if (this.showsStory) this.drawStory(ctx);
   }
 
 
   /**
-   * Yellow text with a brown outline, matching the title colors.
+   * Yellow title and cream text on a brown panel, matching the colors of the game.
    * @param {CanvasRenderingContext2D} ctx
    */
-  drawStartText(ctx) {
-    let text = 'PRESS START TO PLAY';
-    ctx.font = 'bold 34px Zabars, Arial, sans-serif';
+  drawStory(ctx) {
+    ctx.fillStyle = 'rgba(40, 14, 4, 0.94)';
+    ctx.fillRect(0, 0, this.width, this.height);
     ctx.textAlign = 'center';
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = 7;
-    ctx.strokeStyle = '#a0300a';
     ctx.fillStyle = '#ffd500';
-    ctx.strokeText(text, 360, 460);
-    ctx.fillText(text, 360, 460);
+    ctx.font = '48px Zabars, Arial, sans-serif';
+    ctx.fillText(t('storyTitle'), 360, 90);
+    ctx.fillStyle = '#f5e6c8';
+    ctx.font = '24px Arial, sans-serif';
+    this.wrapText(ctx, t('storyText'), 600).forEach((line, i) => ctx.fillText(line, 360, 160 + i * 36));
     ctx.textAlign = 'start';
+  }
+
+
+  /**
+   * Splits a text into lines that are not wider than the given width.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {string} text
+   * @param {number} maxWidth - in pixels
+   * @returns {string[]}
+   */
+  wrapText(ctx, text, maxWidth) {
+    let lines = [''];
+    text.split(' ').forEach((word) => {
+      let line = lines[lines.length - 1];
+      let extended = line ? line + ' ' + word : word;
+      if (line && ctx.measureText(extended).width > maxWidth) lines.push(word);
+      else lines[lines.length - 1] = extended;
+    });
+    return lines;
   }
 }
