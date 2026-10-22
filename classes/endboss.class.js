@@ -3,6 +3,7 @@
  * After his death he tumbles and comes to rest on the ground.
  */
 class Endboss extends Enemy {
+  hasFrame = true;
   height = 400;
   width = 250;
   y = 55;

@@ -1,5 +1,7 @@
 /** Base class for everything Pepe can pick up: it appears at a random spot along the level. */
 class Collectable extends DrawableObject {
+  hasFrame = true;
+
   /**
    * @param {string} imagePath
    * @param {number} minX - leftmost possible position

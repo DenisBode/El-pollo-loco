@@ -1,5 +1,6 @@
 /** A thrown bottle: flies in an arc and rotates until it hits an enemy (then it splashes) or the ground. */
 class ThrowableObject extends MovableObject {
+  hasFrame = true;
   width = 60;
   height = 70;
   groundY = 360;
