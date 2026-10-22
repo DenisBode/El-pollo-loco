@@ -4,12 +4,6 @@ let startScreen;
 let isFlipping = false;
 /** True when all images are requested (their loading is shown by the loading bar). */
 let isPreloaded = false;
-/** Every timer of the game, so stopGame can stop them all. */
-let intervalIds = [];
-let isPaused = false;
-let pausedSince = 0;
-/** All the time the game was paused, in ms, so the game clock can leave it out. */
-let pausedTotal = 0;
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
@@ -56,19 +50,28 @@ function preloadAssets() {
 }
 
 
-/** @returns {boolean} true when all images are loaded and decoded, so the game can start without gaps */
-function areAssetsReady() {
-  return isPreloaded && DrawableObject.loadProgress() >= 1;
+/** Starts loading what is needed later: the late images and the music (the other sounds follow when the game starts). */
+function loadLateAssets() {
+  DrawableObject.loadLazyImages();
+  soundManager.preload(['music']);
 }
 
 
 /**
- * The clock of the game in ms: like Date.now(), but the time of a pause does not count.
- * So everything that waits for a time (an attack of the endboss, a hurt Pepe) goes on where it stopped.
+ * How much of what the game needs at the start is loaded: the images and the short sounds, from 0 to 1.
+ * The long sounds (music, snoring) and the late images load later, while the game runs.
  * @returns {number}
  */
-function gameNow() {
-  return (isPaused ? pausedSince : Date.now()) - pausedTotal;
+function loadProgress() {
+  if (DrawableObject.imagesTotal === 0) return 0;
+  let total = DrawableObject.imagesTotal + START_SOUNDS.length;
+  return (DrawableObject.imagesDone + soundManager.settledCount(START_SOUNDS)) / total;
+}
+
+
+/** @returns {boolean} true when the images and the short sounds are loaded, so the game can start without gaps */
+function areAssetsReady() {
+  return isPreloaded && loadProgress() >= 1;
 }
 
 
@@ -81,60 +84,6 @@ function flashThrowButton(className, duration) {
   let button = document.querySelector('.touch-button[data-key="D"]');
   button.classList.add(className);
   setTimeout(() => button.classList.remove(className), duration);
-}
-
-
-/** Pauses the running game or goes on: the timers stand still, the picture freezes and the sounds are paused. */
-function togglePause() {
-  if (!world || world.gameEnded) return;
-  isPaused = !isPaused;
-  if (isPaused) {
-    pausedSince = Date.now();
-    soundManager.pauseAll();
-  } else {
-    pausedTotal += Date.now() - pausedSince;
-    soundManager.resumeAll();
-  }
-  updatePauseButton();
-  releaseFocus(document.getElementById('pauseButton'));
-}
-
-
-/** Ends a pause without a sound (the game is stopped or restarted). */
-function resetPause() {
-  if (isPaused) pausedTotal += Date.now() - pausedSince;
-  isPaused = false;
-  updatePauseButton();
-}
-
-
-/** Shows the pause or the play symbol on the pause button. */
-function updatePauseButton() {
-  let button = document.getElementById('pauseButton');
-  button.classList.toggle('paused', isPaused);
-  button.setAttribute('aria-pressed', isPaused);
-}
-
-
-/**
- * Starts an interval of the game; stopGame stops it. It does nothing while the game is paused.
- * @param {Function} callback
- * @param {number} delay - in milliseconds
- * @returns {number} the interval id
- */
-function setGameInterval(callback, delay) {
-  let id = setInterval(() => {
-    if (!isPaused) callback();
-  }, delay);
-  intervalIds.push(id);
-  return id;
-}
-
-
-/** Stops all intervals (and timeouts) of the game. */
-function clearGameIntervals() {
-  intervalIds.forEach((id) => clearInterval(id));
-  intervalIds = [];
 }
 
 
@@ -205,7 +154,7 @@ function updateMuteButton() {
  */
 function drawStartScreen(startScreen) {
   if (world) return;
-  if (areAssetsReady()) DrawableObject.loadLazyImages();
+  if (areAssetsReady()) loadLateAssets();
   if (!isFlipping && startScreen.isLoadingDone()) flipCanvas(beginGame);
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);

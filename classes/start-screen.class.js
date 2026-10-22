@@ -41,7 +41,7 @@ class StartScreen extends DrawableObject {
 
   /** @returns {number} the progress shown in the bar: the real progress, but not faster than the minimum time allows */
   shownProgress() {
-    return Math.min(DrawableObject.loadProgress(), (Date.now() - this.loadingSince) / StartScreen.MIN_LOADING_TIME);
+    return Math.min(loadProgress(), (Date.now() - this.loadingSince) / StartScreen.MIN_LOADING_TIME);
   }
 
 
