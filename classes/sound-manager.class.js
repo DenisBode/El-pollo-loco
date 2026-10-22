@@ -15,6 +15,7 @@ class SoundManager {
     getCoin1: new Audio('audio/getcoin1.mp3'),
     getCoin2: new Audio('audio/getcoin2.mp3'),
     getBottle: new Audio('audio/get_bottle.wav'),
+    noThrow: new Audio('audio/no_throw.wav'),
     footsteps: new Audio('audio/foodsteps_character.mp3'),
     jump: new Audio('audio/jump_charcter.mp3'),
     landing: new Audio('audio/landing_character.mp3'),

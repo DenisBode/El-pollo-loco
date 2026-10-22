@@ -15,7 +15,7 @@ let soundManager = new SoundManager();
 let isMuted = loadMuted();
 
 /** The short sounds that are needed right at the start; the long ones follow when the game starts. */
-const START_SOUNDS = ['jump', 'landing', 'footsteps', 'getCoin1', 'getCoin2', 'getBottle', 'ouch1', 'ouch2', 'throwBottle', 'bottleHit', 'chickenCluck'];
+const START_SOUNDS = ['jump', 'landing', 'footsteps', 'getCoin1', 'getCoin2', 'getBottle', 'noThrow', 'ouch1', 'ouch2', 'throwBottle', 'bottleHit', 'chickenCluck'];
 
 const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
 
@@ -69,6 +69,18 @@ function areAssetsReady() {
  */
 function gameNow() {
   return (isPaused ? pausedSince : Date.now()) - pausedTotal;
+}
+
+
+/**
+ * Gives the throw button on the touch screen a look for a moment: "cooling" after a throw, "denied" if it did not work.
+ * @param {string} className
+ * @param {number} duration - in ms
+ */
+function flashThrowButton(className, duration) {
+  let button = document.querySelector('.touch-button[data-key="D"]');
+  button.classList.add(className);
+  setTimeout(() => button.classList.remove(className), duration);
 }
 
 

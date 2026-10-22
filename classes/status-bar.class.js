@@ -2,6 +2,8 @@
 class StatusBar extends DrawableObject {
   images = [];
   percentage = 100;
+  /** The bar flashes (blinks dim) until this time of the game clock. */
+  flashUntil = 0;
 
 
   /**
@@ -31,6 +33,23 @@ class StatusBar extends DrawableObject {
     this.width = 160;
     this.height = 40;
     this.setPercentage(percentage);
+  }
+
+
+  /** Makes the bar blink for a moment, e.g. when a throw was not possible. */
+  flash() {
+    this.flashUntil = gameNow() + 300;
+  }
+
+
+  /**
+   * Draws the bar; while it flashes it is dim every other moment.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  draw(ctx) {
+    ctx.globalAlpha = gameNow() < this.flashUntil && Math.floor(gameNow() / 70) % 2 === 0 ? 0.25 : 1;
+    super.draw(ctx);
+    ctx.globalAlpha = 1;
   }
 
 

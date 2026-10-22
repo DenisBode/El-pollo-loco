@@ -73,6 +73,26 @@
     background: rgba(194, 65, 12, 0.85);
   }
 
+  /* The throw button right after a throw: dimmed until the next throw is possible */
+  .touch-button.cooling {
+    opacity: 0.35;
+  }
+
+  /* The throw button when the throw did not work: red and a short shake */
+  .touch-button.denied {
+    background: rgba(200, 30, 10, 0.8);
+    animation: shake 0.25s;
+  }
+
+  @keyframes shake {
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
+  }
+
   .touch-button img {
     height: 36px;
     pointer-events: none;

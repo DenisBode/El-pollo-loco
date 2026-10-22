@@ -40,6 +40,12 @@ class Enemy extends MovableObject {
   }
 
 
+  /** @returns {boolean} true while the enemy cannot be hurt; only the endboss is immune for a short time after a hit */
+  isImmune() {
+    return false;
+  }
+
+
   /** Every enemy type has its own hit sound. */
   playHitSound() {}
 }

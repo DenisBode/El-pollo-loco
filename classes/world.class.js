@@ -8,6 +8,9 @@ class World {
   pauseScreen = new PauseScreen();
   throwableObjects = [];
   throwKeyPressed = false;
+  /** Time between two throws in ms, so five bottles cannot be thrown at the endboss in one go. */
+  throwCooldown = 700;
+  lastThrowAt = -1000;
   gameWon = false;
   gameEnded = false;
   /** True when the pause screen is already on the canvas, so it is not drawn again and again over itself. */
@@ -142,22 +145,42 @@ class World {
   /** One key press throws exactly one bottle; the key must be released before the next throw. */
   checkThrowObjects() {
     let pressed = this.keyboard.D;
-    if (pressed && !this.throwKeyPressed && this.canThrow()) {
-      this.throwBottle();
-    }
+    if (pressed && !this.throwKeyPressed) this.tryToThrow();
     this.throwKeyPressed = pressed;
     this.updateThrownBottles();
   }
 
 
-  /** @returns {boolean} true when Pepe has a bottle and the game is still running */
+  /** A throw that is not possible (no bottle, or the last throw is too close) gives feedback instead. */
+  tryToThrow() {
+    if (this.character.isDead() || this.gameWon) return;
+    if (this.canThrow()) {
+      this.throwBottle();
+    } else {
+      this.denyThrow();
+    }
+  }
+
+
+  /** @returns {boolean} true when Pepe has a bottle, the game is running and the last throw is over the cooldown */
   canThrow() {
-    return this.character.bottles > 0 && !this.character.isDead() && !this.gameWon;
+    let isReady = gameNow() - this.lastThrowAt >= this.throwCooldown;
+    return this.character.bottles > 0 && !this.character.isDead() && !this.gameWon && isReady;
+  }
+
+
+  /** The key press has no effect, so the player sees and hears why: the bottle bar flashes and a soft tock plays. */
+  denyThrow() {
+    soundManager.play('noThrow');
+    this.hud.flashBottles();
+    flashThrowButton('denied', 250);
   }
 
 
   /** Throws a bottle in the direction Pepe looks, plays the sound and updates the bottle bar. */
   throwBottle() {
+    this.lastThrowAt = gameNow();
+    flashThrowButton('cooling', this.throwCooldown);
     let direction = this.character.otherDirection ? -1 : 1;
     let x = direction === 1 ? this.character.x + 60 : this.character.x - 20;
     this.throwableObjects.push(new ThrowableObject(x, this.character.y + 100, direction));
@@ -180,10 +203,11 @@ class World {
 
   /**
    * A flying bottle damages the first living enemy it touches and is used up.
+   * An enemy that is immune (the endboss right after a hit) lets it fly through, so the bottle is not wasted.
    * @param {ThrowableObject} thrown
    */
   checkBottleHit(thrown) {
-    let enemy = this.level.enemies.find((e) => !e.isDead() && thrown.isColliding(e));
+    let enemy = this.level.enemies.find((e) => !e.isDead() && !e.isImmune() && thrown.isColliding(e));
     if (!enemy) return;
     enemy.hit(enemy.bottleDamage);
     thrown.hitEnemy();

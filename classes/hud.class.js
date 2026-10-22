@@ -46,6 +46,12 @@ class Hud {
   }
 
 
+  /** Makes the bottle bar blink: a throw was not possible. */
+  flashBottles() {
+    this.bottleBar.flash();
+  }
+
+
   /** @param {number} energy - the energy of the endboss, 0 to 100 */
   updateEndboss(energy) {
     this.endbossBar.setPercentage(energy);

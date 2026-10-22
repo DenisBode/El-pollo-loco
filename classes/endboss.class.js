@@ -32,6 +32,9 @@ class Endboss extends Enemy {
   attackDistance = 500;
   /** Pepe must be further than this from his middle (px) before he turns around or moves towards him. */
   turnZone = 40;
+  /** After a hit he cannot be hurt for this time (ms) and blinks, so a series of bottles cannot kill him at once. */
+  immuneTime = 1000;
+  immuneUntil = 0;
   /**
    * How high a jump lifts him (px). It has to be high enough that his feet are above Pepe's head
    * (the top of Pepe's hitbox is 110 px below the top of his image), so Pepe can run underneath.
@@ -287,6 +290,20 @@ class Endboss extends Enemy {
   }
 
 
+  /** A hit hurts him only if he is not immune; after it he is immune for a moment. */
+  hit(damage) {
+    if (this.isImmune()) return;
+    super.hit(damage);
+    this.immuneUntil = gameNow() + this.immuneTime;
+  }
+
+
+  /** @returns {boolean} true for a short time after a hit */
+  isImmune() {
+    return gameNow() < this.immuneUntil;
+  }
+
+
   /**
    * Normal drawing, but after the death animation he tumbles.
    * @param {CanvasRenderingContext2D} ctx
@@ -295,8 +312,19 @@ class Endboss extends Enemy {
     if (this.isDead() && this.isDeathAnimationFinished()) {
       this.drawTumble(ctx);
     } else {
-      super.draw(ctx);
+      this.drawBlinking(ctx);
     }
+  }
+
+
+  /**
+   * He is half see-through every other moment while he is immune, so the player sees that the bottles pass.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  drawBlinking(ctx) {
+    ctx.globalAlpha = this.isImmune() && Math.floor(gameNow() / 90) % 2 === 0 ? 0.4 : 1;
+    super.draw(ctx);
+    ctx.globalAlpha = 1;
   }
 
 
