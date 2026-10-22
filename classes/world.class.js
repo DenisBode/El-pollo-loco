@@ -212,12 +212,14 @@ class World {
 
   /**
    * An enemy hurts Pepe when both are alive, the game is not won and they touch each other.
+   * Not while Pepe is stomping it: the stomp check runs more often, so it wins.
    * @param {Enemy} enemy
    * @returns {boolean}
    */
   canHurtPepe(enemy) {
     let isGameOn = !this.gameWon && !this.character.isDead();
-    return isGameOn && !enemy.isDead() && this.character.isColliding(enemy);
+    let isStomped = enemy.canBeStomped && this.character.isStomping(enemy);
+    return isGameOn && !enemy.isDead() && this.character.isColliding(enemy) && !isStomped;
   }
 
 

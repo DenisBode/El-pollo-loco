@@ -84,23 +84,24 @@ class Character extends MovableObject {
   /** Ms. */
   invulnerableTime = 3000;
 
-
   /** Creates Pepe: loads his images, sets his hitbox and starts the gravity and the loops. */
   constructor() {
     super().loadImage(this.IMAGES_IDLE[0]);
     this.loadAllImages();
-    this.setOffset(110, 20, 10, 20);
+    this.setOffset(110, 30, 15, 20);
     this.applyGravity();
     this.animate();
   }
 
-
   /** Puts all images of Pepe into the cache. */
   loadAllImages() {
-    [this.IMAGES_WALKING, this.IMAGES_JUMPING, this.IMAGES_HURT].forEach((images) => this.loadImages(images));
-    [this.IMAGES_DEAD, this.IMAGES_IDLE, this.IMAGES_LONG_IDLE].forEach((images) => this.loadImages(images));
+    [this.IMAGES_WALKING, this.IMAGES_JUMPING, this.IMAGES_HURT].forEach((images) =>
+      this.loadImages(images)
+    );
+    [this.IMAGES_DEAD, this.IMAGES_IDLE, this.IMAGES_LONG_IDLE].forEach((images) =>
+      this.loadImages(images)
+    );
   }
-
 
   /** Starts the loops for control (60 times a second), images (20 a second), idle (5 a second, it runs slower) and death. */
   animate() {
@@ -110,19 +111,16 @@ class Character extends MovableObject {
     setGameInterval(() => this.updateDeathAnimation(), 150);
   }
 
-
   /** True when Pepe is dead or the game is won: he does not react any more. */
   isFrozen() {
     return this.isDead() || this.world.gameWon;
   }
-
 
   /** Jumps when the jump key is pressed and Pepe stands on the ground. */
   handleJump() {
     if (this.isFrozen()) return;
     if (this.world.keyboard.SPACE && !this.isAboveGround()) this.jump();
   }
-
 
   /**
    * Runs to the right or to the left, but not out of the level. The world calls this once per drawn
@@ -138,18 +136,15 @@ class Character extends MovableObject {
     }
   }
 
-
   /** @returns {boolean} true when the right key is pressed and the end of the level is not reached */
   canMoveRight() {
     return this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX;
   }
 
-
   /** @returns {boolean} true when the left key is pressed and Pepe is not at the start of the level */
   canMoveLeft() {
     return this.world.keyboard.LEFT && this.x > 0;
   }
-
 
   /** Pepe jumps and the jump sound plays; hasJumped makes the landing sound play later. */
   jump() {
@@ -157,7 +152,6 @@ class Character extends MovableObject {
     this.hasJumped = true;
     soundManager.play('jump');
   }
-
 
   /**
    * Removes energy and plays one of the ouch sounds; nothing happens while Pepe is invulnerable.
@@ -169,7 +163,6 @@ class Character extends MovableObject {
     soundManager.playRandom(['ouch1', 'ouch2']);
   }
 
-
   /**
    * True when Pepe is falling onto the upper part of the enemy (not when he only touches it from the side).
    * @param {Enemy} enemy
@@ -179,35 +172,33 @@ class Character extends MovableObject {
     return this.isFalling() && this.isFootAboveEnemyMiddle(enemy);
   }
 
-
   /** @returns {boolean} true while Pepe is in the air and moving downwards */
   isFalling() {
     return this.isAboveGround() && this.speedY < 0;
   }
 
-
   /**
+   * A fast fall moves Pepe up to 30 px in one step, so his feet can jump from above the enemy to deep inside it.
+   * That is why the position before the last step counts, not the position now.
    * @param {Enemy} enemy
-   * @returns {boolean} true when Pepe's feet are above the lower 40% of the enemy
+   * @returns {boolean} true when Pepe's feet were above the lower 40% of the enemy before the last step
    */
   isFootAboveEnemyMiddle(enemy) {
     let pepe = this.getHitbox();
     let target = enemy.getHitbox();
-    return pepe.y + pepe.height < target.y + target.height * 0.6;
+    let previousFeet = pepe.y + pepe.height - (this.y - this.previousY);
+    return previousFeet < target.y + target.height * 0.6;
   }
-
 
   /** Pepe bounces off a defeated enemy with a small jump. */
   bounce() {
     this.speedY = 15;
   }
 
-
   /** @returns {boolean} true for a short time after a respawn */
   isInvulnerable() {
     return Date.now() < this.invulnerableUntil;
   }
-
 
   /**
    * Pepe blinks while he is invulnerable.
@@ -218,7 +209,6 @@ class Character extends MovableObject {
     if (!isBlinkedOut) super.draw(ctx);
   }
 
-
   /** Picks up a bottle as long as Pepe can carry more. */
   collectBottle() {
     if (this.bottles < this.maxBottles) {
@@ -226,13 +216,11 @@ class Character extends MovableObject {
     }
   }
 
-
   /** @returns {boolean} true when Pepe has the maximum number of coins */
   collectCoin() {
     this.coins++;
     return this.coins >= this.maxCoins;
   }
-
 
   /** Chooses the image for hurt, jump or run and updates the sounds and the idle timer. */
   updateImage() {
@@ -245,7 +233,6 @@ class Character extends MovableObject {
     if (!this.isIdle() || this.world.keyboard.D) this.lastAction = Date.now();
   }
 
-
   /** Hurt images come first, then the jump images in the air, then the walking images while a key is pressed. */
   playMovementAnimation() {
     if (this.isHurt()) {
@@ -256,7 +243,6 @@ class Character extends MovableObject {
       this.playAnimation(this.IMAGES_WALKING);
     }
   }
-
 
   /**
    * The jump images follow the flight: take-off, apex and landing, once each, whatever the duration.
@@ -269,7 +255,6 @@ class Character extends MovableObject {
     this.img = this.imageCache[this.IMAGES_JUMPING[index]];
   }
 
-
   /** Footsteps while running on the ground; a landing sound when a jump ends. */
   playMovementSounds() {
     let isOnGround = !this.isAboveGround();
@@ -280,7 +265,6 @@ class Character extends MovableObject {
     }
     this.playLandingSound(isOnGround);
   }
-
 
   /**
    * Plays the landing sound once after a jump, not at the start when Pepe drops to the ground.
@@ -297,18 +281,15 @@ class Character extends MovableObject {
     }
   }
 
-
   /** Standing on the ground, not moving and not hurt. */
   isIdle() {
     return !this.isHurt() && !this.isAboveGround() && !this.isMoveKeyPressed();
   }
 
-
   /** @returns {boolean} true when the left or the right key is pressed */
   isMoveKeyPressed() {
     return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
   }
-
 
   /** Short idle right after stopping; after longIdleAfter ms without any action Pepe sleeps. */
   playIdleAnimation() {
@@ -321,7 +302,6 @@ class Character extends MovableObject {
     this.playAnimation(isSleeping ? this.IMAGES_LONG_IDLE : this.IMAGES_IDLE);
   }
 
-
   /** @param {boolean} isSleeping - Pepe snores as long as he sleeps */
   playSnoring(isSleeping) {
     if (isSleeping) {
@@ -330,7 +310,6 @@ class Character extends MovableObject {
       soundManager.stop('snoring');
     }
   }
-
 
   /** Plays the dead images once; afterwards Pepe respawns if he has a life left. */
   updateDeathAnimation() {
@@ -343,14 +322,12 @@ class Character extends MovableObject {
     this.playDeathAnimation(this.IMAGES_DEAD);
   }
 
-
   /** Pepe dies: the dead sound plays and he loses a life. */
   startDying() {
     soundManager.play('characterDead');
     this.lives--;
     this.world.hud.updateLives(this.lives);
   }
-
 
   /**
    * Pepe falls from the sky at the place where he died, with full health and a short time of invulnerability.
@@ -367,12 +344,10 @@ class Character extends MovableObject {
     this.world.hud.updateHealth(this.energy);
   }
 
-
   /** @returns {boolean} true when all dead images were shown */
   isDeathAnimationFinished() {
     return this.hasFinishedDeathAnimation(this.IMAGES_DEAD);
   }
-
 
   /** @returns {boolean} true when Pepe is dead and has no life left: the game is lost */
   isLost() {

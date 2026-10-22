@@ -2,6 +2,8 @@
 class MovableObject extends DrawableObject {
   speed = 0.15;
   speedY = 0;
+  /** Height before the last gravity step. */
+  previousY = 0;
   acceleration = 2;
   energy = 100;
   lastHit = 0;
@@ -12,9 +14,13 @@ class MovableObject extends DrawableObject {
   groundLevel = 140;
 
 
-  /** Lets the object fall until it stands on the ground; a jump (speedY > 0) lifts it first. */
+  /**
+   * Lets the object fall until it stands on the ground; a jump (speedY > 0) lifts it first.
+   * Before every step the old height is kept in previousY, so a fast fall can be told from a slow one.
+   */
   applyGravity() {
     setGameInterval(() => {
+      this.previousY = this.y;
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
