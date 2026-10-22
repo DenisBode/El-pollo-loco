@@ -17,31 +17,24 @@ body {
   display: none !important;
 }
 
-/* Heading sits in the top third of the window, the canvas stays in the middle */
+/* The heading fills the free space above the canvas (the canvas is 480 px high and sits in the middle of the window).
+   The font size follows that space, so the heading never touches the canvas, and never gets wider than the window. */
 h1 {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 33.333vh;
+  height: calc((100vh - 480px) / 2);
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 56px;
-  letter-spacing: 4px;
+  font-size: clamp(24px, min(calc((100vh - 480px) * 0.3), 11vw), 112px);
+  letter-spacing: 0.07em;
   /* Same yellow with brown outline as the game title */
   color: #ffd500;
-  -webkit-text-stroke: 6px #a0300a;
+  -webkit-text-stroke: max(3px, 0.055em) #a0300a;
   paint-order: stroke fill;
-}
-
-/* Big desktop screens: the heading is twice as big */
-@media (min-width: 1024px) {
-  h1 {
-    font-size: 112px;
-    letter-spacing: 8px;
-  }
 }
 
 /* Global hover effect: add class="hover-effect" to any element.
