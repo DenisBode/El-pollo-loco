@@ -128,7 +128,7 @@ function setLanguage(language) {
     localStorage.setItem('language', language);
   } catch {}
   applyLanguage();
-  document.activeElement.blur(); // otherwise the space bar (jump) would press the button again
+  releaseFocus(document.activeElement);
 }
 
 
