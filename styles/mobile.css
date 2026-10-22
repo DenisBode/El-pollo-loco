@@ -14,9 +14,11 @@
 
 /* Rotated phone (landscape and low): the canvas fills the whole window */
 @media only screen and (orientation: landscape) and (max-height: 600px) {
-  /* As big as possible, but never wider than the window (keeps the 3:2 ratio) */
+  /* As big as possible, but never wider than the window (keeps the 3:2 ratio).
+     On a phone the address bar takes room: vh is the height without it, dvh the height that is really visible. */
   canvas {
     width: min(100vw, 150vh);
+    width: min(100vw, 150dvh);
     height: auto;
   }
 
