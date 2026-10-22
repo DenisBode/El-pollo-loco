@@ -1,5 +1,6 @@
 /**
- * The endboss: waits until he is seen, shows an alert, then walks and attacks when Pepe is close.
+ * The endboss: waits until he is seen and shows an alert. Then he fights: he walks up to Pepe, charges at him,
+ * backs off, rests, and sometimes jumps. The less energy he has, the faster and angrier he gets.
  * After his death he tumbles and comes to rest on the ground.
  */
 class Endboss extends Enemy {
@@ -9,14 +10,25 @@ class Endboss extends Enemy {
   y = 55;
   /** Five bottles kill the endboss. */
   bottleDamage = 20;
-  /** Waiting -> alert -> walking. */
+  /** Waiting -> alert -> fighting. */
   state = 'waiting';
   alertFrame = 0;
+  /** True while he charges or jumps: the attack images are shown. */
   attacking = false;
-  /** While attacking he runs 3 times faster. */
-  attackSpeedFactor = 3;
-  /** The attack starts when Pepe is closer than this (px). */
-  attackDistance = 350;
+  /** The character he fights (set by the world). */
+  target;
+  /** The current move of the fight: one of the keys of Endboss.ACTIONS. */
+  action = 'walk';
+  actionSince = 0;
+  /** The ground height; a jump lifts him from here. */
+  baseY = 55;
+  /** The most he moves to the right and to the left (px), so he stays near the end of the level. */
+  arenaRight = 6950;
+  arenaLeft = 5200;
+  /** Distance to Pepe under which he starts an attack (px). */
+  attackDistance = 500;
+  /** How high a jump lifts him (px). */
+  jumpHeight = 100;
   tumbleStart = null;
   /** Ms. */
   tumbleDuration = 1800;
@@ -26,6 +38,18 @@ class Endboss extends Enemy {
   lyingScale = 0.8;
   /** The image box ends below the visible body, so this is deeper than Pepe's lower edge. */
   groundY = 500;
+
+  /**
+   * The moves of the fight: speed in px per step (60 steps a second) and duration in ms.
+   * Charging is slower than Pepe (10 px per step), so he can always run away.
+   */
+  static ACTIONS = {
+    walk: { speed: 2.5, duration: 1600 },
+    charge: { speed: 6, duration: 900 },
+    retreat: { speed: 3, duration: 1100 },
+    rest: { speed: 0, duration: 700 },
+    jump: { speed: 5, duration: 1000 },
+  };
 
   IMAGES_WALKING = [
     'img/4_enemie_boss_chicken/1_walk/G1.webp',
@@ -75,19 +99,85 @@ class Endboss extends Enemy {
     [this.IMAGES_WALKING, this.IMAGES_ALERT, this.IMAGES_ATTACK, this.IMAGES_HURT, this.IMAGES_DEAD].forEach((images) =>
       this.loadImages(images, false),
     );
+    this.setOffset(45, 10, 14, 22);
     this.x = 6800;
-    this.speed = 0.15 + Math.random() * 0.3;
   }
 
 
-  /** Walks only after the alert; while attacking he is faster. */
+  /** One step of the fight, 60 times a second: he does his current move until its time is over. */
   move() {
-    if (this.isDead() || this.state !== 'walking') return;
-    if (this.attacking) {
-      this.x -= this.speed * this.attackSpeedFactor;
-    } else {
-      this.moveLeft();
-    }
+    if (this.isDead() || this.state !== 'fighting' || !this.target) return;
+    let config = Endboss.ACTIONS[this.action];
+    let elapsed = Date.now() - this.actionSince;
+    if (elapsed >= this.durationOf(config)) return this.chooseNextAction();
+    this.otherDirection = this.target.x > this.x;
+    this.x += this.directionOfAction() * config.speed * this.rage();
+    this.x = Math.min(this.arenaRight, Math.max(this.arenaLeft, this.x));
+    this.y = this.baseY - this.jumpLift(elapsed / config.duration);
+  }
+
+
+  /**
+   * How angry he is: 1 with full energy, up to 1.5 when he is almost defeated.
+   * @returns {number}
+   */
+  rage() {
+    return 1 + (1 - this.energy / 100) * 0.5;
+  }
+
+
+  /**
+   * The angrier he is, the shorter he rests.
+   * @param {{speed: number, duration: number}} config
+   * @returns {number} the duration of the move in ms
+   */
+  durationOf(config) {
+    return this.action === 'rest' ? config.duration / this.rage() : config.duration;
+  }
+
+
+  /** @returns {number} 1 to the right, -1 to the left: towards Pepe, or away from him while he backs off */
+  directionOfAction() {
+    let towardsPepe = this.target.x > this.x ? 1 : -1;
+    return this.action === 'retreat' ? -towardsPepe : towardsPepe;
+  }
+
+
+  /**
+   * @param {number} progress - how much of the move is done, from 0 to 1
+   * @returns {number} the height of the jump in px; 0 for every move except the jump
+   */
+  jumpLift(progress) {
+    return this.action === 'jump' ? this.jumpHeight * Math.sin(Math.PI * progress) : 0;
+  }
+
+
+  /** Charge and jump are followed by a retreat or a rest; after that he picks a new attack. */
+  chooseNextAction() {
+    let next = { charge: 'retreat', retreat: 'rest', jump: 'rest' }[this.action];
+    this.startAction(next || this.pickAttack(Math.abs(this.target.x - this.x)));
+  }
+
+
+  /**
+   * He walks up to Pepe first; when close, he charges or (in two of five cases) jumps.
+   * @param {number} distance - to Pepe in px
+   * @returns {string} the name of the move
+   */
+  pickAttack(distance) {
+    if (distance > this.attackDistance) return 'walk';
+    return Math.random() < 0.4 ? 'jump' : 'charge';
+  }
+
+
+  /**
+   * @param {string} name - one of the keys of Endboss.ACTIONS
+   */
+  startAction(name) {
+    this.action = name;
+    this.actionSince = Date.now();
+    this.attacking = name === 'charge' || name === 'jump';
+    this.y = this.baseY;
   }
 
 
@@ -97,7 +187,7 @@ class Endboss extends Enemy {
       this.playDeathAnimation(this.IMAGES_DEAD);
     } else if (this.state === 'alert') {
       this.playAlertAnimation();
-    } else if (this.state === 'walking') {
+    } else if (this.state === 'fighting') {
       this.playWalkingAnimation();
     }
   }
@@ -123,13 +213,14 @@ class Endboss extends Enemy {
   }
 
 
-  /** Plays the alert images once, then the endboss starts walking. */
+  /** Plays the alert images once, then the fight begins. */
   playAlertAnimation() {
     if (this.alertFrame < this.IMAGES_ALERT.length) {
       this.img = this.imageCache[this.IMAGES_ALERT[this.alertFrame]];
       this.alertFrame++;
     } else {
-      this.state = 'walking';
+      this.state = 'fighting';
+      this.startAction('walk');
     }
   }
 
@@ -141,15 +232,6 @@ class Endboss extends Enemy {
    */
   hasComeIntoView(character) {
     return this.x - character.x < this.viewDistance;
-  }
-
-
-  /**
-   * Switches the attack on when Pepe is close.
-   * @param {Character} character
-   */
-  updateAttack(character) {
-    this.attacking = this.isNear(character, this.attackDistance);
   }
 
 

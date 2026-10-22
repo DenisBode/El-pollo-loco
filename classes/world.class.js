@@ -29,6 +29,7 @@ class World {
     this.ctx = canvas.getContext('2d');
     this.character.world = this;
     this.level.start();
+    if (this.endboss) this.endboss.target = this.character;
     this.draw();
     this.run();
   }
@@ -279,7 +280,6 @@ class World {
       this.hud.showEndbossBar();
       boss.startAlert();
     }
-    boss.updateAttack(this.character);
     if (boss.isDead() && boss.isDeathAnimationFinished()) this.gameWon = true;
   }
 
