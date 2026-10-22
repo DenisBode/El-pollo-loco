@@ -30,7 +30,9 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>SoundManager<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Plays the background music and all sound effects; mute switches everything off at once.</div>
+            <div class="class-description">Plays the background music and all sound effects; mute switches everything off at once.
+The sounds are loaded completely into memory first (with new tries if the connection is bad) and played from there
+with the Web Audio API, so they play at once, overlap each other and do not depend on the network any more.</div>
         
     
 </header>
@@ -53,8 +55,7 @@
 
 
 <div class="description">
-    Sets loops and volumes: the cluck is quiet, the game over jingle is loud.
-The sounds are created with preload "none", so the page does not wait for them.
+    Connects a volume control for every sound to the master volume and unlocks the sound with the first touch or key.
 </div>
 
 
@@ -98,7 +99,7 @@ The sounds are created with preload "none", so the page does not wait for them.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line2">line 2</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -148,13 +149,13 @@ The sounds are created with preload "none", so the page does not wait for them.
 
         
             
-<h4 class="name" id="pausedSounds"><span class="type-signature"></span>pausedSounds<span class="type-signature"></span></h4>
+<h4 class="name" id="FILES"><span class="type-signature"></span>FILES<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The sounds that were playing when the game was paused.
+    All sound files: name -> path.
 </div>
 
 
@@ -192,7 +193,565 @@ The sounds are created with preload "none", so the page does not wait for them.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line27">line 27</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="LOOPS"><span class="type-signature"></span>LOOPS<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The sounds that run in a loop until they are stopped.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line33">line 33</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="TRIES"><span class="type-signature"></span>TRIES<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    How often a sound is loaded before it is given up, and after how many ms a new try is allowed.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="VOLUMES"><span class="type-signature"></span>VOLUMES<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The volume of each sound (0 to 1); a sound that is not listed plays with 0.5.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line30">line 30</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="buffers"><span class="type-signature"></span>buffers<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The decoded sounds, ready to play: name -> AudioBuffer.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="context"><span class="type-signature"></span>context<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The Web Audio context; empty if the browser has none (then the game is silent).
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="failedAt"><span class="type-signature"></span>failedAt<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    When the last load of a sound failed: name -> time in ms.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line50">line 50</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="playing"><span class="type-signature"></span>playing<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The sources that are playing at the moment: name -> Set.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line52">line 52</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="requests"><span class="type-signature"></span>requests<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The loads that are running: name -> Promise.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line48">line 48</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="wantsMusic"><span class="type-signature"></span>wantsMusic<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    True from the start of the game until the music is stopped: it starts as soon as it is loaded.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -220,7 +779,7 @@ The sounds are created with preload "none", so the page does not wait for them.
     
 
     
-    <h4 class="name" id="loop"><span class="type-signature"></span>loop<span class="signature">(name)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="fetchBuffer"><span class="type-signature">(async) </span>fetchBuffer<span class="signature">(path)</span><span class="type-signature"> &rarr; {Promise.&lt;AudioBuffer>}</span></h4>
     
 
     
@@ -228,7 +787,318 @@ The sounds are created with preload "none", so the page does not wait for them.
 
 
 <div class="description">
-    Starts a looping effect (e.g. snoring) if it is not already running.
+    Downloads and decodes a file; if that fails (bad connection) it waits longer and longer and tries again.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;AudioBuffer></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isPlaying"><span class="type-signature"></span>isPlaying<span class="signature">(name)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key in SoundManager.FILES</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line194">line 194</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    true while the sound is playing
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">(name)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Loads a sound into memory; a load that is running or done is not started again.
+After a failed load the next try waits a while, so a sound that is played often does not flood the network.
 </div>
 
 
@@ -280,7 +1150,7 @@ The sounds are created with preload "none", so the page does not wait for them.
 
             
 
-            <td class="description last">key in effects</td>
+            <td class="description last">key in SoundManager.FILES</td>
         </tr>
 
     
@@ -321,7 +1191,162 @@ The sounds are created with preload "none", so the page does not wait for them.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line124">line 124</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line82">line 82</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="loop"><span class="type-signature"></span>loop<span class="signature">(name)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Starts a looping sound (e.g. snoring) if it is not already running.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key in SoundManager.FILES</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line185">line 185</a>
     </li></ul></dd>
     
 
@@ -365,7 +1390,7 @@ The sounds are created with preload "none", so the page does not wait for them.
 
 
 <div class="description">
-    Pauses everything that is playing, the music and the effects; resumeAll goes on at the same place.
+    Pauses everything that is playing; resumeAll goes on at the same place.
 </div>
 
 
@@ -409,7 +1434,7 @@ The sounds are created with preload "none", so the page does not wait for them.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line143">line 143</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line229">line 229</a>
     </li></ul></dd>
     
 
@@ -453,7 +1478,7 @@ The sounds are created with preload "none", so the page does not wait for them.
 
 
 <div class="description">
-    Plays an effect once from the beginning.
+    Plays a sound from the beginning once; if it is still playing, it starts again.
 </div>
 
 
@@ -505,7 +1530,7 @@ The sounds are created with preload "none", so the page does not wait for them.
 
             
 
-            <td class="description last">key in effects</td>
+            <td class="description last">key in SoundManager.FILES</td>
         </tr>
 
     
@@ -546,7 +1571,7 @@ The sounds are created with preload "none", so the page does not wait for them.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line77">line 77</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -590,7 +1615,8 @@ The sounds are created with preload "none", so the page does not wait for them.
 
 
 <div class="description">
-    Plays an effect on a copy, so quick repeats do not cut each other off.
+    Plays a sound on top of the same sound that is still playing (e.g. coins collected one after the other).
+A sound that is not loaded yet is loaded now and not played this time.
 </div>
 
 
@@ -642,7 +1668,7 @@ The sounds are created with preload "none", so the page does not wait for them.
 
             
 
-            <td class="description last">key in effects</td>
+            <td class="description last">key in SoundManager.FILES</td>
         </tr>
 
     
@@ -683,7 +1709,7 @@ The sounds are created with preload "none", so the page does not wait for them.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line111">line 111</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line146">line 146</a>
     </li></ul></dd>
     
 
@@ -727,7 +1753,7 @@ The sounds are created with preload "none", so the page does not wait for them.
 
 
 <div class="description">
-    Plays one random effect of the list.
+    Plays one random sound of the list.
 With waitForEnd it is skipped while one of them is still playing (no sound pile-up).
 </div>
 
@@ -786,7 +1812,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
                 </td>
             
 
-            <td class="description last">keys in effects</td>
+            <td class="description last">keys in SoundManager.FILES</td>
         </tr>
 
     
@@ -856,7 +1882,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line90">line 90</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line166">line 166</a>
     </li></ul></dd>
     
 
@@ -900,8 +1926,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
 
 <div class="description">
-    Plays one random effect of the list on a copy, so quick repeats do not cut each other off
-(e.g. coins collected one after the other).
+    Plays one random sound of the list on top of the ones that are still playing.
 </div>
 
 
@@ -953,7 +1978,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
             
 
-            <td class="description last">keys in effects</td>
+            <td class="description last">keys in SoundManager.FILES</td>
         </tr>
 
     
@@ -994,7 +2019,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line102">line 102</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -1090,7 +2115,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
             
 
-            <td class="description last">keys in effects; without names all effects are loaded (the music always)</td>
+            <td class="description last">keys in SoundManager.FILES; without names all sounds are loaded</td>
         </tr>
 
     
@@ -1131,7 +2156,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line51">line 51</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -1219,7 +2244,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line150">line 150</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line236">line 236</a>
     </li></ul></dd>
     
 
@@ -1356,7 +2381,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line168">line 168</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line254">line 254</a>
     </li></ul></dd>
     
 
@@ -1392,6 +2417,161 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
 
     
+    <h4 class="name" id="settledCount"><span class="type-signature"></span>settledCount<span class="signature">(names)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>names</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">keys in SoundManager.FILES</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    how many of them are done: loaded, or given up after the tries failed
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="startMusic"><span class="type-signature"></span>startMusic<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
@@ -1400,7 +2580,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
 
 <div class="description">
-    Starts the background music; must be called after a user action (e.g. the start button).
+    Starts the background music; it begins as soon as it is loaded. Call it after a user action (e.g. the start button).
 </div>
 
 
@@ -1444,7 +2624,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line61">line 61</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -1488,7 +2668,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
 
 <div class="description">
-    Stops an effect and rewinds it.
+    Stops a sound.
 </div>
 
 
@@ -1540,7 +2720,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
             
 
-            <td class="description last">key in effects</td>
+            <td class="description last">key in SoundManager.FILES</td>
         </tr>
 
     
@@ -1581,7 +2761,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line134">line 134</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line203">line 203</a>
     </li></ul></dd>
     
 
@@ -1669,7 +2849,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line157">line 157</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line243">line 243</a>
     </li></ul></dd>
     
 
@@ -1713,7 +2893,7 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 
 
 <div class="description">
-    Stops the background music and rewinds it.
+    Stops the background music.
 </div>
 
 
@@ -1757,7 +2937,95 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line67">line 67</a>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line222">line 222</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="unlock"><span class="type-signature"></span>unlock<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Browsers keep the sound off until the player has touched the page; this switches it on (not during a pause).
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_sound-manager.class.js.html">classes/sound-manager.class.js</a>, <a href="classes_sound-manager.class.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -1803,13 +3071,13 @@ With waitForEnd it is skipped while one of them is still playing (no sound pile-
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flashThrowButton">flashThrowButton</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#gameNow">gameNow</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#pausedTotal">pausedTotal</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#resetPause">resetPause</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupLayout">setupLayout</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li><li><a href="global.html#updatePauseButton">updatePauseButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flashThrowButton">flashThrowButton</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#gameNow">gameNow</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadLateAssets">loadLateAssets</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#loadProgress">loadProgress</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#pausedTotal">pausedTotal</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#resetPause">resetPause</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupLayout">setupLayout</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li><li><a href="global.html#updatePauseButton">updatePauseButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 13:13:36 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 14:31:46 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>
