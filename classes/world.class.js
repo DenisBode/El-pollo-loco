@@ -6,6 +6,7 @@ class World {
   gameOverScreen = new GameOverScreen();
   winScreen = new WinScreen();
   pauseScreen = new PauseScreen();
+  collector = new ItemCollector(this);
   throwableObjects = [];
   throwKeyPressed = false;
   /** Time between two throws in ms, so five bottles cannot be thrown at the endboss in one go. */
@@ -24,6 +25,7 @@ class World {
 
 
   /**
+   * Creates the world with its character, level and screens and starts the loops.
    * @param {HTMLCanvasElement} canvas
    * @param {Keyboard} keyboard
    * @param {Function} onGameEnd - called once when the game is won or lost
@@ -60,8 +62,8 @@ class World {
     this.checkThrowObjects();
     this.checkStomp();
     this.checkSelfHit();
-    this.checkBottleCollisions();
-    this.checkCoinCollisions();
+    this.collector.checkBottles();
+    this.collector.checkCoins();
   }
 
 
@@ -102,6 +104,7 @@ class World {
 
 
   /**
+   * Checks if Pepe stomps on the enemy right now.
    * @param {Enemy} enemy
    * @returns {boolean} true when the enemy can be stomped, is alive and Pepe falls onto it
    */
@@ -162,7 +165,10 @@ class World {
   }
 
 
-  /** @returns {boolean} true when Pepe has a bottle, the game is running and the last throw is over the cooldown */
+  /**
+   * Checks if Pepe can throw a bottle at the moment.
+   * @returns {boolean} true when Pepe has a bottle, the game is running and the last throw is over the cooldown
+   */
   canThrow() {
     let isReady = gameNow() - this.lastThrowAt >= this.throwCooldown;
     return this.character.bottles > 0 && !this.character.isDead() && !this.gameWon && isReady;
@@ -250,54 +256,6 @@ class World {
     return isGameOn && !enemy.isDead() && this.character.isColliding(enemy) && !isStomped;
   }
 
-
-  /**
-   * Removes the items Pepe touches (if he may collect them) and returns the remaining ones.
-   * @param {DrawableObject[]} items
-   * @param {Function} canCollect - asked for every item, returns true if Pepe may collect it now
-   * @param {Function} onCollect - called for every collected item
-   * @returns {DrawableObject[]}
-   */
-  collectItems(items, canCollect, onCollect) {
-    return items.filter((item) => {
-      if (!canCollect() || !this.character.isColliding(item)) return true;
-      onCollect();
-      return false;
-    });
-  }
-
-
-  /** Collects bottles as long as Pepe can carry more. */
-  checkBottleCollisions() {
-    let canCollect = () => !this.character.isDead() && this.character.bottles < this.character.maxBottles;
-    this.level.bottles = this.collectItems(this.level.bottles, canCollect, () => {
-      this.character.collectBottle();
-      soundManager.playOverlapping('getBottle');
-      this.hud.updateBottles(this.character.bottles, this.character.maxBottles);
-    });
-  }
-
-
-  /** Collects coins; a full coin bar gives Pepe a life and full health and starts again. */
-  checkCoinCollisions() {
-    this.level.coins = this.collectItems(this.level.coins, () => !this.character.isDead(), () => {
-      soundManager.playRandomOverlapping(['getCoin1', 'getCoin2']);
-      let isFull = this.character.collectCoin();
-      this.hud.updateCoins(this.character.coins, this.character.maxCoins);
-      if (isFull) this.rewardFullCoinBar();
-    });
-  }
-
-
-  /** Gives Pepe an extra life and full health and empties the coin bar after a short moment. */
-  rewardFullCoinBar() {
-    this.character.energy = 100;
-    this.character.lives++;
-    this.hud.updateHealth(100);
-    this.hud.updateLives(this.character.lives);
-    this.character.coins = 0;
-    intervalIds.push(setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500));
-  }
 
 
   /** The endboss bar and the alert start when he comes into view; the attack when Pepe is close. */
