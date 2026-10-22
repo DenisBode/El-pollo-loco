@@ -68,7 +68,7 @@ class Character extends MovableObject {
     'img/2_character_pepe/1_idle/long_idle/I-20.webp',
   ];
 
-  /** Ms of doing nothing until the long idle animation starts. */
+  /** How long Pepe does nothing until the long idle animation starts, in milliseconds (ms). */
   longIdleAfter = 5000;
   lastAction = gameNow();
   lives = 5;
@@ -81,7 +81,7 @@ class Character extends MovableObject {
   isAirborne = false;
   /** After a respawn nothing can hurt Pepe until this time. */
   invulnerableUntil = 0;
-  /** Ms. */
+  /** How long Pepe is invulnerable after a respawn, in milliseconds (ms). */
   invulnerableTime = 3000;
 
   /** Creates Pepe: loads his images, sets his hitbox and starts the gravity and the loops. */
@@ -136,12 +136,18 @@ class Character extends MovableObject {
     }
   }
 
-  /** @returns {boolean} true when the right key is pressed and the end of the level is not reached */
+  /**
+   * Checks if Pepe may run to the right.
+   * @returns {boolean} true when the right key is pressed and the end of the level is not reached
+   */
   canMoveRight() {
     return this.world.keyboard.RIGHT && this.x < this.world.level.levelEndX;
   }
 
-  /** @returns {boolean} true when the left key is pressed and Pepe is not at the start of the level */
+  /**
+   * Checks if Pepe may run to the left.
+   * @returns {boolean} true when the left key is pressed and Pepe is not at the start of the level
+   */
   canMoveLeft() {
     return this.world.keyboard.LEFT && this.x > 0;
   }
@@ -172,7 +178,10 @@ class Character extends MovableObject {
     return this.isFalling() && this.isFootAboveEnemyMiddle(enemy);
   }
 
-  /** @returns {boolean} true while Pepe is in the air and moving downwards */
+  /**
+   * Checks if Pepe is falling; that is the first condition for a stomp.
+   * @returns {boolean} true while Pepe is in the air and moving downwards
+   */
   isFalling() {
     return this.isAboveGround() && this.speedY < 0;
   }
@@ -195,7 +204,10 @@ class Character extends MovableObject {
     this.speedY = 15;
   }
 
-  /** @returns {boolean} true for a short time after a respawn */
+  /**
+   * Checks if Pepe is still protected after a respawn.
+   * @returns {boolean} true for a short time after a respawn
+   */
   isInvulnerable() {
     return gameNow() < this.invulnerableUntil;
   }
@@ -216,7 +228,10 @@ class Character extends MovableObject {
     }
   }
 
-  /** @returns {boolean} true when Pepe has the maximum number of coins */
+  /**
+   * Counts one more coin for Pepe.
+   * @returns {boolean} true when Pepe has the maximum number of coins
+   */
   collectCoin() {
     this.coins++;
     return this.coins >= this.maxCoins;
@@ -286,7 +301,10 @@ class Character extends MovableObject {
     return !this.isHurt() && !this.isAboveGround() && !this.isMoveKeyPressed();
   }
 
-  /** @returns {boolean} true when the left or the right key is pressed */
+  /**
+   * Checks if the player tells Pepe to run.
+   * @returns {boolean} true when the left or the right key is pressed
+   */
   isMoveKeyPressed() {
     return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
   }
@@ -302,7 +320,10 @@ class Character extends MovableObject {
     this.playAnimation(isSleeping ? this.IMAGES_LONG_IDLE : this.IMAGES_IDLE);
   }
 
-  /** @param {boolean} isSleeping - Pepe snores as long as he sleeps */
+  /**
+   * Plays or stops the snoring sound.
+   * @param {boolean} isSleeping - Pepe snores as long as he sleeps
+   */
   playSnoring(isSleeping) {
     if (isSleeping) {
       soundManager.loop('snoring');
@@ -344,12 +365,18 @@ class Character extends MovableObject {
     this.world.hud.updateHealth(this.energy);
   }
 
-  /** @returns {boolean} true when all dead images were shown */
+  /**
+   * Checks if the death animation of Pepe has run through.
+   * @returns {boolean} true when all dead images were shown
+   */
   isDeathAnimationFinished() {
     return this.hasFinishedDeathAnimation(this.IMAGES_DEAD);
   }
 
-  /** @returns {boolean} true when Pepe is dead and has no life left: the game is lost */
+  /**
+   * Checks if the game is lost, which is when Pepe is dead and has no life left.
+   * @returns {boolean} true when Pepe is dead and has no life left: the game is lost
+   */
   isLost() {
     return this.isDead() && this.lives <= 0 && this.isDeathAnimationFinished();
   }

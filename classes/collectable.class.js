@@ -3,6 +3,7 @@ class Collectable extends DrawableObject {
   hasFrame = true;
 
   /**
+   * Creates a collectable object at a random place along the level.
    * @param {string} imagePath
    * @param {number} minX - leftmost possible position
    * @param {number} maxX - rightmost possible position

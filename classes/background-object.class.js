@@ -5,6 +5,7 @@ class BackgroundObject extends DrawableObject {
 
 
   /**
+   * Creates one layer of the background.
    * @param {string} imagePath
    * @param {number} x - left edge of the tile
    */

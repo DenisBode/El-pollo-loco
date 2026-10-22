@@ -26,7 +26,10 @@ class DrawableObject {
   static lazyPaths = [];
 
 
-  /** @returns {number} the share of the requested images that are loaded and decoded, from 0 to 1 */
+  /**
+   * Tells how far the loading of the images is.
+   * @returns {number} the share of the requested images that are loaded and decoded, from 0 to 1
+   */
   static loadProgress() {
     return DrawableObject.imagesTotal === 0 ? 0 : DrawableObject.imagesDone / DrawableObject.imagesTotal;
   }

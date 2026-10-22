@@ -1,6 +1,6 @@
 /** The start screen; the 16:9 image is squeezed to the 3:2 canvas, so the whole image stays visible. */
 class StartScreen extends DrawableObject {
-  /** Ms, so the bar is always visible, even when everything is loaded at once. */
+  /** How long the loading bar takes at least, in milliseconds (ms), so it is always visible, even when everything is loaded at once. */
   static MIN_LOADING_TIME = 1500;
 
   /** true = the back side of the canvas (the story) is shown instead of the start image. */
@@ -39,13 +39,19 @@ class StartScreen extends DrawableObject {
   }
 
 
-  /** @returns {number} the progress shown in the bar: the real progress, but not faster than the minimum time allows */
+  /**
+   * Calculates the progress that the loading bar shows.
+   * @returns {number} the progress shown in the bar: the real progress, but not faster than the minimum time allows
+   */
   shownProgress() {
     return Math.min(loadProgress(), (Date.now() - this.loadingSince) / StartScreen.MIN_LOADING_TIME);
   }
 
 
-  /** @returns {boolean} true when the bar is full and all images are ready */
+  /**
+   * Checks if the game can start now.
+   * @returns {boolean} true when the bar is full and all images are ready
+   */
   isLoadingDone() {
     return this.isLoading && areAssetsReady() && this.shownProgress() >= 1;
   }
@@ -65,6 +71,7 @@ class StartScreen extends DrawableObject {
 
 
   /**
+   * Writes the percentage above the loading bar.
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} progress - from 0 to 1
    */

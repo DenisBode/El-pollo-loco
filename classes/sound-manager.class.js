@@ -119,6 +119,7 @@ class SoundManager {
 
 
   /**
+   * Counts the sounds that are done with loading.
    * @param {string[]} names - keys in SoundManager.FILES
    * @returns {number} how many of them are done: loaded, or given up after the tries failed
    */
@@ -188,6 +189,7 @@ class SoundManager {
 
 
   /**
+   * Checks if a sound is playing at the moment.
    * @param {string} name - key in SoundManager.FILES
    * @returns {boolean} true while the sound is playing
    */

@@ -43,7 +43,7 @@ class Endboss extends Enemy {
   /** In the air the hitbox ends higher, at his body: the dangling feet do not hurt Pepe (offset at the bottom, px). */
   airBottomOffset = 60;
   tumbleStart = null;
-  /** Ms. */
+  /** How long the tumble of the dead endboss takes, in milliseconds (ms). */
   tumbleDuration = 1800;
   /** Two full turns plus 290 degrees. */
   lyingAngle = 1010;
@@ -149,7 +149,10 @@ class Endboss extends Enemy {
   }
 
 
-  /** @returns {number} how far Pepe's middle is from the middle of the endboss in px; positive when Pepe is on the right */
+  /**
+   * Measures the distance between the middle of the endboss and the middle of Pepe.
+   * @returns {number} how far Pepe's middle is from the middle of the endboss in px; positive when Pepe is on the right
+   */
   offsetToPepe() {
     return this.target.x + this.target.width / 2 - (this.x + this.width / 2);
   }
@@ -163,6 +166,7 @@ class Endboss extends Enemy {
 
 
   /**
+   * Finds the direction in which the endboss moves during his current move.
    * @returns {number} 1 to the right, -1 to the left: towards Pepe, or away from him while he backs off;
    * 0 while Pepe is in the middle of him, so he does not shake from side to side
    */
@@ -174,6 +178,7 @@ class Endboss extends Enemy {
 
 
   /**
+   * Calculates how high the endboss is above the ground during a jump.
    * @param {number} progress - how much of the move is done, from 0 to 1
    * @returns {number} the height of the jump in px; 0 for every move except the jump
    */
@@ -201,6 +206,7 @@ class Endboss extends Enemy {
 
 
   /**
+   * Starts a new move of the fight and resets his height and his hitbox.
    * @param {string} name - one of the keys of Endboss.ACTIONS
    */
   startAction(name) {
@@ -284,7 +290,10 @@ class Endboss extends Enemy {
   }
 
 
-  /** @returns {boolean} true when the death animation is over and he starts to tumble */
+  /**
+   * Checks if the death animation of the endboss is over.
+   * @returns {boolean} true when the death animation is over and he starts to tumble
+   */
   isDeathAnimationFinished() {
     return this.hasFinishedDeathAnimation(this.IMAGES_DEAD);
   }
@@ -298,7 +307,10 @@ class Endboss extends Enemy {
   }
 
 
-  /** @returns {boolean} true for a short time after a hit */
+  /**
+   * Checks if the endboss is still immune after a hit.
+   * @returns {boolean} true for a short time after a hit
+   */
   isImmune() {
     return gameNow() < this.immuneUntil;
   }

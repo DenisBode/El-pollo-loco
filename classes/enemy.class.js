@@ -40,7 +40,10 @@ class Enemy extends MovableObject {
   }
 
 
-  /** @returns {boolean} true while the enemy cannot be hurt; only the endboss is immune for a short time after a hit */
+  /**
+   * Checks if the enemy cannot be hurt at the moment; a normal enemy is never immune.
+   * @returns {boolean} true while the enemy cannot be hurt; only the endboss is immune for a short time after a hit
+   */
   isImmune() {
     return false;
   }

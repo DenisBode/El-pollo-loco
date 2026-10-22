@@ -4,6 +4,7 @@ class CounterIcon extends DrawableObject {
 
 
   /**
+   * Creates an icon with a number next to it.
    * @param {string} imagePath
    * @param {number} x
    * @param {number} y
@@ -19,7 +20,10 @@ class CounterIcon extends DrawableObject {
   }
 
 
-  /** @param {number} count */
+  /**
+   * Changes the number that is shown next to the icon.
+   * @param {number} count
+   */
   setCount(count) {
     this.count = count;
   }

@@ -69,7 +69,10 @@ function loadProgress() {
 }
 
 
-/** @returns {boolean} true when the images and the short sounds are loaded, so the game can start without gaps */
+/**
+ * Checks if everything that is needed for the start is loaded.
+ * @returns {boolean} true when the images and the short sounds are loaded, so the game can start without gaps
+ */
 function areAssetsReady() {
   return isPreloaded && loadProgress() >= 1;
 }

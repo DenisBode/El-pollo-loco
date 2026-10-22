@@ -16,17 +16,26 @@ class SmallChicken extends Chicken {
     this.setOffset(5, 9, 10, 9);
   }
 
-  /** @returns {string[]} the walking images of a chick */
+  /**
+   * Gives the walking images of a chick.
+   * @returns {string[]} the walking images of a chick
+   */
   walkingImages() {
     return SmallChicken.IMAGES_WALKING;
   }
 
-  /** @returns {string} the image of a defeated chick */
+  /**
+   * Gives the image of a defeated chick.
+   * @returns {string} the image of a defeated chick
+   */
   deadImage() {
     return SmallChicken.IMAGE_DEAD;
   }
 
-  /** @returns {number} chicks are about twice as fast as normal chickens */
+  /**
+   * Picks a random walking speed for a chick.
+   * @returns {number} chicks are about twice as fast as normal chickens
+   */
   randomSpeed() {
     return 0.6 + Math.random() * 0.6;
   }

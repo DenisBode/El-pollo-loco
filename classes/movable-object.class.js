@@ -60,7 +60,10 @@ class MovableObject extends DrawableObject {
   }
 
 
-  /** @returns {boolean} */
+  /**
+   * Checks if the object has no energy left.
+   * @returns {boolean}
+   */
   isDead() {
     return this.energy <= 0;
   }
@@ -75,7 +78,10 @@ class MovableObject extends DrawableObject {
   }
 
 
-  /** @returns {boolean} */
+  /**
+   * Checks if the object is in the air.
+   * @returns {boolean}
+   */
   isAboveGround() {
     return this.y < 130;
   }
@@ -102,14 +108,20 @@ class MovableObject extends DrawableObject {
   }
 
 
-  /** @param {number} frameFactor - 1 is one step of 1/60 s; the step is longer if a frame took longer */
+  /**
+   * Moves the object one step to the right.
+   * @param {number} frameFactor - 1 is one step of 1/60 s; the step is longer if a frame took longer
+   */
   moveRight(frameFactor = 1) {
     this.otherDirection = false;
     this.x += this.speed * frameFactor;
   }
 
 
-  /** @param {number} frameFactor - see moveRight */
+  /**
+   * Moves the object one step to the left.
+   * @param {number} frameFactor - see moveRight
+   */
   moveLeft(frameFactor = 1) {
     this.x -= this.speed * frameFactor;
   }

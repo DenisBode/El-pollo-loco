@@ -32,6 +32,7 @@ class ThrowableObject extends MovableObject {
 
 
   /**
+   * Creates a bottle that flies from the given position.
    * @param {number} x - start position
    * @param {number} y - start position
    * @param {number} direction - 1 flies to the right, -1 to the left
@@ -105,7 +106,10 @@ class ThrowableObject extends MovableObject {
   }
 
 
-  /** @returns {boolean} true when the bottle can be removed: it lay down or its splash is over */
+  /**
+   * Checks if the bottle can be removed from the world.
+   * @returns {boolean} true when the bottle can be removed: it lay down or its splash is over
+   */
   isFinished() {
     return this.landed || this.splashDone;
   }

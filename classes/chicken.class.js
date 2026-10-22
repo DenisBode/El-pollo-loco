@@ -15,6 +15,7 @@ class Chicken extends Enemy {
 
 
   /**
+   * Creates a chicken at a random place of the level.
    * @param {number} minX - leftmost spawn position
    * @param {number} maxX - rightmost spawn position
    */
@@ -35,19 +36,28 @@ class Chicken extends Enemy {
   }
 
 
-  /** @returns {string[]} the walking images of this chicken type */
+  /**
+   * Gives the walking images of this chicken type; every type has its own.
+   * @returns {string[]} the walking images of this chicken type
+   */
   walkingImages() {
     return Chicken.IMAGES_WALKING;
   }
 
 
-  /** @returns {string} the image of the defeated chicken of this type */
+  /**
+   * Gives the image of a defeated chicken of this type.
+   * @returns {string} the image of the defeated chicken of this type
+   */
   deadImage() {
     return Chicken.IMAGE_DEAD;
   }
 
 
-  /** @returns {number} a random walking speed for this chicken type */
+  /**
+   * Picks a random walking speed for this chicken type.
+   * @returns {number} a random walking speed for this chicken type
+   */
   randomSpeed() {
     return 0.15 + Math.random() * 0.5;
   }

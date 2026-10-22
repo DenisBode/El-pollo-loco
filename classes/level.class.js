@@ -15,6 +15,7 @@ class Level {
 
 
   /**
+   * Creates a level from its objects.
    * @param {Enemy[]} enemies
    * @param {Cloud[]} clouds
    * @param {BackgroundObject[]} backgroundObjects
