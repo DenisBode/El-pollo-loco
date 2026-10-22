@@ -36,6 +36,19 @@ class DrawableObject {
 
 
   /**
+   * Builds the paths of images that are numbered one after the other, e.g. W-21.webp to W-26.webp.
+   * @param {string} folder - with a slash at the end
+   * @param {string} prefix - the letters in front of the number
+   * @param {number} first - the number of the first image
+   * @param {number} last - the number of the last image
+   * @returns {string[]}
+   */
+  static numberedPaths(folder, prefix, first, last) {
+    return Array.from({ length: last - first + 1 }, (_, i) => `${folder}${prefix}${first + i}.webp`);
+  }
+
+
+  /**
    * Returns the shared image of a path. A needed image starts loading at once and is counted by the loading bar
    * (a broken image counts as done, so it cannot block the start for ever); a late image only waits in a list.
    * @param {string} path

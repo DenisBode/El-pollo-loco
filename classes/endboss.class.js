@@ -64,46 +64,15 @@ class Endboss extends Enemy {
     jump: { speed: 3.5, duration: 1500 },
   };
 
-  IMAGES_WALKING = [
-    'img/4_enemie_boss_chicken/1_walk/G1.webp',
-    'img/4_enemie_boss_chicken/1_walk/G2.webp',
-    'img/4_enemie_boss_chicken/1_walk/G3.webp',
-    'img/4_enemie_boss_chicken/1_walk/G4.webp',
-  ];
+  IMAGES_WALKING = DrawableObject.numberedPaths('img/4_enemie_boss_chicken/1_walk/', 'G', 1, 4);
 
-  IMAGES_ALERT = [
-    'img/4_enemie_boss_chicken/2_alert/G5.webp',
-    'img/4_enemie_boss_chicken/2_alert/G6.webp',
-    'img/4_enemie_boss_chicken/2_alert/G7.webp',
-    'img/4_enemie_boss_chicken/2_alert/G8.webp',
-    'img/4_enemie_boss_chicken/2_alert/G9.webp',
-    'img/4_enemie_boss_chicken/2_alert/G10.webp',
-    'img/4_enemie_boss_chicken/2_alert/G11.webp',
-    'img/4_enemie_boss_chicken/2_alert/G12.webp',
-  ];
+  IMAGES_ALERT = DrawableObject.numberedPaths('img/4_enemie_boss_chicken/2_alert/', 'G', 5, 12);
 
-  IMAGES_ATTACK = [
-    'img/4_enemie_boss_chicken/3_attack/G13.webp',
-    'img/4_enemie_boss_chicken/3_attack/G14.webp',
-    'img/4_enemie_boss_chicken/3_attack/G15.webp',
-    'img/4_enemie_boss_chicken/3_attack/G16.webp',
-    'img/4_enemie_boss_chicken/3_attack/G17.webp',
-    'img/4_enemie_boss_chicken/3_attack/G18.webp',
-    'img/4_enemie_boss_chicken/3_attack/G19.webp',
-    'img/4_enemie_boss_chicken/3_attack/G20.webp',
-  ];
+  IMAGES_ATTACK = DrawableObject.numberedPaths('img/4_enemie_boss_chicken/3_attack/', 'G', 13, 20);
 
-  IMAGES_HURT = [
-    'img/4_enemie_boss_chicken/4_hurt/G21.webp',
-    'img/4_enemie_boss_chicken/4_hurt/G22.webp',
-    'img/4_enemie_boss_chicken/4_hurt/G23.webp',
-  ];
+  IMAGES_HURT = DrawableObject.numberedPaths('img/4_enemie_boss_chicken/4_hurt/', 'G', 21, 23);
 
-  IMAGES_DEAD = [
-    'img/4_enemie_boss_chicken/5_dead/G24.webp',
-    'img/4_enemie_boss_chicken/5_dead/G25.webp',
-    'img/4_enemie_boss_chicken/5_dead/G26.webp',
-  ];
+  IMAGES_DEAD = DrawableObject.numberedPaths('img/4_enemie_boss_chicken/5_dead/', 'G', 24, 26);
 
 
   /** Creates the endboss at the end of the level; he is far away, so his images load after the start images. */
