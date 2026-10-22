@@ -299,13 +299,14 @@ class World {
 
   /**
    * Moves Pepe, places the camera and draws one frame; asks for the next frame until the world is stopped.
+   * The camera follows Pepe (he stands 100 px from the left edge) until the last screen, the arena of the endboss.
    * A frame that was requested before the stop must not move Pepe or play sounds any more.
    * @param {number} time - time stamp of the frame (given by requestAnimationFrame)
    */
   draw(time = performance.now()) {
     if (this.stopped) return;
     this.character.handleMovement(this.frameFactor(time));
-    this.cameraX = -this.character.x + 100;
+    this.cameraX = -Math.min(this.character.x - 100, this.level.cameraEndX);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawWorldObjects();
     this.drawOverlays();

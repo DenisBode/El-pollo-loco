@@ -22,9 +22,12 @@ class Endboss extends Enemy {
   actionSince = 0;
   /** The ground height; a jump lifts him from here. */
   baseY = 65;
-  /** The most he moves to the right and to the left (px), so he stays near the end of the level. */
-  arenaRight = 6950;
-  arenaLeft = 5200;
+  /**
+   * The most he moves to the left and to the right (px): the last screen, where the camera stops (see Level.cameraEndX).
+   * On the right he stays fully inside the screen.
+   */
+  arenaLeft = 6350;
+  arenaRight = 6826;
   /** Distance to Pepe under which he starts an attack (px). */
   attackDistance = 500;
   /** Pepe must be further than this from his middle (px) before he turns around or moves towards him. */

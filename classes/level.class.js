@@ -5,7 +5,13 @@ class Level {
   backgroundObjects;
   bottles;
   coins;
-  levelEndX = 6600;
+  /** Pepe cannot run further to the right than this (px). */
+  levelEndX = 6950;
+  /**
+   * The camera stops here (its left edge, px): the last screen is the arena of the endboss, so he stays in view.
+   * The arena reaches from this edge to 720 px further.
+   */
+  cameraEndX = 6350;
 
 
   /**
