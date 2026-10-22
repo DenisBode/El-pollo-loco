@@ -27,6 +27,8 @@ class Endboss extends Enemy {
   arenaLeft = 5200;
   /** Distance to Pepe under which he starts an attack (px). */
   attackDistance = 500;
+  /** Pepe must be further than this from his middle (px) before he turns around or moves towards him. */
+  turnZone = 40;
   /** How high a jump lifts him (px). */
   jumpHeight = 100;
   tumbleStart = null;
@@ -110,7 +112,7 @@ class Endboss extends Enemy {
     let config = Endboss.ACTIONS[this.action];
     let elapsed = Date.now() - this.actionSince;
     if (elapsed >= this.durationOf(config)) return this.chooseNextAction();
-    this.otherDirection = this.target.x > this.x;
+    this.faceTarget();
     this.x += this.directionOfAction() * config.speed * this.rage();
     this.x = Math.min(this.arenaRight, Math.max(this.arenaLeft, this.x));
     this.y = this.baseY - this.jumpLift(elapsed / config.duration);
@@ -136,9 +138,26 @@ class Endboss extends Enemy {
   }
 
 
-  /** @returns {number} 1 to the right, -1 to the left: towards Pepe, or away from him while he backs off */
+  /** @returns {number} how far Pepe's middle is from the middle of the endboss in px; positive when Pepe is on the right */
+  offsetToPepe() {
+    return this.target.x + this.target.width / 2 - (this.x + this.width / 2);
+  }
+
+
+  /** He looks at Pepe. Only when Pepe is clearly on the other side, so he does not flicker while Pepe runs through him. */
+  faceTarget() {
+    let offset = this.offsetToPepe();
+    if (Math.abs(offset) > this.turnZone) this.otherDirection = offset > 0;
+  }
+
+
+  /**
+   * @returns {number} 1 to the right, -1 to the left: towards Pepe, or away from him while he backs off;
+   * 0 while Pepe is in the middle of him, so he does not shake from side to side
+   */
   directionOfAction() {
-    let towardsPepe = this.target.x > this.x ? 1 : -1;
+    let offset = this.offsetToPepe();
+    let towardsPepe = Math.abs(offset) > this.turnZone ? Math.sign(offset) : 0;
     return this.action === 'retreat' ? -towardsPepe : towardsPepe;
   }
 
