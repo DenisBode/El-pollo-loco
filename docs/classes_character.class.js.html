@@ -96,7 +96,7 @@ class Character extends MovableObject {
     'img/2_character_pepe/1_idle/long_idle/I-20.webp',
   ];
 
-  /** Ms of doing nothing until the long idle animation starts. */
+  /** How long Pepe does nothing until the long idle animation starts, in milliseconds (ms). */
   longIdleAfter = 5000;
   lastAction = gameNow();
   lives = 5;
@@ -109,7 +109,7 @@ class Character extends MovableObject {
   isAirborne = false;
   /** After a respawn nothing can hurt Pepe until this time. */
   invulnerableUntil = 0;
-  /** Ms. */
+  /** How long Pepe is invulnerable after a respawn, in milliseconds (ms). */
   invulnerableTime = 3000;
 
   /** Creates Pepe: loads his images, sets his hitbox and starts the gravity and the loops. */
@@ -164,12 +164,18 @@ class Character extends MovableObject {
     }
   }
 
-  /** @returns {boolean} true when the right key is pressed and the end of the level is not reached */
+  /**
+   * Checks if Pepe may run to the right.
+   * @returns {boolean} true when the right key is pressed and the end of the level is not reached
+   */
   canMoveRight() {
     return this.world.keyboard.RIGHT &amp;&amp; this.x &lt; this.world.level.levelEndX;
   }
 
-  /** @returns {boolean} true when the left key is pressed and Pepe is not at the start of the level */
+  /**
+   * Checks if Pepe may run to the left.
+   * @returns {boolean} true when the left key is pressed and Pepe is not at the start of the level
+   */
   canMoveLeft() {
     return this.world.keyboard.LEFT &amp;&amp; this.x > 0;
   }
@@ -200,7 +206,10 @@ class Character extends MovableObject {
     return this.isFalling() &amp;&amp; this.isFootAboveEnemyMiddle(enemy);
   }
 
-  /** @returns {boolean} true while Pepe is in the air and moving downwards */
+  /**
+   * Checks if Pepe is falling; that is the first condition for a stomp.
+   * @returns {boolean} true while Pepe is in the air and moving downwards
+   */
   isFalling() {
     return this.isAboveGround() &amp;&amp; this.speedY &lt; 0;
   }
@@ -223,7 +232,10 @@ class Character extends MovableObject {
     this.speedY = 15;
   }
 
-  /** @returns {boolean} true for a short time after a respawn */
+  /**
+   * Checks if Pepe is still protected after a respawn.
+   * @returns {boolean} true for a short time after a respawn
+   */
   isInvulnerable() {
     return gameNow() &lt; this.invulnerableUntil;
   }
@@ -244,7 +256,10 @@ class Character extends MovableObject {
     }
   }
 
-  /** @returns {boolean} true when Pepe has the maximum number of coins */
+  /**
+   * Counts one more coin for Pepe.
+   * @returns {boolean} true when Pepe has the maximum number of coins
+   */
   collectCoin() {
     this.coins++;
     return this.coins >= this.maxCoins;
@@ -314,7 +329,10 @@ class Character extends MovableObject {
     return !this.isHurt() &amp;&amp; !this.isAboveGround() &amp;&amp; !this.isMoveKeyPressed();
   }
 
-  /** @returns {boolean} true when the left or the right key is pressed */
+  /**
+   * Checks if the player tells Pepe to run.
+   * @returns {boolean} true when the left or the right key is pressed
+   */
   isMoveKeyPressed() {
     return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
   }
@@ -330,7 +348,10 @@ class Character extends MovableObject {
     this.playAnimation(isSleeping ? this.IMAGES_LONG_IDLE : this.IMAGES_IDLE);
   }
 
-  /** @param {boolean} isSleeping - Pepe snores as long as he sleeps */
+  /**
+   * Plays or stops the snoring sound.
+   * @param {boolean} isSleeping - Pepe snores as long as he sleeps
+   */
   playSnoring(isSleeping) {
     if (isSleeping) {
       soundManager.loop('snoring');
@@ -372,12 +393,18 @@ class Character extends MovableObject {
     this.world.hud.updateHealth(this.energy);
   }
 
-  /** @returns {boolean} true when all dead images were shown */
+  /**
+   * Checks if the death animation of Pepe has run through.
+   * @returns {boolean} true when all dead images were shown
+   */
   isDeathAnimationFinished() {
     return this.hasFinishedDeathAnimation(this.IMAGES_DEAD);
   }
 
-  /** @returns {boolean} true when Pepe is dead and has no life left: the game is lost */
+  /**
+   * Checks if the game is lost, which is when Pepe is dead and has no life left.
+   * @returns {boolean} true when Pepe is dead and has no life left: the game is lost
+   */
   isLost() {
     return this.isDead() &amp;&amp; this.lives &lt;= 0 &amp;&amp; this.isDeathAnimationFinished();
   }
@@ -392,13 +419,13 @@ class Character extends MovableObject {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flashThrowButton">flashThrowButton</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#gameNow">gameNow</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadLateAssets">loadLateAssets</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#loadProgress">loadProgress</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#pausedTotal">pausedTotal</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#resetPause">resetPause</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupLayout">setupLayout</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li><li><a href="global.html#updatePauseButton">updatePauseButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="FlyingHeart.html">FlyingHeart</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="ItemCollector.html">ItemCollector</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flashThrowButton">flashThrowButton</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#gameNow">gameNow</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadLateAssets">loadLateAssets</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#loadProgress">loadProgress</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#pausedTotal">pausedTotal</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#resetPause">resetPause</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupLayout">setupLayout</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li><li><a href="global.html#updatePauseButton">updatePauseButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 14:31:46 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 19:41:00 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>
