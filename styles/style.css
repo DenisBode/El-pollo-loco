@@ -1,4 +1,4 @@
-/* Base styles of the game page (desktop). Phones and tablets: mobile.css, fullscreen: fullscreen.css */
+/* Base styles of the game page (desktop). Phones and tablets: mobile.css */
 
 body {
   display: flex;
@@ -158,7 +158,7 @@ html:not(.compact) .menu-side {
   border-color: #fff;
 }
 
-/* Mute and fullscreen button: small square buttons with an icon */
+/* Mute and abort button: small square buttons with an icon, below the canvas */
 .mute-button {
   position: absolute;
   top: calc(100% + 16px);
@@ -199,13 +199,9 @@ html:not(.compact) .menu-side {
   display: block;
 }
 
-/* Next to the mute button below the canvas */
-.fullscreen-button {
-  right: 62px;
-}
-
+/* Next to the mute button */
 .abort-button {
-  right: 124px;
+  right: 62px;
 }
 
 /* Impressum link ---------------------------------------- */

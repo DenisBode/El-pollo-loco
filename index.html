@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="styles/background.css" />
     <link rel="stylesheet" href="styles/style.css" />
     <link rel="stylesheet" href="styles/mobile.css" />
-    <link rel="stylesheet" href="styles/fullscreen.css" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
     <title>El Pollo Loco</title>
     <script src="classes/drawable-object.class.js"></script>
@@ -76,12 +75,6 @@
           <path class="waves" d="M5 5l14 14M19 5L5 19" />
         </svg>
       </button>
-      <!-- Switches the game area to fullscreen and back (hidden if the browser cannot do it) -->
-      <button id="fullscreenButton" class="mute-button fullscreen-button" onclick="toggleFullscreen()" data-i18n-aria="fullscreen" aria-label="Fullscreen" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path class="waves" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
-        </svg>
-      </button>
       <!-- Only on tablets and phones, and only while the game runs -->
       <div id="touchControls" class="touch-controls" oncontextmenu="return false" hidden>
         <div class="touch-group">
@@ -95,7 +88,7 @@
           <button class="touch-button" data-key="SPACE" data-i18n-aria="jumpUp" aria-label="Jump">&uarr;</button>
         </div>
       </div>
-      <!-- Inside the game area, so it is also visible in fullscreen -->
+      <!-- Inside the game area, next to the canvas -->
       <dialog id="infoDialog" class="info-dialog" onclick="closeInfoOnBackdrop(event)">
         <div class="info-content">
           <button class="info-close" onclick="closeInfo()" data-i18n-aria="close" aria-label="Close">&times;</button>

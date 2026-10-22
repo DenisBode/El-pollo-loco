@@ -1,7 +1,12 @@
 /* Phones and tablets: breakpoints, touch buttons, compact layout and the "turn your device" message */
 
-/* Smartphones ----------------------------------------- */
+/* Narrow windows: the canvas fills the width, with a small gap at the sides so the buttons do not touch the edge */
 @media only screen and (max-width: 720px) {
+  body {
+    padding: 0 8px;
+    box-sizing: border-box;
+  }
+
   canvas {
     width: 100%;
   }
@@ -25,9 +30,9 @@
   }
 }
 
-/* Tablets and phones: touch buttons --------------------- */
-@media only screen and (max-width: 1024px), (pointer: coarse) {
-  /* On the canvas, at its lower corners, so they are always there, with or without fullscreen */
+/* Touch devices (tablets and phones): touch buttons; a narrow desktop window does not get them --------------------- */
+@media only screen and (pointer: coarse) {
+  /* On the canvas, at its lower corners, so they are always there */
   .touch-controls {
     position: absolute;
     left: 0;
@@ -79,8 +84,8 @@
   }
 }
 
-/* Portrait mode on tablets and phones: ask to turn the device */
-@media only screen and (orientation: portrait) and (max-width: 1024px) {
+/* Portrait mode on touch devices (tablets and phones): ask to turn the device; a narrow desktop window is no reason */
+@media only screen and (orientation: portrait) and (max-width: 1024px) and (pointer: coarse) {
   .rotate-message {
     position: fixed;
     inset: 0;
@@ -102,7 +107,7 @@
   }
 }
 
-/* Compact layout (set by script.js on the html element): rotated phone or fullscreen.
+/* Compact layout (set by script.js on the html element): rotated phone.
    All buttons sit on top of the game instead of below it. */
 .compact #menuButtons {
   top: auto;
@@ -130,18 +135,14 @@
   padding: 4px;
 }
 
-/* The language buttons would lie under the mute and fullscreen buttons, so they move to the left */
+/* The language buttons would lie under the mute and abort buttons, so they move to the left */
 .compact .language-switch {
   right: auto;
   left: 8px;
 }
 
-.compact .fullscreen-button {
-  right: 52px;
-}
-
 .compact .abort-button {
-  right: 96px;
+  right: 52px;
 }
 
 /* The impressum link moves into the info dialog */

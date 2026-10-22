@@ -11,7 +11,7 @@ let soundManager = new SoundManager();
 let isMuted = loadMuted();
 
 /** The short sounds that are needed right at the start; the long ones follow when the game starts. */
-const START_SOUNDS = ['jump', 'landing', 'footsteps', 'getCoin1', 'getCoin2', 'ouch1', 'ouch2', 'throwBottle', 'bottleHit', 'chickenCluck'];
+const START_SOUNDS = ['jump', 'landing', 'footsteps', 'getCoin1', 'getCoin2', 'getBottle', 'ouch1', 'ouch2', 'throwBottle', 'bottleHit', 'chickenCluck'];
 
 const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
 
@@ -32,7 +32,7 @@ function init() {
   applyLanguage();
   updateMuteButton();
   bindTouchButtons();
-  setupFullscreen();
+  setupLayout();
   startScreen = new StartScreen();
   drawStartScreen(startScreen);
   setTimeout(preloadAssets, 0);
@@ -78,30 +78,16 @@ function clearGameIntervals() {
 }
 
 
-/** Shows the fullscreen button if the browser can do fullscreen and keeps the layout up to date. */
-function setupFullscreen() {
-  document.getElementById('fullscreenButton').hidden = !document.fullscreenEnabled;
+/** Keeps the layout up to date: the compact layout is used on a rotated phone (landscape and low). */
+function setupLayout() {
   compactQuery.addEventListener('change', updateLayout);
-  document.addEventListener('fullscreenchange', updateLayout);
   updateLayout();
 }
 
 
-/** The compact layout (buttons on top of the game) is used on a rotated phone and in fullscreen. */
+/** Sets the class "compact" (buttons on top of the game instead of below it) on the html element. */
 function updateLayout() {
-  let isCompact = compactQuery.matches || !!document.fullscreenElement;
-  document.documentElement.classList.toggle('compact', isCompact);
-}
-
-
-/** Switches the game area (canvas, buttons, touch buttons) to fullscreen or back. */
-function toggleFullscreen() {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  } else {
-    document.querySelector('.game-area').requestFullscreen().catch(() => {});
-  }
-  releaseFocus(document.getElementById('fullscreenButton'));
+  document.documentElement.classList.toggle('compact', compactQuery.matches);
 }
 
 
