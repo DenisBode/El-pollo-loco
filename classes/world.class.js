@@ -245,6 +245,7 @@ class World {
     let canCollect = () => !this.character.isDead() && this.character.bottles < this.character.maxBottles;
     this.level.bottles = this.collectItems(this.level.bottles, canCollect, () => {
       this.character.collectBottle();
+      soundManager.playOverlapping('getBottle');
       this.hud.updateBottles(this.character.bottles, this.character.maxBottles);
     });
   }

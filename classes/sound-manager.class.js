@@ -14,6 +14,7 @@ class SoundManager {
     gameOver: new Audio('audio/game_over.mp3'),
     getCoin1: new Audio('audio/getcoin1.mp3'),
     getCoin2: new Audio('audio/getcoin2.mp3'),
+    getBottle: new Audio('audio/get_bottle.wav'),
     footsteps: new Audio('audio/foodsteps_character.mp3'),
     jump: new Audio('audio/jump_charcter.mp3'),
     landing: new Audio('audio/landing_character.mp3'),
@@ -96,7 +97,16 @@ class SoundManager {
    * @param {string[]} names - keys in effects
    */
   playRandomOverlapping(names) {
-    let original = this.effects[names[Math.floor(Math.random() * names.length)]];
+    this.playOverlapping(names[Math.floor(Math.random() * names.length)]);
+  }
+
+
+  /**
+   * Plays an effect on a copy, so quick repeats do not cut each other off.
+   * @param {string} name - key in effects
+   */
+  playOverlapping(name) {
+    let original = this.effects[name];
     let copy = original.cloneNode();
     copy.volume = original.volume;
     copy.muted = this.isMuted;
