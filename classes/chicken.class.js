@@ -74,6 +74,6 @@ class Chicken extends Enemy {
    * @returns {boolean}
    */
   isRemovable() {
-    return this.isDead() && Date.now() - this.lastHit > 1000;
+    return this.isDead() && gameNow() - this.lastHit > 1000;
   }
 }

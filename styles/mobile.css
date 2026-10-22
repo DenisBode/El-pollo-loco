@@ -141,8 +141,12 @@
   left: 8px;
 }
 
-.compact .abort-button {
+.compact .pause-button {
   right: 52px;
+}
+
+.compact .abort-button {
+  right: 96px;
 }
 
 /* The impressum link moves into the info dialog */

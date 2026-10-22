@@ -29,6 +29,7 @@
     <script src="classes/start-screen.class.js"></script>
     <script src="classes/game-over-screen.class.js"></script>
     <script src="classes/win-screen.class.js"></script>
+    <script src="classes/pause-screen.class.js"></script>
     <script src="classes/level.class.js"></script>
     <script src="classes/keyboard.class.js"></script>
     <script src="classes/sound-manager.class.js"></script>
@@ -67,6 +68,13 @@
           <path class="speaker" d="M3 9v6h4l5 4V5L7 9H3z" />
           <path class="waves" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" />
           <line class="slash" x1="3" y1="3" x2="21" y2="21" />
+        </svg>
+      </button>
+      <!-- Only while the game runs: pauses the game and goes on (also with the key P) -->
+      <button id="pauseButton" class="mute-button pause-button" onclick="togglePause()" data-i18n-aria="pause" aria-label="Pause" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="waves bars" d="M8.5 5v14M15.5 5v14" />
+          <path class="play-icon" d="M8 5v14l11-7z" />
         </svg>
       </button>
       <!-- Only while the game runs: back to the start screen -->

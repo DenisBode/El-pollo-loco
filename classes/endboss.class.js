@@ -118,7 +118,7 @@ class Endboss extends Enemy {
   move() {
     if (this.isDead() || this.state !== 'fighting' || !this.target) return;
     let config = Endboss.ACTIONS[this.action];
-    let elapsed = Date.now() - this.actionSince;
+    let elapsed = gameNow() - this.actionSince;
     if (elapsed >= this.durationOf(config)) return this.chooseNextAction();
     this.faceTarget();
     this.x += this.directionOfAction() * config.speed * this.rage();
@@ -202,7 +202,7 @@ class Endboss extends Enemy {
    */
   startAction(name) {
     this.action = name;
-    this.actionSince = Date.now();
+    this.actionSince = gameNow();
     this.attacking = name === 'charge' || name === 'jump';
     this.y = this.baseY;
     this.setOffset(45, 10, name === 'jump' ? this.airBottomOffset : 14, 22);
@@ -305,8 +305,8 @@ class Endboss extends Enemy {
    * @returns {number}
    */
   tumbleProgress() {
-    this.tumbleStart ??= Date.now();
-    let progress = Math.min(1, (Date.now() - this.tumbleStart) / this.tumbleDuration);
+    this.tumbleStart ??= gameNow();
+    let progress = Math.min(1, (gameNow() - this.tumbleStart) / this.tumbleDuration);
     return 1 - Math.pow(1 - progress, 3);
   }
 

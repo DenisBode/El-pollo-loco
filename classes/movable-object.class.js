@@ -46,7 +46,7 @@ class MovableObject extends DrawableObject {
   hit(damage = 5) {
     if (this.energy > 0) {
       this.energy = Math.max(0, this.energy - damage);
-      this.lastHit = Date.now();
+      this.lastHit = gameNow();
     }
   }
 
@@ -56,7 +56,7 @@ class MovableObject extends DrawableObject {
    * @returns {boolean}
    */
   isHurt() {
-    return Date.now() - this.lastHit < 1000;
+    return gameNow() - this.lastHit < 1000;
   }
 
 

@@ -22,6 +22,8 @@ class SoundManager {
   };
 
   isMuted = false;
+  /** The sounds that were playing when the game was paused. */
+  pausedSounds = [];
 
 
   /**
@@ -136,8 +138,23 @@ class SoundManager {
   }
 
 
+  /** Pauses everything that is playing, the music and the effects; resumeAll goes on at the same place. */
+  pauseAll() {
+    this.pausedSounds = [this.music, ...Object.values(this.effects)].filter((sound) => !sound.paused);
+    this.pausedSounds.forEach((sound) => sound.pause());
+  }
+
+
+  /** Goes on with the sounds that pauseAll paused. */
+  resumeAll() {
+    this.pausedSounds.forEach((sound) => sound.play().catch(() => {}));
+    this.pausedSounds = [];
+  }
+
+
   /** Stops the music and every effect; the next start begins from the beginning. */
   stopAll() {
+    this.pausedSounds = [];
     this.stopMusic();
     Object.keys(this.effects).forEach((name) => this.stop(name));
   }

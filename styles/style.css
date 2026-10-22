@@ -199,9 +199,23 @@ html:not(.compact) .menu-side {
   display: block;
 }
 
-/* Next to the mute button */
-.abort-button {
+/* Next to the mute button: pause first, abort after it */
+.pause-button {
   right: 62px;
+}
+
+.abort-button {
+  right: 124px;
+}
+
+/* The pause button shows the two bars; while the game is paused it shows the play triangle */
+.pause-button .play-icon,
+.pause-button.paused .bars {
+  display: none;
+}
+
+.pause-button.paused .play-icon {
+  display: block;
 }
 
 /* Impressum link ---------------------------------------- */

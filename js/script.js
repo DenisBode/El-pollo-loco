@@ -6,6 +6,10 @@ let isFlipping = false;
 let isPreloaded = false;
 /** Every timer of the game, so stopGame can stop them all. */
 let intervalIds = [];
+let isPaused = false;
+let pausedSince = 0;
+/** All the time the game was paused, in ms, so the game clock can leave it out. */
+let pausedTotal = 0;
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
@@ -59,13 +63,57 @@ function areAssetsReady() {
 
 
 /**
- * Starts an interval of the game; stopGame stops it.
+ * The clock of the game in ms: like Date.now(), but the time of a pause does not count.
+ * So everything that waits for a time (an attack of the endboss, a hurt Pepe) goes on where it stopped.
+ * @returns {number}
+ */
+function gameNow() {
+  return (isPaused ? pausedSince : Date.now()) - pausedTotal;
+}
+
+
+/** Pauses the running game or goes on: the timers stand still, the picture freezes and the sounds are paused. */
+function togglePause() {
+  if (!world || world.gameEnded) return;
+  isPaused = !isPaused;
+  if (isPaused) {
+    pausedSince = Date.now();
+    soundManager.pauseAll();
+  } else {
+    pausedTotal += Date.now() - pausedSince;
+    soundManager.resumeAll();
+  }
+  updatePauseButton();
+  releaseFocus(document.getElementById('pauseButton'));
+}
+
+
+/** Ends a pause without a sound (the game is stopped or restarted). */
+function resetPause() {
+  if (isPaused) pausedTotal += Date.now() - pausedSince;
+  isPaused = false;
+  updatePauseButton();
+}
+
+
+/** Shows the pause or the play symbol on the pause button. */
+function updatePauseButton() {
+  let button = document.getElementById('pauseButton');
+  button.classList.toggle('paused', isPaused);
+  button.setAttribute('aria-pressed', isPaused);
+}
+
+
+/**
+ * Starts an interval of the game; stopGame stops it. It does nothing while the game is paused.
  * @param {Function} callback
  * @param {number} delay - in milliseconds
  * @returns {number} the interval id
  */
 function setGameInterval(callback, delay) {
-  let id = setInterval(callback, delay);
+  let id = setInterval(() => {
+    if (!isPaused) callback();
+  }, delay);
   intervalIds.push(id);
   return id;
 }
@@ -172,6 +220,7 @@ function startGame() {
 function beginGame() {
   DrawableObject.loadLazyImages();
   document.getElementById('abortButton').hidden = false;
+  document.getElementById('pauseButton').hidden = false;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = false;
   initLevel();
@@ -183,12 +232,14 @@ function beginGame() {
 /** Shows the buttons for restart and leaving after the game is won or lost. */
 function showEndButtons() {
   document.getElementById('abortButton').hidden = true;
+  document.getElementById('pauseButton').hidden = true;
   document.getElementById('endButtons').hidden = false;
 }
 
 
 /** Stops the running game completely: drawing loop, all intervals and all sounds. */
 function stopGame() {
+  resetPause();
   world.stop();
   clearGameIntervals();
   world = null;
@@ -208,6 +259,7 @@ function restartGame() {
 function leaveGame() {
   stopGame();
   document.getElementById('abortButton').hidden = true;
+  document.getElementById('pauseButton').hidden = true;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = true;
   document.getElementById('menuButtons').hidden = false;
@@ -317,5 +369,8 @@ function setKey(event, isPressed) {
 }
 
 
-window.addEventListener('keydown', (event) => setKey(event, true));
+window.addEventListener('keydown', (event) => {
+  if (event.key.toLowerCase() === 'p' && !event.repeat) togglePause();
+  setKey(event, true);
+});
 window.addEventListener('keyup', (event) => setKey(event, false));

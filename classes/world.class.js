@@ -5,10 +5,13 @@ class World {
   hud = new Hud(this.character.lives);
   gameOverScreen = new GameOverScreen();
   winScreen = new WinScreen();
+  pauseScreen = new PauseScreen();
   throwableObjects = [];
   throwKeyPressed = false;
   gameWon = false;
   gameEnded = false;
+  /** True when the pause screen is already on the canvas, so it is not drawn again and again over itself. */
+  isPauseDrawn = false;
   stopped = false;
   cameraX = 0;
   ctx;
@@ -306,11 +309,22 @@ class World {
    */
   draw(time = performance.now()) {
     if (this.stopped) return;
+    if (isPaused) return this.drawPause();
+    this.isPauseDrawn = false;
     this.character.handleMovement(this.frameFactor(time));
     this.cameraX = -Math.min(this.character.x - 100, this.level.cameraEndX);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawWorldObjects();
     this.drawOverlays();
+    requestAnimationFrame((nextTime) => this.draw(nextTime));
+  }
+
+
+  /** While the game is paused the picture stays as it is; the pause screen is drawn once over it. */
+  drawPause() {
+    if (!this.isPauseDrawn) this.pauseScreen.render(this.ctx);
+    this.isPauseDrawn = true;
+    this.lastFrameTime = 0;
     requestAnimationFrame((nextTime) => this.draw(nextTime));
   }
 

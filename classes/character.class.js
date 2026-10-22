@@ -70,7 +70,7 @@ class Character extends MovableObject {
 
   /** Ms of doing nothing until the long idle animation starts. */
   longIdleAfter = 5000;
-  lastAction = Date.now();
+  lastAction = gameNow();
   lives = 5;
   bottles = 0;
   maxBottles = 5;
@@ -197,7 +197,7 @@ class Character extends MovableObject {
 
   /** @returns {boolean} true for a short time after a respawn */
   isInvulnerable() {
-    return Date.now() < this.invulnerableUntil;
+    return gameNow() < this.invulnerableUntil;
   }
 
   /**
@@ -230,7 +230,7 @@ class Character extends MovableObject {
     }
     this.playMovementSounds();
     this.playMovementAnimation();
-    if (!this.isIdle() || this.world.keyboard.D) this.lastAction = Date.now();
+    if (!this.isIdle() || this.world.keyboard.D) this.lastAction = gameNow();
   }
 
   /** Hurt images come first, then the jump images in the air, then the walking images while a key is pressed. */
@@ -297,7 +297,7 @@ class Character extends MovableObject {
       soundManager.stop('snoring');
       return;
     }
-    let isSleeping = Date.now() - this.lastAction > this.longIdleAfter;
+    let isSleeping = gameNow() - this.lastAction > this.longIdleAfter;
     this.playSnoring(isSleeping);
     this.playAnimation(isSleeping ? this.IMAGES_LONG_IDLE : this.IMAGES_IDLE);
   }
@@ -339,8 +339,8 @@ class Character extends MovableObject {
     this.y = -this.height;
     this.speedY = 0;
     this.hasJumped = true;
-    this.lastAction = Date.now();
-    this.invulnerableUntil = Date.now() + this.invulnerableTime;
+    this.lastAction = gameNow();
+    this.invulnerableUntil = gameNow() + this.invulnerableTime;
     this.world.hud.updateHealth(this.energy);
   }
 
