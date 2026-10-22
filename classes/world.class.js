@@ -152,6 +152,7 @@ class World {
   }
 
 
+  /** Throws a bottle in the direction Pepe looks, plays the sound and updates the bottle bar. */
   throwBottle() {
     let direction = this.character.otherDirection ? -1 : 1;
     let x = direction === 1 ? this.character.x + 60 : this.character.x - 20;
@@ -162,13 +163,13 @@ class World {
   }
 
 
-  /** A hit bottle disappears, a missed bottle stays lying on the ground where it landed. */
+  /** A hit bottle splashes and then disappears, a missed bottle stays lying on the ground where it landed. */
   updateThrownBottles() {
     this.throwableObjects.forEach((thrown) => {
       if (!thrown.landed && !thrown.hasHit) this.checkBottleHit(thrown);
       if (thrown.landed) this.dropBottle(thrown.x);
     });
-    this.throwableObjects = this.throwableObjects.filter((thrown) => !thrown.landed && !thrown.hasHit);
+    this.throwableObjects = this.throwableObjects.filter((thrown) => !thrown.isFinished());
     this.level.enemies = this.level.enemies.filter((enemy) => !enemy.isRemovable());
   }
 
@@ -294,10 +295,11 @@ class World {
 
   /**
    * Moves Pepe, places the camera and draws one frame; asks for the next frame until the world is stopped.
+   * A frame that was requested before the stop must not move Pepe or play sounds any more.
    * @param {number} time - time stamp of the frame (given by requestAnimationFrame)
    */
   draw(time = performance.now()) {
-    if (this.stopped) return; // a frame that was already requested must not move Pepe or play sounds after the stop
+    if (this.stopped) return;
     this.character.handleMovement(this.frameFactor(time));
     this.cameraX = -this.character.x + 100;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
