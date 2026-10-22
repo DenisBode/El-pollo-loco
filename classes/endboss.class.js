@@ -29,8 +29,13 @@ class Endboss extends Enemy {
   attackDistance = 500;
   /** Pepe must be further than this from his middle (px) before he turns around or moves towards him. */
   turnZone = 40;
-  /** How high a jump lifts him (px). */
-  jumpHeight = 100;
+  /**
+   * How high a jump lifts him (px). It has to be high enough that his feet are above Pepe's head
+   * (the top of Pepe's hitbox is 110 px below the top of his image), so Pepe can run underneath.
+   */
+  jumpHeight = 170;
+  /** In the air the hitbox ends higher, at his body: the dangling feet do not hurt Pepe (offset at the bottom, px). */
+  airBottomOffset = 60;
   tumbleStart = null;
   /** Ms. */
   tumbleDuration = 1800;
@@ -50,7 +55,7 @@ class Endboss extends Enemy {
     charge: { speed: 6, duration: 900 },
     retreat: { speed: 3, duration: 1100 },
     rest: { speed: 0, duration: 700 },
-    jump: { speed: 5, duration: 1000 },
+    jump: { speed: 4.5, duration: 1100 },
   };
 
   IMAGES_WALKING = [
@@ -197,6 +202,7 @@ class Endboss extends Enemy {
     this.actionSince = Date.now();
     this.attacking = name === 'charge' || name === 'jump';
     this.y = this.baseY;
+    this.setOffset(45, 10, name === 'jump' ? this.airBottomOffset : 14, 22);
   }
 
 
