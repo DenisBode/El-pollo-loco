@@ -5,9 +5,9 @@
  */
 class Endboss extends Enemy {
   hasFrame = true;
-  height = 400;
-  width = 250;
-  y = 55;
+  height = 390;
+  width = 244;
+  y = 65;
   /** Five bottles kill the endboss. */
   bottleDamage = 20;
   /** Waiting -> alert -> fighting. */
@@ -21,7 +21,7 @@ class Endboss extends Enemy {
   action = 'walk';
   actionSince = 0;
   /** The ground height; a jump lifts him from here. */
-  baseY = 55;
+  baseY = 65;
   /** The most he moves to the right and to the left (px), so he stays near the end of the level. */
   arenaRight = 6950;
   arenaLeft = 5200;
@@ -55,7 +55,7 @@ class Endboss extends Enemy {
     charge: { speed: 6, duration: 900 },
     retreat: { speed: 3, duration: 1100 },
     rest: { speed: 0, duration: 700 },
-    jump: { speed: 4.5, duration: 1100 },
+    jump: { speed: 3.5, duration: 1500 },
   };
 
   IMAGES_WALKING = [
