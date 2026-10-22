@@ -56,6 +56,8 @@ class World {
     this.onGameEnd = onGameEnd;
     this.ctx = canvas.getContext('2d');
     this.character.world = this;
+    this.level.start();
+    if (this.endboss) this.endboss.target = this.character;
     this.draw();
     this.run();
   }
@@ -63,9 +65,9 @@ class World {
 
   /** Starts the loops for throwing, collisions and new bottles. */
   run() {
-    setInterval(() => this.runFastChecks(), 1000 / 60);
-    setInterval(() => this.runChecks(), 200);
-    setInterval(() => this.spawnBottle(), 5000);
+    setGameInterval(() => this.runFastChecks(), 1000 / 60);
+    setGameInterval(() => this.runChecks(), 200);
+    setGameInterval(() => this.spawnBottle(), 5000);
   }
 
 
@@ -75,11 +77,13 @@ class World {
   }
 
 
-  /** Checks that must be quick: Pepe falls fast, so a stomp would be missed at five checks a second. */
+  /** Checks that must be quick: Pepe falls and runs fast, so a stomp or a coin would be missed at five checks a second. */
   runFastChecks() {
     this.checkThrowObjects();
     this.checkStomp();
     this.checkSelfHit();
+    this.checkBottleCollisions();
+    this.checkCoinCollisions();
   }
 
 
@@ -112,20 +116,25 @@ class World {
   /** Pepe jumping onto a stompable enemy from above defeats it and bounces off. */
   checkStomp() {
     if (this.character.isDead() || this.gameWon) return;
-    let enemy = this.level.enemies.find(
-      (e) => e.canBeStomped &amp;&amp; !e.isDead() &amp;&amp; this.character.isColliding(e) &amp;&amp; this.character.isStomping(e),
-    );
+    let enemy = this.level.enemies.find((e) => this.canStomp(e));
     if (!enemy) return;
     enemy.hit(enemy.stompDamage);
     this.character.bounce();
   }
 
 
+  /**
+   * @param {Enemy} enemy
+   * @returns {boolean} true when the enemy can be stomped, is alive and Pepe falls onto it
+   */
+  canStomp(enemy) {
+    return enemy.canBeStomped &amp;&amp; !enemy.isDead() &amp;&amp; this.character.isColliding(enemy) &amp;&amp; this.character.isStomping(enemy);
+  }
+
+
   /** All checks that need to run only five times a second. */
   runChecks() {
     this.checkEnemyCollisions();
-    this.checkBottleCollisions();
-    this.checkCoinCollisions();
     this.checkEndboss();
     this.checkChickensInView();
     this.checkGameEnd();
@@ -172,6 +181,7 @@ class World {
   }
 
 
+  /** Throws a bottle in the direction Pepe looks, plays the sound and updates the bottle bar. */
   throwBottle() {
     let direction = this.character.otherDirection ? -1 : 1;
     let x = direction === 1 ? this.character.x + 60 : this.character.x - 20;
@@ -182,13 +192,13 @@ class World {
   }
 
 
-  /** A hit bottle disappears, a missed bottle stays lying on the ground where it landed. */
+  /** A hit bottle splashes and then disappears, a missed bottle stays lying on the ground where it landed. */
   updateThrownBottles() {
     this.throwableObjects.forEach((thrown) => {
       if (!thrown.landed &amp;&amp; !thrown.hasHit) this.checkBottleHit(thrown);
       if (thrown.landed) this.dropBottle(thrown.x);
     });
-    this.throwableObjects = this.throwableObjects.filter((thrown) => !thrown.landed &amp;&amp; !thrown.hasHit);
+    this.throwableObjects = this.throwableObjects.filter((thrown) => !thrown.isFinished());
     this.level.enemies = this.level.enemies.filter((enemy) => !enemy.isRemovable());
   }
 
@@ -221,11 +231,24 @@ class World {
   /** Every living enemy that touches Pepe hurts him. */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
-      if (!this.gameWon &amp;&amp; !this.character.isDead() &amp;&amp; !enemy.isDead() &amp;&amp; this.character.isColliding(enemy)) {
+      if (this.canHurtPepe(enemy)) {
         this.character.hit();
         this.hud.updateHealth(this.character.energy);
       }
     });
+  }
+
+
+  /**
+   * An enemy hurts Pepe when both are alive, the game is not won and they touch each other.
+   * Not while Pepe is stomping it: the stomp check runs more often, so it wins.
+   * @param {Enemy} enemy
+   * @returns {boolean}
+   */
+  canHurtPepe(enemy) {
+    let isGameOn = !this.gameWon &amp;&amp; !this.character.isDead();
+    let isStomped = enemy.canBeStomped &amp;&amp; this.character.isStomping(enemy);
+    return isGameOn &amp;&amp; !enemy.isDead() &amp;&amp; this.character.isColliding(enemy) &amp;&amp; !isStomped;
   }
 
 
@@ -255,23 +278,25 @@ class World {
   }
 
 
-  /** Collects coins; a full coin bar refills the health and starts again. */
+  /** Collects coins; a full coin bar gives Pepe a life and full health and starts again. */
   checkCoinCollisions() {
     this.level.coins = this.collectItems(this.level.coins, () => !this.character.isDead(), () => {
       soundManager.playRandomOverlapping(['getCoin1', 'getCoin2']);
       let isFull = this.character.collectCoin();
       this.hud.updateCoins(this.character.coins, this.character.maxCoins);
-      if (isFull) this.refillHealth();
+      if (isFull) this.rewardFullCoinBar();
     });
   }
 
 
-  /** Gives Pepe full health and empties the coin bar after a short moment. */
-  refillHealth() {
+  /** Gives Pepe an extra life and full health and empties the coin bar after a short moment. */
+  rewardFullCoinBar() {
     this.character.energy = 100;
+    this.character.lives++;
     this.hud.updateHealth(100);
+    this.hud.updateLives(this.character.lives);
     this.character.coins = 0;
-    setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500);
+    intervalIds.push(setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500));
   }
 
 
@@ -283,7 +308,6 @@ class World {
       this.hud.showEndbossBar();
       boss.startAlert();
     }
-    boss.updateAttack(this.character);
     if (boss.isDead() &amp;&amp; boss.isDeathAnimationFinished()) this.gameWon = true;
   }
 
@@ -303,15 +327,16 @@ class World {
 
   /**
    * Moves Pepe, places the camera and draws one frame; asks for the next frame until the world is stopped.
+   * A frame that was requested before the stop must not move Pepe or play sounds any more.
    * @param {number} time - time stamp of the frame (given by requestAnimationFrame)
    */
   draw(time = performance.now()) {
+    if (this.stopped) return;
     this.character.handleMovement(this.frameFactor(time));
     this.cameraX = -this.character.x + 100;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawWorldObjects();
     this.drawOverlays();
-    if (this.stopped) return;
     requestAnimationFrame((nextTime) => this.draw(nextTime));
   }
 
@@ -369,13 +394,13 @@ class World {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 10:20:48 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>

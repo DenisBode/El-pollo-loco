@@ -28,8 +28,19 @@
         <article>
             <pre class="prettyprint source linenums"><code>/** The start screen; the 16:9 image is squeezed to the 3:2 canvas, so the whole image stays visible. */
 class StartScreen extends DrawableObject {
+  /** Ms, so the bar is always visible, even when everything is loaded at once. */
+  static MIN_LOADING_TIME = 1500;
+
+  /** true = the back side of the canvas (the story) is shown instead of the start image. */
+  showsStory = false;
+  /** True from the click on Start until the canvas turns around to the game. */
+  isLoading = false;
+  loadingSince = 0;
+
+
+  /** Creates the start screen: the start image fills the whole canvas. */
   constructor() {
-    super().loadImage('img/9_intro_outro_screens/start/startscreen_1.png');
+    super().loadImage('img/9_intro_outro_screens/start/startscreen_1.webp');
     this.x = 0;
     this.y = 0;
     this.width = 720;
@@ -37,6 +48,116 @@ class StartScreen extends DrawableObject {
   }
 
 
+  /**
+   * Draws the start image, or the story on a dark panel if the canvas is turned around.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  draw(ctx) {
+    super.draw(ctx);
+    if (this.showsStory) this.drawStory(ctx);
+    else if (this.isLoading) this.drawLoadingBar(ctx);
+  }
+
+
+  /** Shows the loading bar; the game starts when it is full. */
+  startLoading() {
+    this.showsStory = false;
+    this.isLoading = true;
+    this.loadingSince = Date.now();
+  }
+
+
+  /** @returns {number} the progress shown in the bar: the real progress, but not faster than the minimum time allows */
+  shownProgress() {
+    return Math.min(DrawableObject.loadProgress(), (Date.now() - this.loadingSince) / StartScreen.MIN_LOADING_TIME);
+  }
+
+
+  /** @returns {boolean} true when the bar is full and all images are ready */
+  isLoadingDone() {
+    return this.isLoading &amp;&amp; areAssetsReady() &amp;&amp; this.shownProgress() >= 1;
+  }
+
+
+  /**
+   * A small, soft bar with the percentage at the bottom of the start image, as long as the images are loading.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  drawLoadingBar(ctx) {
+    let progress = this.shownProgress();
+    this.fillRounded(ctx, 190, 412, 340, 52, 14, 'rgba(40, 14, 4, 0.6)');
+    this.drawLoadingText(ctx, progress);
+    this.fillRounded(ctx, 210, 447, 300, 8, 4, 'rgba(255, 255, 255, 0.2)');
+    this.fillRounded(ctx, 210, 447, Math.max(8, 300 * progress), 8, 4, '#ffd500');
+  }
+
+
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} progress - from 0 to 1
+   */
+  drawLoadingText(ctx, progress) {
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffd500';
+    ctx.font = '20px Zabars, Arial, sans-serif';
+    ctx.fillText(`${t('loading')} ${Math.round(progress * 100)} %`, 360, 435);
+    ctx.textAlign = 'start';
+  }
+
+
+  /**
+   * Fills a rectangle with rounded corners.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   * @param {string} color
+   */
+  fillRounded(ctx, x, y, width, height, radius, color) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, width, height, radius);
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+
+  /**
+   * Yellow title and cream text on a brown panel, matching the colors of the game.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  drawStory(ctx) {
+    ctx.fillStyle = 'rgba(40, 14, 4, 0.94)';
+    ctx.fillRect(0, 0, this.width, this.height);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffd500';
+    ctx.font = '48px Zabars, Arial, sans-serif';
+    ctx.fillText(t('storyTitle'), 360, 90);
+    ctx.fillStyle = '#f5e6c8';
+    ctx.font = '24px Arial, sans-serif';
+    this.wrapText(ctx, t('storyText'), 600).forEach((line, i) => ctx.fillText(line, 360, 160 + i * 36));
+    ctx.textAlign = 'start';
+  }
+
+
+  /**
+   * Splits a text into lines that are not wider than the given width.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {string} text
+   * @param {number} maxWidth - in pixels
+   * @returns {string[]}
+   */
+  wrapText(ctx, text, maxWidth) {
+    let lines = [''];
+    text.split(' ').forEach((word) => {
+      let line = lines[lines.length - 1];
+      let extended = line ? line + ' ' + word : word;
+      if (line &amp;&amp; ctx.measureText(extended).width > maxWidth) lines.push(word);
+      else lines[lines.length - 1] = extended;
+    });
+    return lines;
+  }
 }
 </code></pre>
         </article>
@@ -48,13 +169,13 @@ class StartScreen extends DrawableObject {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 10:20:48 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -33,17 +33,18 @@ class StatusBar extends DrawableObject {
 
 
   /**
-   * Builds the six image paths of a bar: folder + prefix + 0/20/40/60/80/100 + .png
+   * Builds the six image paths of a bar: folder + prefix + 0/20/40/60/80/100 + .webp
    * @param {string} folder
    * @param {string} prefix
    * @returns {string[]}
    */
   static imagePaths(folder, prefix = '') {
-    return [0, 20, 40, 60, 80, 100].map((percent) => `${folder}${prefix}${percent}.png`);
+    return [0, 20, 40, 60, 80, 100].map((percent) => `${folder}${prefix}${percent}.webp`);
   }
 
 
   /**
+   * Creates a bar; its size keeps the ratio of the images, which is 4 : 1.
    * @param {string[]} images - the six images of the bar
    * @param {number} x
    * @param {number} y
@@ -56,7 +57,7 @@ class StatusBar extends DrawableObject {
     this.x = x;
     this.y = y;
     this.width = 160;
-    this.height = 40; // the images are 4 : 1
+    this.height = 40;
     this.setPercentage(percentage);
   }
 
@@ -74,25 +75,15 @@ class StatusBar extends DrawableObject {
    * @returns {number}
    */
   resolveImageIndex() {
-    if (this.percentage > 80) {
-      return 5;
-    } else if (this.percentage > 60) {
-      return 4;
-    } else if (this.percentage > 40) {
-      return 3;
-    } else if (this.percentage > 20) {
-      return 2;
-    } else if (this.percentage > 0) {
-      return 1;
-    } else {
-      return 0;
-    }
+    if (this.percentage &lt;= 0) return 0;
+    return Math.min(5, Math.ceil(this.percentage / 20));
   }
 }
 
 
 /** The health bar of Pepe (starts full). */
 class HealthStatusBar extends StatusBar {
+  /** Creates the green health bar at the top left. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/1_statusbar/2_statusbar_health/green/'), 20, 0, 100);
   }
@@ -101,6 +92,7 @@ class HealthStatusBar extends StatusBar {
 
 /** The coin bar (starts empty). */
 class CoinStatusBar extends StatusBar {
+  /** Creates the orange coin bar under the health bar. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/1_statusbar/1_statusbar_coin/orange/'), 20, 45, 0);
   }
@@ -109,17 +101,19 @@ class CoinStatusBar extends StatusBar {
 
 /** The bottle bar (starts empty). */
 class BottleStatusBar extends StatusBar {
+  /** Creates the blue bottle bar under the coin bar. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/'), 20, 90, 0);
   }
 }
 
 
-/** The endboss bar: bigger, at the bottom right, and blinking when he is almost defeated. */
+/** The endboss bar: bigger, at the bottom in the middle (the touch buttons sit in the corners), and blinking when he is almost defeated. */
 class EndbossStatusBar extends StatusBar {
+  /** Creates the endboss bar; it is bigger than the other bars, but has the same 4 : 1 ratio. */
   constructor() {
-    super(StatusBar.imagePaths('img/7_statusbars/2_statusbar_endboss/orange/', 'orange'), 460, 410, 100);
-    this.width = 240; // bigger than the other bars, same 4 : 1 ratio
+    super(StatusBar.imagePaths('img/7_statusbars/2_statusbar_endboss/orange/', 'orange'), 240, 410, 100);
+    this.width = 240;
     this.height = 60;
   }
 
@@ -145,13 +139,13 @@ class EndbossStatusBar extends StatusBar {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 10:20:48 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>

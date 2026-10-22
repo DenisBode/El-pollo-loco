@@ -27,88 +27,185 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * The endboss: waits until he is seen, shows an alert, then walks and attacks when Pepe is close.
+ * The endboss: waits until he is seen and shows an alert. Then he fights: he walks up to Pepe, charges at him,
+ * backs off, rests, and sometimes jumps. The less energy he has, the faster and angrier he gets.
  * After his death he tumbles and comes to rest on the ground.
  */
 class Endboss extends Enemy {
+  hasFrame = true;
   height = 400;
   width = 250;
   y = 55;
-  bottleDamage = 20; // five bottles kill the endboss
-  state = 'waiting'; // waiting -> alert -> walking
+  /** Five bottles kill the endboss. */
+  bottleDamage = 20;
+  /** Waiting -> alert -> fighting. */
+  state = 'waiting';
   alertFrame = 0;
+  /** True while he charges or jumps: the attack images are shown. */
   attacking = false;
-  attackSpeedFactor = 3; // while attacking he runs 3 times faster
-  attackDistance = 350; // the attack starts when Pepe is closer than this (px)
+  /** The character he fights (set by the world). */
+  target;
+  /** The current move of the fight: one of the keys of Endboss.ACTIONS. */
+  action = 'walk';
+  actionSince = 0;
+  /** The ground height; a jump lifts him from here. */
+  baseY = 55;
+  /** The most he moves to the right and to the left (px), so he stays near the end of the level. */
+  arenaRight = 6950;
+  arenaLeft = 5200;
+  /** Distance to Pepe under which he starts an attack (px). */
+  attackDistance = 500;
+  /** How high a jump lifts him (px). */
+  jumpHeight = 100;
   tumbleStart = null;
-  tumbleDuration = 1800; // ms
-  lyingAngle = 1010; // two full turns plus 290 degrees
-  lyingScale = 0.8; // he shrinks a bit while falling
-  groundY = 500; // the image box ends below the visible body, so this is deeper than Pepe's lower edge
+  /** Ms. */
+  tumbleDuration = 1800;
+  /** Two full turns plus 290 degrees. */
+  lyingAngle = 1010;
+  /** He shrinks a bit while falling. */
+  lyingScale = 0.8;
+  /** The image box ends below the visible body, so this is deeper than Pepe's lower edge. */
+  groundY = 500;
+
+  /**
+   * The moves of the fight: speed in px per step (60 steps a second) and duration in ms.
+   * Charging is slower than Pepe (10 px per step), so he can always run away.
+   */
+  static ACTIONS = {
+    walk: { speed: 2.5, duration: 1600 },
+    charge: { speed: 6, duration: 900 },
+    retreat: { speed: 3, duration: 1100 },
+    rest: { speed: 0, duration: 700 },
+    jump: { speed: 5, duration: 1000 },
+  };
 
   IMAGES_WALKING = [
-    'img/4_enemie_boss_chicken/1_walk/G1.png',
-    'img/4_enemie_boss_chicken/1_walk/G2.png',
-    'img/4_enemie_boss_chicken/1_walk/G3.png',
-    'img/4_enemie_boss_chicken/1_walk/G4.png',
+    'img/4_enemie_boss_chicken/1_walk/G1.webp',
+    'img/4_enemie_boss_chicken/1_walk/G2.webp',
+    'img/4_enemie_boss_chicken/1_walk/G3.webp',
+    'img/4_enemie_boss_chicken/1_walk/G4.webp',
   ];
 
   IMAGES_ALERT = [
-    'img/4_enemie_boss_chicken/2_alert/G5.png',
-    'img/4_enemie_boss_chicken/2_alert/G6.png',
-    'img/4_enemie_boss_chicken/2_alert/G7.png',
-    'img/4_enemie_boss_chicken/2_alert/G8.png',
-    'img/4_enemie_boss_chicken/2_alert/G9.png',
-    'img/4_enemie_boss_chicken/2_alert/G10.png',
-    'img/4_enemie_boss_chicken/2_alert/G11.png',
-    'img/4_enemie_boss_chicken/2_alert/G12.png',
+    'img/4_enemie_boss_chicken/2_alert/G5.webp',
+    'img/4_enemie_boss_chicken/2_alert/G6.webp',
+    'img/4_enemie_boss_chicken/2_alert/G7.webp',
+    'img/4_enemie_boss_chicken/2_alert/G8.webp',
+    'img/4_enemie_boss_chicken/2_alert/G9.webp',
+    'img/4_enemie_boss_chicken/2_alert/G10.webp',
+    'img/4_enemie_boss_chicken/2_alert/G11.webp',
+    'img/4_enemie_boss_chicken/2_alert/G12.webp',
   ];
 
   IMAGES_ATTACK = [
-    'img/4_enemie_boss_chicken/3_attack/G13.png',
-    'img/4_enemie_boss_chicken/3_attack/G14.png',
-    'img/4_enemie_boss_chicken/3_attack/G15.png',
-    'img/4_enemie_boss_chicken/3_attack/G16.png',
-    'img/4_enemie_boss_chicken/3_attack/G17.png',
-    'img/4_enemie_boss_chicken/3_attack/G18.png',
-    'img/4_enemie_boss_chicken/3_attack/G19.png',
-    'img/4_enemie_boss_chicken/3_attack/G20.png',
+    'img/4_enemie_boss_chicken/3_attack/G13.webp',
+    'img/4_enemie_boss_chicken/3_attack/G14.webp',
+    'img/4_enemie_boss_chicken/3_attack/G15.webp',
+    'img/4_enemie_boss_chicken/3_attack/G16.webp',
+    'img/4_enemie_boss_chicken/3_attack/G17.webp',
+    'img/4_enemie_boss_chicken/3_attack/G18.webp',
+    'img/4_enemie_boss_chicken/3_attack/G19.webp',
+    'img/4_enemie_boss_chicken/3_attack/G20.webp',
   ];
 
   IMAGES_HURT = [
-    'img/4_enemie_boss_chicken/4_hurt/G21.png',
-    'img/4_enemie_boss_chicken/4_hurt/G22.png',
-    'img/4_enemie_boss_chicken/4_hurt/G23.png',
+    'img/4_enemie_boss_chicken/4_hurt/G21.webp',
+    'img/4_enemie_boss_chicken/4_hurt/G22.webp',
+    'img/4_enemie_boss_chicken/4_hurt/G23.webp',
   ];
 
   IMAGES_DEAD = [
-    'img/4_enemie_boss_chicken/5_dead/G24.png',
-    'img/4_enemie_boss_chicken/5_dead/G25.png',
-    'img/4_enemie_boss_chicken/5_dead/G26.png',
+    'img/4_enemie_boss_chicken/5_dead/G24.webp',
+    'img/4_enemie_boss_chicken/5_dead/G25.webp',
+    'img/4_enemie_boss_chicken/5_dead/G26.webp',
   ];
 
 
+  /** Creates the endboss at the end of the level; he is far away, so his images load after the start images. */
   constructor() {
-    super().loadImage(this.IMAGES_WALKING[0]);
-    this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_ALERT);
-    this.loadImages(this.IMAGES_ATTACK);
-    this.loadImages(this.IMAGES_HURT);
-    this.loadImages(this.IMAGES_DEAD);
+    super().loadImage(this.IMAGES_WALKING[0], false);
+    [this.IMAGES_WALKING, this.IMAGES_ALERT, this.IMAGES_ATTACK, this.IMAGES_HURT, this.IMAGES_DEAD].forEach((images) =>
+      this.loadImages(images, false),
+    );
+    this.setOffset(45, 10, 14, 22);
     this.x = 6800;
-    this.speed = 0.15 + Math.random() * 0.3;
-    this.animate();
   }
 
 
-  /** Walks only after the alert; while attacking he is faster. */
+  /** One step of the fight, 60 times a second: he does his current move until its time is over. */
   move() {
-    if (this.isDead() || this.state !== 'walking') return;
-    if (this.attacking) {
-      this.x -= this.speed * this.attackSpeedFactor;
-    } else {
-      this.moveLeft();
-    }
+    if (this.isDead() || this.state !== 'fighting' || !this.target) return;
+    let config = Endboss.ACTIONS[this.action];
+    let elapsed = Date.now() - this.actionSince;
+    if (elapsed >= this.durationOf(config)) return this.chooseNextAction();
+    this.otherDirection = this.target.x > this.x;
+    this.x += this.directionOfAction() * config.speed * this.rage();
+    this.x = Math.min(this.arenaRight, Math.max(this.arenaLeft, this.x));
+    this.y = this.baseY - this.jumpLift(elapsed / config.duration);
+  }
+
+
+  /**
+   * How angry he is: 1 with full energy, up to 1.5 when he is almost defeated.
+   * @returns {number}
+   */
+  rage() {
+    return 1 + (1 - this.energy / 100) * 0.5;
+  }
+
+
+  /**
+   * The angrier he is, the shorter he rests.
+   * @param {{speed: number, duration: number}} config
+   * @returns {number} the duration of the move in ms
+   */
+  durationOf(config) {
+    return this.action === 'rest' ? config.duration / this.rage() : config.duration;
+  }
+
+
+  /** @returns {number} 1 to the right, -1 to the left: towards Pepe, or away from him while he backs off */
+  directionOfAction() {
+    let towardsPepe = this.target.x > this.x ? 1 : -1;
+    return this.action === 'retreat' ? -towardsPepe : towardsPepe;
+  }
+
+
+  /**
+   * @param {number} progress - how much of the move is done, from 0 to 1
+   * @returns {number} the height of the jump in px; 0 for every move except the jump
+   */
+  jumpLift(progress) {
+    return this.action === 'jump' ? this.jumpHeight * Math.sin(Math.PI * progress) : 0;
+  }
+
+
+  /** Charge and jump are followed by a retreat or a rest; after that he picks a new attack. */
+  chooseNextAction() {
+    let next = { charge: 'retreat', retreat: 'rest', jump: 'rest' }[this.action];
+    this.startAction(next || this.pickAttack(Math.abs(this.target.x - this.x)));
+  }
+
+
+  /**
+   * He walks up to Pepe first; when close, he charges or (in two of five cases) jumps.
+   * @param {number} distance - to Pepe in px
+   * @returns {string} the name of the move
+   */
+  pickAttack(distance) {
+    if (distance > this.attackDistance) return 'walk';
+    return Math.random() &lt; 0.4 ? 'jump' : 'charge';
+  }
+
+
+  /**
+   * @param {string} name - one of the keys of Endboss.ACTIONS
+   */
+  startAction(name) {
+    this.action = name;
+    this.actionSince = Date.now();
+    this.attacking = name === 'charge' || name === 'jump';
+    this.y = this.baseY;
   }
 
 
@@ -118,7 +215,7 @@ class Endboss extends Enemy {
       this.playDeathAnimation(this.IMAGES_DEAD);
     } else if (this.state === 'alert') {
       this.playAlertAnimation();
-    } else if (this.state === 'walking') {
+    } else if (this.state === 'fighting') {
       this.playWalkingAnimation();
     }
   }
@@ -144,13 +241,14 @@ class Endboss extends Enemy {
   }
 
 
-  /** Plays the alert images once, then the endboss starts walking. */
+  /** Plays the alert images once, then the fight begins. */
   playAlertAnimation() {
     if (this.alertFrame &lt; this.IMAGES_ALERT.length) {
       this.img = this.imageCache[this.IMAGES_ALERT[this.alertFrame]];
       this.alertFrame++;
     } else {
-      this.state = 'walking';
+      this.state = 'fighting';
+      this.startAction('walk');
     }
   }
 
@@ -162,15 +260,6 @@ class Endboss extends Enemy {
    */
   hasComeIntoView(character) {
     return this.x - character.x &lt; this.viewDistance;
-  }
-
-
-  /**
-   * Switches the attack on when Pepe is close.
-   * @param {Character} character
-   */
-  updateAttack(character) {
-    this.attacking = this.isNear(character, this.attackDistance);
   }
 
 
@@ -261,13 +350,13 @@ class Endboss extends Enemy {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 10:20:48 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>

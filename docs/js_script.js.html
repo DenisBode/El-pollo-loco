@@ -28,9 +28,18 @@
         <article>
             <pre class="prettyprint source linenums"><code>let canvas;
 let world;
+let startScreen;
+let isFlipping = false;
+/** True when all images are requested (their loading is shown by the loading bar). */
+let isPreloaded = false;
+/** Every timer of the game, so stopGame can stop them all. */
+let intervalIds = [];
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
+
+/** The short sounds that are needed right at the start; the long ones follow when the game starts. */
+const START_SOUNDS = ['jump', 'landing', 'footsteps', 'getCoin1', 'getCoin2', 'ouch1', 'ouch2', 'throwBottle', 'bottleHit', 'chickenCluck'];
 
 const compactQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
 
@@ -45,13 +54,55 @@ const KEY_MAP = {
 };
 
 
-/** Called when the page is loaded: shows the start screen. */
+/** Called when the page is loaded: shows the start screen and preloads the images after its first picture. */
 function init() {
   canvas = document.getElementById('canvas');
+  applyLanguage();
   updateMuteButton();
   bindTouchButtons();
   setupFullscreen();
-  drawStartScreen(new StartScreen());
+  startScreen = new StartScreen();
+  drawStartScreen(startScreen);
+  setTimeout(preloadAssets, 0);
+}
+
+
+/**
+ * Loads all images and the first sounds while the start screen is shown, so the game starts quickly.
+ * The objects are only created to load their images (the browser keeps them), their intervals are stopped at once.
+ */
+function preloadAssets() {
+  initLevel();
+  [new Character(), new Hud(5), new GameOverScreen(), new WinScreen(), new ThrowableObject(0, 0, 1)];
+  clearGameIntervals();
+  soundManager.preload(START_SOUNDS);
+  isPreloaded = true;
+}
+
+
+/** @returns {boolean} true when all images are loaded and decoded, so the game can start without gaps */
+function areAssetsReady() {
+  return isPreloaded &amp;&amp; DrawableObject.loadProgress() >= 1;
+}
+
+
+/**
+ * Starts an interval of the game; stopGame stops it.
+ * @param {Function} callback
+ * @param {number} delay - in milliseconds
+ * @returns {number} the interval id
+ */
+function setGameInterval(callback, delay) {
+  let id = setInterval(callback, delay);
+  intervalIds.push(id);
+  return id;
+}
+
+
+/** Stops all intervals (and timeouts) of the game. */
+function clearGameIntervals() {
+  intervalIds.forEach((id) => clearInterval(id));
+  intervalIds = [];
 }
 
 
@@ -78,7 +129,7 @@ function toggleFullscreen() {
   } else {
     document.querySelector('.game-area').requestFullscreen().catch(() => {});
   }
-  document.getElementById('fullscreenButton').blur(); // otherwise the space bar (jump) would press the button again
+  releaseFocus(document.getElementById('fullscreenButton'));
 }
 
 
@@ -117,7 +168,7 @@ function toggleMute() {
     localStorage.setItem('muted', isMuted);
   } catch {}
   updateMuteButton();
-  document.getElementById('muteButton').blur(); // otherwise the space bar (jump) would press the button again
+  releaseFocus(document.getElementById('muteButton'));
 }
 
 
@@ -136,6 +187,8 @@ function updateMuteButton() {
  */
 function drawStartScreen(startScreen) {
   if (world) return;
+  if (areAssetsReady()) DrawableObject.loadLazyImages();
+  if (!isFlipping &amp;&amp; startScreen.isLoadingDone()) flipCanvas(beginGame);
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   startScreen.render(ctx);
@@ -143,30 +196,35 @@ function drawStartScreen(startScreen) {
 }
 
 
-/** Starts the game: hides the menu buttons, creates the level and the world, starts the music. */
+/**
+ * The click on Start: the loading bar fills, then the canvas turns around and the game begins.
+ * The music is started right here, because the browsers only allow it directly after a click.
+ * Start, info and story are only for before the game, so they are hidden.
+ */
 function startGame() {
-  if (world) return;
-  document.getElementById('menuButtons').hidden = true; // start and info are only for before the game
+  if (world || startScreen.isLoading || isFlipping) return;
+  document.getElementById('menuButtons').hidden = true;
+  document.getElementById('languageSwitch').hidden = true;
+  startScreen.startLoading();
+  soundManager.startMusic();
+}
+
+
+/** Creates the level and the world and shows the buttons of the running game; the long sounds load while Pepe runs. */
+function beginGame() {
+  DrawableObject.loadLazyImages();
+  document.getElementById('abortButton').hidden = false;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = false;
   initLevel();
   world = new World(canvas, keyboard, showEndButtons);
-  soundManager.startMusic();
-  enterFullscreenOnTouchDevice();
-}
-
-
-/** On phones and tablets the game starts in fullscreen (the start button click allows it). */
-function enterFullscreenOnTouchDevice() {
-  let isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-  if (isTouchDevice &amp;&amp; document.fullscreenEnabled &amp;&amp; !document.fullscreenElement) {
-    document.querySelector('.game-area').requestFullscreen().catch(() => {});
-  }
+  soundManager.preload();
 }
 
 
 /** Shows the buttons for restart and leaving after the game is won or lost. */
 function showEndButtons() {
+  document.getElementById('abortButton').hidden = true;
   document.getElementById('endButtons').hidden = false;
 }
 
@@ -174,8 +232,7 @@ function showEndButtons() {
 /** Stops the running game completely: drawing loop, all intervals and all sounds. */
 function stopGame() {
   world.stop();
-  let lastId = setInterval(() => {}, 1000000);
-  for (let id = 1; id &lt;= lastId; id++) clearInterval(id);
+  clearGameIntervals();
   world = null;
   soundManager.stopAll();
 }
@@ -184,25 +241,99 @@ function stopGame() {
 /** Starts a new game without reloading the page. */
 function restartGame() {
   stopGame();
-  startGame();
+  soundManager.startMusic();
+  beginGame();
 }
 
 
 /** Back to the start screen. */
 function leaveGame() {
   stopGame();
+  document.getElementById('abortButton').hidden = true;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = true;
   document.getElementById('menuButtons').hidden = false;
-  drawStartScreen(new StartScreen());
+  startScreen = new StartScreen();
+  document.getElementById('storyButton').dataset.i18n = 'story';
+  document.getElementById('languageSwitch').hidden = false;
+  applyLanguage();
+  drawStartScreen(startScreen);
 }
 
 
+/** Turns the canvas around to show the story on its back, or back to the start image. */
+function toggleStory() {
+  releaseFocus(document.getElementById('storyButton'));
+  if (isFlipping) return;
+  flipCanvas(() => {
+    startScreen.showsStory = !startScreen.showsStory;
+    document.getElementById('storyButton').dataset.i18n = startScreen.showsStory ? 'back' : 'story';
+    applyLanguage();
+  });
+}
+
+
+/**
+ * Turns the canvas and the language buttons by 90 degrees, calls the function while they stand edge-on,
+ * and turns them on to the front. All turn around the middle of the canvas, so they look like one card.
+ * @param {Function} onHalfway - changes what is drawn on the canvas
+ */
+async function flipCanvas(onHalfway) {
+  isFlipping = true;
+  let elements = [canvas, document.getElementById('languageSwitch')];
+  let origins = elements.map(getFlipOrigin);
+  let first = elements.map((element, i) => turn(element, origins[i], 0, 90, 'forwards'));
+  await first[0].finished;
+  onHalfway();
+  await Promise.all(elements.map((element, i) => turn(element, origins[i], -90, 0, 'none').finished));
+  first.forEach((animation) => animation.cancel());
+  isFlipping = false;
+}
+
+
+/**
+ * The middle of the canvas, measured from the top left corner of the element.
+ * @param {HTMLElement} element
+ * @returns {string} a transform-origin value
+ */
+function getFlipOrigin(element) {
+  let canvasBox = canvas.getBoundingClientRect();
+  let box = element.getBoundingClientRect();
+  return `${canvasBox.left + canvasBox.width / 2 - box.left}px ${canvasBox.top + canvasBox.height / 2 - box.top}px`;
+}
+
+
+/**
+ * Starts a turn around the vertical axis.
+ * @param {HTMLElement} element
+ * @param {string} origin - the point it turns around
+ * @param {number} from - start angle in degrees
+ * @param {number} to - end angle in degrees
+ * @param {string} fill - 'forwards' keeps the end angle after the turn
+ * @returns {Animation}
+ */
+function turn(element, origin, from, to, fill) {
+  let frames = [from, to].map((deg) => ({ transform: `perspective(900px) rotateY(${deg}deg)`, transformOrigin: origin }));
+  return element.animate(frames, { duration: 250, easing: 'ease-in-out', fill });
+}
+
+
+/**
+ * Takes the focus off an element after a click; otherwise the space bar (jump) would press the button again.
+ * @param {HTMLElement} element
+ */
+function releaseFocus(element) {
+  element.blur();
+}
+
+
+/** Opens the info dialog with the controls. */
 function openInfo() {
   document.getElementById('infoDialog').showModal();
 }
 
 
+/** Closes the info dialog. */
 function closeInfo() {
   document.getElementById('infoDialog').close();
 }
@@ -240,13 +371,13 @@ window.addEventListener('keyup', (event) => setKey(event, false));
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#enterFullscreenOnTouchDevice">enterFullscreenOnTouchDevice</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Oct 21 2026 09:18:43 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 10:20:48 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>
