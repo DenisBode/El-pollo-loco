@@ -80,11 +80,11 @@ class BottleStatusBar extends StatusBar {
 }
 
 
-/** The endboss bar: bigger, at the bottom right, and blinking when he is almost defeated. */
+/** The endboss bar: bigger, at the bottom in the middle (the touch buttons sit in the corners), and blinking when he is almost defeated. */
 class EndbossStatusBar extends StatusBar {
   /** Creates the endboss bar; it is bigger than the other bars, but has the same 4 : 1 ratio. */
   constructor() {
-    super(StatusBar.imagePaths('img/7_statusbars/2_statusbar_endboss/orange/', 'orange'), 460, 410, 100);
+    super(StatusBar.imagePaths('img/7_statusbars/2_statusbar_endboss/orange/', 'orange'), 240, 410, 100);
     this.width = 240;
     this.height = 60;
   }

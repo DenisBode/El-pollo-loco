@@ -9,9 +9,10 @@
 
 /* Rotated phone (landscape and low): the canvas fills the whole window */
 @media only screen and (orientation: landscape) and (max-height: 600px) {
+  /* As big as possible, but never wider than the window (keeps the 3:2 ratio) */
   canvas {
-    height: 100vh;
-    width: auto; /* keeps the 3:2 ratio when both queries apply */
+    width: min(100vw, 150vh);
+    height: auto;
   }
 
   body {
@@ -26,12 +27,15 @@
 
 /* Tablets and phones: touch buttons --------------------- */
 @media only screen and (max-width: 1024px), (pointer: coarse) {
+  /* On the canvas, at its lower corners, so they are always there, with or without fullscreen */
   .touch-controls {
-    position: fixed; /* at the screen edges, where the thumbs are, not only inside the canvas */
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 8px;
+    z-index: 5;
     padding: 0 12px;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     pointer-events: none; /* only the buttons react, the rest of the area stays free */
@@ -124,6 +128,12 @@
   width: 36px;
   height: 36px;
   padding: 4px;
+}
+
+/* The language buttons would lie under the mute and fullscreen buttons, so they move to the left */
+.compact .language-switch {
+  right: auto;
+  left: 8px;
 }
 
 .compact .fullscreen-button {

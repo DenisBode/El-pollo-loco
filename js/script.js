@@ -170,7 +170,7 @@ function drawStartScreen(startScreen) {
 
 /**
  * The click on Start: the loading bar fills, then the canvas turns around and the game begins.
- * Music and fullscreen are started right here, because the browsers only allow them directly after a click.
+ * The music is started right here, because the browsers only allow it directly after a click.
  * Start, info and story are only for before the game, so they are hidden.
  */
 function startGame() {
@@ -179,7 +179,6 @@ function startGame() {
   document.getElementById('languageSwitch').hidden = true;
   startScreen.startLoading();
   soundManager.startMusic();
-  enterFullscreenOnTouchDevice();
 }
 
 
@@ -192,15 +191,6 @@ function beginGame() {
   initLevel();
   world = new World(canvas, keyboard, showEndButtons);
   soundManager.preload();
-}
-
-
-/** On phones and tablets the game starts in fullscreen (the start button click allows it). */
-function enterFullscreenOnTouchDevice() {
-  let isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-  if (isTouchDevice && document.fullscreenEnabled && !document.fullscreenElement) {
-    document.querySelector('.game-area').requestFullscreen().catch(() => {});
-  }
 }
 
 
@@ -224,7 +214,6 @@ function stopGame() {
 function restartGame() {
   stopGame();
   soundManager.startMusic();
-  enterFullscreenOnTouchDevice();
   beginGame();
 }
 
