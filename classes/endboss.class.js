@@ -6,67 +6,74 @@ class Endboss extends Enemy {
   height = 400;
   width = 250;
   y = 55;
-  bottleDamage = 20; // five bottles kill the endboss
-  state = 'waiting'; // waiting -> alert -> walking
+  /** Five bottles kill the endboss. */
+  bottleDamage = 20;
+  /** Waiting -> alert -> walking. */
+  state = 'waiting';
   alertFrame = 0;
   attacking = false;
-  attackSpeedFactor = 3; // while attacking he runs 3 times faster
-  attackDistance = 350; // the attack starts when Pepe is closer than this (px)
+  /** While attacking he runs 3 times faster. */
+  attackSpeedFactor = 3;
+  /** The attack starts when Pepe is closer than this (px). */
+  attackDistance = 350;
   tumbleStart = null;
-  tumbleDuration = 1800; // ms
-  lyingAngle = 1010; // two full turns plus 290 degrees
-  lyingScale = 0.8; // he shrinks a bit while falling
-  groundY = 500; // the image box ends below the visible body, so this is deeper than Pepe's lower edge
+  /** Ms. */
+  tumbleDuration = 1800;
+  /** Two full turns plus 290 degrees. */
+  lyingAngle = 1010;
+  /** He shrinks a bit while falling. */
+  lyingScale = 0.8;
+  /** The image box ends below the visible body, so this is deeper than Pepe's lower edge. */
+  groundY = 500;
 
   IMAGES_WALKING = [
-    'img/4_enemie_boss_chicken/1_walk/G1.png',
-    'img/4_enemie_boss_chicken/1_walk/G2.png',
-    'img/4_enemie_boss_chicken/1_walk/G3.png',
-    'img/4_enemie_boss_chicken/1_walk/G4.png',
+    'img/4_enemie_boss_chicken/1_walk/G1.webp',
+    'img/4_enemie_boss_chicken/1_walk/G2.webp',
+    'img/4_enemie_boss_chicken/1_walk/G3.webp',
+    'img/4_enemie_boss_chicken/1_walk/G4.webp',
   ];
 
   IMAGES_ALERT = [
-    'img/4_enemie_boss_chicken/2_alert/G5.png',
-    'img/4_enemie_boss_chicken/2_alert/G6.png',
-    'img/4_enemie_boss_chicken/2_alert/G7.png',
-    'img/4_enemie_boss_chicken/2_alert/G8.png',
-    'img/4_enemie_boss_chicken/2_alert/G9.png',
-    'img/4_enemie_boss_chicken/2_alert/G10.png',
-    'img/4_enemie_boss_chicken/2_alert/G11.png',
-    'img/4_enemie_boss_chicken/2_alert/G12.png',
+    'img/4_enemie_boss_chicken/2_alert/G5.webp',
+    'img/4_enemie_boss_chicken/2_alert/G6.webp',
+    'img/4_enemie_boss_chicken/2_alert/G7.webp',
+    'img/4_enemie_boss_chicken/2_alert/G8.webp',
+    'img/4_enemie_boss_chicken/2_alert/G9.webp',
+    'img/4_enemie_boss_chicken/2_alert/G10.webp',
+    'img/4_enemie_boss_chicken/2_alert/G11.webp',
+    'img/4_enemie_boss_chicken/2_alert/G12.webp',
   ];
 
   IMAGES_ATTACK = [
-    'img/4_enemie_boss_chicken/3_attack/G13.png',
-    'img/4_enemie_boss_chicken/3_attack/G14.png',
-    'img/4_enemie_boss_chicken/3_attack/G15.png',
-    'img/4_enemie_boss_chicken/3_attack/G16.png',
-    'img/4_enemie_boss_chicken/3_attack/G17.png',
-    'img/4_enemie_boss_chicken/3_attack/G18.png',
-    'img/4_enemie_boss_chicken/3_attack/G19.png',
-    'img/4_enemie_boss_chicken/3_attack/G20.png',
+    'img/4_enemie_boss_chicken/3_attack/G13.webp',
+    'img/4_enemie_boss_chicken/3_attack/G14.webp',
+    'img/4_enemie_boss_chicken/3_attack/G15.webp',
+    'img/4_enemie_boss_chicken/3_attack/G16.webp',
+    'img/4_enemie_boss_chicken/3_attack/G17.webp',
+    'img/4_enemie_boss_chicken/3_attack/G18.webp',
+    'img/4_enemie_boss_chicken/3_attack/G19.webp',
+    'img/4_enemie_boss_chicken/3_attack/G20.webp',
   ];
 
   IMAGES_HURT = [
-    'img/4_enemie_boss_chicken/4_hurt/G21.png',
-    'img/4_enemie_boss_chicken/4_hurt/G22.png',
-    'img/4_enemie_boss_chicken/4_hurt/G23.png',
+    'img/4_enemie_boss_chicken/4_hurt/G21.webp',
+    'img/4_enemie_boss_chicken/4_hurt/G22.webp',
+    'img/4_enemie_boss_chicken/4_hurt/G23.webp',
   ];
 
   IMAGES_DEAD = [
-    'img/4_enemie_boss_chicken/5_dead/G24.png',
-    'img/4_enemie_boss_chicken/5_dead/G25.png',
-    'img/4_enemie_boss_chicken/5_dead/G26.png',
+    'img/4_enemie_boss_chicken/5_dead/G24.webp',
+    'img/4_enemie_boss_chicken/5_dead/G25.webp',
+    'img/4_enemie_boss_chicken/5_dead/G26.webp',
   ];
 
 
+  /** Creates the endboss at the end of the level; he is far away, so his images load after the start images. */
   constructor() {
-    super().loadImage(this.IMAGES_WALKING[0]);
-    this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_ALERT);
-    this.loadImages(this.IMAGES_ATTACK);
-    this.loadImages(this.IMAGES_HURT);
-    this.loadImages(this.IMAGES_DEAD);
+    super().loadImage(this.IMAGES_WALKING[0], false);
+    [this.IMAGES_WALKING, this.IMAGES_ALERT, this.IMAGES_ATTACK, this.IMAGES_HURT, this.IMAGES_DEAD].forEach((images) =>
+      this.loadImages(images, false),
+    );
     this.x = 6800;
     this.speed = 0.15 + Math.random() * 0.3;
   }

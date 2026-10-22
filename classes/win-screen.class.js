@@ -1,9 +1,10 @@
 /** The blinking "You won" text. */
 class WinScreen extends DrawableObject {
+  /** Creates the text in the middle of the canvas; the image is about 4.8 : 1 and loads late. */
   constructor() {
-    super().loadImage('img/You won, you lost/You Won B.png');
+    super().loadImage('img/You won, you lost/You Won B.webp', false);
     this.width = 500;
-    this.height = 104; // the image is about 4.8 : 1
+    this.height = 104;
     this.x = 110;
     this.y = 188;
   }

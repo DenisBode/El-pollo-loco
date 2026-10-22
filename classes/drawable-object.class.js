@@ -19,8 +19,11 @@ class DrawableObject {
 
   /** Every image is loaded only once and shared by path, so a new game does not load them again. */
   static imagePool = {};
+  /** Only the images the game needs at the start; the loading bar waits for these. */
   static imagesTotal = 0;
   static imagesDone = 0;
+  /** Images that are needed late (endboss, end screens); they load after the start images. */
+  static lazyPaths = [];
 
 
   /** @returns {number} the share of the requested images that are loaded and decoded, from 0 to 1 */
@@ -30,20 +33,33 @@ class DrawableObject {
 
 
   /**
-   * Returns the shared image of a path; the first request starts loading and decoding it.
-   * A broken image counts as done, so it cannot block the start for ever.
+   * Returns the shared image of a path. A needed image starts loading at once and is counted by the loading bar
+   * (a broken image counts as done, so it cannot block the start for ever); a late image only waits in a list.
    * @param {string} path
+   * @param {boolean} isNeeded - false for images that are needed late in the game
    * @returns {HTMLImageElement}
    */
-  static getImage(path) {
+  static getImage(path, isNeeded = true) {
     let pool = DrawableObject.imagePool;
-    if (!pool[path]) {
-      pool[path] = new Image();
-      pool[path].src = path;
-      DrawableObject.imagesTotal++;
-      pool[path].decode().catch(() => {}).finally(() => DrawableObject.imagesDone++);
+    if (pool[path]) return pool[path];
+    pool[path] = new Image();
+    if (!isNeeded) {
+      DrawableObject.lazyPaths.push(path);
+      return pool[path];
     }
+    pool[path].src = path;
+    DrawableObject.imagesTotal++;
+    pool[path].decode().catch(() => {}).finally(() => DrawableObject.imagesDone++);
     return pool[path];
+  }
+
+
+  /** Starts loading the late images; called when the start images are ready. */
+  static loadLazyImages() {
+    DrawableObject.lazyPaths.splice(0).forEach((path) => {
+      DrawableObject.imagePool[path].src = path;
+      DrawableObject.imagePool[path].decode().catch(() => {});
+    });
   }
 
 
@@ -181,18 +197,20 @@ class DrawableObject {
   /**
    * Loads a single image.
    * @param {string} path
+   * @param {boolean} isNeeded - false for an image that is needed late in the game
    */
-  loadImage(path) {
-    this.img = DrawableObject.getImage(path);
+  loadImage(path, isNeeded = true) {
+    this.img = DrawableObject.getImage(path, isNeeded);
   }
 
 
   /**
    * Loads multiple images into the cache.
    * @param {string[]} paths - an array of image paths
+   * @param {boolean} isNeeded - false for images that are needed late in the game
    */
-  loadImages(paths) {
-    paths.forEach((path) => (this.imageCache[path] = DrawableObject.getImage(path)));
+  loadImages(paths, isNeeded = true) {
+    paths.forEach((path) => (this.imageCache[path] = DrawableObject.getImage(path, isNeeded)));
   }
 
 

@@ -23,7 +23,10 @@ class SoundManager {
   isMuted = false;
 
 
-  /** Sets loops and volumes: the cluck is quiet, the game over jingle is loud. */
+  /**
+   * Sets loops and volumes: the cluck is quiet, the game over jingle is loud.
+   * The sounds are created with preload "none", so the page does not wait for them.
+   */
   constructor() {
     this.music.loop = true;
     this.music.volume = 0.3;
@@ -33,7 +36,7 @@ class SoundManager {
     Object.values(this.effects).forEach((sound) => (sound.volume = 0.5));
     this.effects.chickenCluck.volume = 0.2;
     this.effects.gameOver.volume = 1;
-    [this.music, ...Object.values(this.effects)].forEach((sound) => (sound.preload = 'none')); // the page does not wait for the sounds
+    [this.music, ...Object.values(this.effects)].forEach((sound) => (sound.preload = 'none'));
   }
 
 
@@ -56,6 +59,7 @@ class SoundManager {
   }
 
 
+  /** Stops the background music and rewinds it. */
   stopMusic() {
     this.music.pause();
     this.music.currentTime = 0;

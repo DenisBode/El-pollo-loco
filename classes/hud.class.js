@@ -5,13 +5,13 @@ class Hud {
   bottleBar = new BottleStatusBar();
   endbossBar = new EndbossStatusBar();
   livesIcon;
-  bottlesIcon = new CounterIcon('img/7_statusbars/3_icons/icon_salsa_bottle.png', 375, 0, 0);
+  bottlesIcon = new CounterIcon('img/7_statusbars/3_icons/icon_salsa_bottle.webp', 375, 0, 0);
   endbossBarVisible = false;
 
 
   /** @param {number} lives - the start value of the lives counter */
   constructor(lives) {
-    this.livesIcon = new CounterIcon('img/7_statusbars/3_icons/icon_health.png', 255, 0, lives);
+    this.livesIcon = new CounterIcon('img/7_statusbars/3_icons/icon_health.webp', 255, 0, lives);
   }
 
 

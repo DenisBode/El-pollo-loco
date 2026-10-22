@@ -1,11 +1,18 @@
 /** The start screen; the 16:9 image is squeezed to the 3:2 canvas, so the whole image stays visible. */
 class StartScreen extends DrawableObject {
+  /** Ms, so the bar is always visible, even when everything is loaded at once. */
+  static MIN_LOADING_TIME = 1500;
+
   /** true = the back side of the canvas (the story) is shown instead of the start image. */
   showsStory = false;
+  /** True from the click on Start until the canvas turns around to the game. */
+  isLoading = false;
+  loadingSince = 0;
 
 
+  /** Creates the start screen: the start image fills the whole canvas. */
   constructor() {
-    super().loadImage('img/9_intro_outro_screens/start/startscreen_1.png');
+    super().loadImage('img/9_intro_outro_screens/start/startscreen_1.webp');
     this.x = 0;
     this.y = 0;
     this.width = 720;
@@ -20,23 +27,40 @@ class StartScreen extends DrawableObject {
   draw(ctx) {
     super.draw(ctx);
     if (this.showsStory) this.drawStory(ctx);
-    else if (!areAssetsReady()) this.drawLoadingBar(ctx);
+    else if (this.isLoading) this.drawLoadingBar(ctx);
+  }
+
+
+  /** Shows the loading bar; the game starts when it is full. */
+  startLoading() {
+    this.showsStory = false;
+    this.isLoading = true;
+    this.loadingSince = Date.now();
+  }
+
+
+  /** @returns {number} the progress shown in the bar: the real progress, but not faster than the minimum time allows */
+  shownProgress() {
+    return Math.min(DrawableObject.loadProgress(), (Date.now() - this.loadingSince) / StartScreen.MIN_LOADING_TIME);
+  }
+
+
+  /** @returns {boolean} true when the bar is full and all images are ready */
+  isLoadingDone() {
+    return this.isLoading && areAssetsReady() && this.shownProgress() >= 1;
   }
 
 
   /**
-   * A bar with the percentage at the bottom of the start image, as long as the images are loading.
+   * A small, soft bar with the percentage at the bottom of the start image, as long as the images are loading.
    * @param {CanvasRenderingContext2D} ctx
    */
   drawLoadingBar(ctx) {
-    let progress = DrawableObject.loadProgress();
-    ctx.fillStyle = 'rgba(40, 14, 4, 0.85)';
-    ctx.fillRect(150, 396, 420, 64);
+    let progress = this.shownProgress();
+    this.fillRounded(ctx, 190, 412, 340, 52, 14, 'rgba(40, 14, 4, 0.6)');
     this.drawLoadingText(ctx, progress);
-    ctx.strokeStyle = '#ffd500';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(170, 438, 380, 14);
-    ctx.fillRect(170, 438, 380 * progress, 14);
+    this.fillRounded(ctx, 210, 447, 300, 8, 4, 'rgba(255, 255, 255, 0.2)');
+    this.fillRounded(ctx, 210, 447, Math.max(8, 300 * progress), 8, 4, '#ffd500');
   }
 
 
@@ -47,9 +71,27 @@ class StartScreen extends DrawableObject {
   drawLoadingText(ctx, progress) {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffd500';
-    ctx.font = '24px Zabars, Arial, sans-serif';
-    ctx.fillText(`${t('loading')} ${Math.round(progress * 100)} %`, 360, 428);
+    ctx.font = '20px Zabars, Arial, sans-serif';
+    ctx.fillText(`${t('loading')} ${Math.round(progress * 100)} %`, 360, 435);
     ctx.textAlign = 'start';
+  }
+
+
+  /**
+   * Fills a rectangle with rounded corners.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   * @param {string} color
+   */
+  fillRounded(ctx, x, y, width, height, radius, color) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, width, height, radius);
+    ctx.fillStyle = color;
+    ctx.fill();
   }
 
 

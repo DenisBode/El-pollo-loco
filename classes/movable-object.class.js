@@ -6,8 +6,10 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
   deathFrame = 0;
-  jumpSpeed = 30; // the upward speed at the start of a jump
-  groundLevel = 140; // the height at which a falling object comes to rest
+  /** The upward speed at the start of a jump. */
+  jumpSpeed = 30;
+  /** The height at which a falling object comes to rest. */
+  groundLevel = 140;
 
 
   /** Lets the object fall until it stands on the ground; a jump (speedY > 0) lifts it first. */
@@ -107,6 +109,7 @@ class MovableObject extends DrawableObject {
   }
 
 
+  /** Starts a jump: the object moves up with the jump speed and the gravity pulls it down again. */
   jump() {
     this.speedY = this.jumpSpeed;
     this.currentImage = 0;

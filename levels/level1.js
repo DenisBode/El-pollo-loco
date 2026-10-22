@@ -1,8 +1,10 @@
 let level1;
 
-const BACKGROUND_WIDTH = 719; // tile width 720, minus 1 px overlap against gaps
+/** Tile width 720, minus 1 px overlap against gaps. */
+const BACKGROUND_WIDTH = 719;
 const FIRST_TILE_INDEX = -1;
-const LAST_TILE_INDEX = 10; // the background reaches past the endboss at x 6800
+/** The background reaches past the endboss at x 6800. */
+const LAST_TILE_INDEX = 10;
 
 
 /**
@@ -14,10 +16,10 @@ function createBackgroundTile(index) {
   let x = index * BACKGROUND_WIDTH;
   let variant = index % 2 === 0 ? '1' : '2';
   return [
-    new BackgroundObject('img/5_background/layers/air.png', x),
-    new BackgroundObject(`img/5_background/layers/3_third_layer/${variant}.png`, x),
-    new BackgroundObject(`img/5_background/layers/2_second_layer/${variant}.png`, x),
-    new BackgroundObject(`img/5_background/layers/1_first_layer/${variant}.png`, x),
+    new BackgroundObject('img/5_background/layers/air.webp', x),
+    new BackgroundObject(`img/5_background/layers/3_third_layer/${variant}.webp`, x),
+    new BackgroundObject(`img/5_background/layers/2_second_layer/${variant}.webp`, x),
+    new BackgroundObject(`img/5_background/layers/1_first_layer/${variant}.webp`, x),
   ];
 }
 

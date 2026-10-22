@@ -5,17 +5,18 @@ class StatusBar extends DrawableObject {
 
 
   /**
-   * Builds the six image paths of a bar: folder + prefix + 0/20/40/60/80/100 + .png
+   * Builds the six image paths of a bar: folder + prefix + 0/20/40/60/80/100 + .webp
    * @param {string} folder
    * @param {string} prefix
    * @returns {string[]}
    */
   static imagePaths(folder, prefix = '') {
-    return [0, 20, 40, 60, 80, 100].map((percent) => `${folder}${prefix}${percent}.png`);
+    return [0, 20, 40, 60, 80, 100].map((percent) => `${folder}${prefix}${percent}.webp`);
   }
 
 
   /**
+   * Creates a bar; its size keeps the ratio of the images, which is 4 : 1.
    * @param {string[]} images - the six images of the bar
    * @param {number} x
    * @param {number} y
@@ -28,7 +29,7 @@ class StatusBar extends DrawableObject {
     this.x = x;
     this.y = y;
     this.width = 160;
-    this.height = 40; // the images are 4 : 1
+    this.height = 40;
     this.setPercentage(percentage);
   }
 
@@ -54,6 +55,7 @@ class StatusBar extends DrawableObject {
 
 /** The health bar of Pepe (starts full). */
 class HealthStatusBar extends StatusBar {
+  /** Creates the green health bar at the top left. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/1_statusbar/2_statusbar_health/green/'), 20, 0, 100);
   }
@@ -62,6 +64,7 @@ class HealthStatusBar extends StatusBar {
 
 /** The coin bar (starts empty). */
 class CoinStatusBar extends StatusBar {
+  /** Creates the orange coin bar under the health bar. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/1_statusbar/1_statusbar_coin/orange/'), 20, 45, 0);
   }
@@ -70,6 +73,7 @@ class CoinStatusBar extends StatusBar {
 
 /** The bottle bar (starts empty). */
 class BottleStatusBar extends StatusBar {
+  /** Creates the blue bottle bar under the coin bar. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/'), 20, 90, 0);
   }
@@ -78,9 +82,10 @@ class BottleStatusBar extends StatusBar {
 
 /** The endboss bar: bigger, at the bottom right, and blinking when he is almost defeated. */
 class EndbossStatusBar extends StatusBar {
+  /** Creates the endboss bar; it is bigger than the other bars, but has the same 4 : 1 ratio. */
   constructor() {
     super(StatusBar.imagePaths('img/7_statusbars/2_statusbar_endboss/orange/', 'orange'), 460, 410, 100);
-    this.width = 240; // bigger than the other bars, same 4 : 1 ratio
+    this.width = 240;
     this.height = 60;
   }
 

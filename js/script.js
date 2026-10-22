@@ -2,8 +2,10 @@ let canvas;
 let world;
 let startScreen;
 let isFlipping = false;
-let isPreloaded = false; // true when all images are requested (their loading is shown by the loading bar)
-let intervalIds = []; // every timer of the game, so stopGame can stop them all
+/** True when all images are requested (their loading is shown by the loading bar). */
+let isPreloaded = false;
+/** Every timer of the game, so stopGame can stop them all. */
+let intervalIds = [];
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 let isMuted = loadMuted();
@@ -24,7 +26,7 @@ const KEY_MAP = {
 };
 
 
-/** Called when the page is loaded: shows the start screen. */
+/** Called when the page is loaded: shows the start screen and preloads the images after its first picture. */
 function init() {
   canvas = document.getElementById('canvas');
   applyLanguage();
@@ -33,7 +35,7 @@ function init() {
   setupFullscreen();
   startScreen = new StartScreen();
   drawStartScreen(startScreen);
-  setTimeout(preloadAssets, 0); // after the first picture of the start screen
+  setTimeout(preloadAssets, 0);
 }
 
 
@@ -99,7 +101,7 @@ function toggleFullscreen() {
   } else {
     document.querySelector('.game-area').requestFullscreen().catch(() => {});
   }
-  document.getElementById('fullscreenButton').blur(); // otherwise the space bar (jump) would press the button again
+  releaseFocus(document.getElementById('fullscreenButton'));
 }
 
 
@@ -138,7 +140,7 @@ function toggleMute() {
     localStorage.setItem('muted', isMuted);
   } catch {}
   updateMuteButton();
-  document.getElementById('muteButton').blur(); // otherwise the space bar (jump) would press the button again
+  releaseFocus(document.getElementById('muteButton'));
 }
 
 
@@ -157,7 +159,8 @@ function updateMuteButton() {
  */
 function drawStartScreen(startScreen) {
   if (world) return;
-  document.getElementById('startButton').disabled = !areAssetsReady();
+  if (areAssetsReady()) DrawableObject.loadLazyImages();
+  if (!isFlipping && startScreen.isLoadingDone()) flipCanvas(beginGame);
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   startScreen.render(ctx);
@@ -165,19 +168,30 @@ function drawStartScreen(startScreen) {
 }
 
 
-/** Starts the game: hides the menu buttons, creates the level and the world, starts the music. */
+/**
+ * The click on Start: the loading bar fills, then the canvas turns around and the game begins.
+ * Music and fullscreen are started right here, because the browsers only allow them directly after a click.
+ * Start, info and story are only for before the game, so they are hidden.
+ */
 function startGame() {
-  if (world || !areAssetsReady()) return;
-  document.getElementById('abortButton').hidden = false;
-  document.getElementById('menuButtons').hidden = true; // start, info and story are only for before the game
+  if (world || startScreen.isLoading || isFlipping) return;
+  document.getElementById('menuButtons').hidden = true;
   document.getElementById('languageSwitch').hidden = true;
+  startScreen.startLoading();
+  soundManager.startMusic();
+  enterFullscreenOnTouchDevice();
+}
+
+
+/** Creates the level and the world and shows the buttons of the running game; the long sounds load while Pepe runs. */
+function beginGame() {
+  DrawableObject.loadLazyImages();
+  document.getElementById('abortButton').hidden = false;
   document.getElementById('endButtons').hidden = true;
   document.getElementById('touchControls').hidden = false;
   initLevel();
   world = new World(canvas, keyboard, showEndButtons);
-  soundManager.startMusic();
-  soundManager.preload(); // the long sounds (e.g. snoring) load while Pepe runs
-  enterFullscreenOnTouchDevice();
+  soundManager.preload();
 }
 
 
@@ -209,7 +223,9 @@ function stopGame() {
 /** Starts a new game without reloading the page. */
 function restartGame() {
   stopGame();
-  startGame();
+  soundManager.startMusic();
+  enterFullscreenOnTouchDevice();
+  beginGame();
 }
 
 
@@ -230,7 +246,7 @@ function leaveGame() {
 
 /** Turns the canvas around to show the story on its back, or back to the start image. */
 function toggleStory() {
-  document.getElementById('storyButton').blur(); // otherwise the space bar (jump) would press the button again
+  releaseFocus(document.getElementById('storyButton'));
   if (isFlipping) return;
   flipCanvas(() => {
     startScreen.showsStory = !startScreen.showsStory;
@@ -285,11 +301,22 @@ function turn(element, origin, from, to, fill) {
 }
 
 
+/**
+ * Takes the focus off an element after a click; otherwise the space bar (jump) would press the button again.
+ * @param {HTMLElement} element
+ */
+function releaseFocus(element) {
+  element.blur();
+}
+
+
+/** Opens the info dialog with the controls. */
 function openInfo() {
   document.getElementById('infoDialog').showModal();
 }
 
 
+/** Closes the info dialog. */
 function closeInfo() {
   document.getElementById('infoDialog').close();
 }

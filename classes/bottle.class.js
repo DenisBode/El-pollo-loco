@@ -1,8 +1,8 @@
 /** A salsa bottle lying on the ground. */
 class Bottle extends Collectable {
   static IMAGES_GROUND = [
-    'img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
-    'img/6_salsa_bottle/2_salsa_bottle_on_ground.png',
+    'img/6_salsa_bottle/1_salsa_bottle_on_ground.webp',
+    'img/6_salsa_bottle/2_salsa_bottle_on_ground.webp',
   ];
 
   y = 360;

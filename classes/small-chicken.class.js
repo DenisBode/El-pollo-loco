@@ -1,12 +1,12 @@
 /** A small chick: smaller and much faster than a normal chicken. */
 class SmallChicken extends Chicken {
   static IMAGES_WALKING = [
-    'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
-    'img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
-    'img/3_enemies_chicken/chicken_small/1_walk/3_w.png',
+    'img/3_enemies_chicken/chicken_small/1_walk/1_w.webp',
+    'img/3_enemies_chicken/chicken_small/1_walk/2_w.webp',
+    'img/3_enemies_chicken/chicken_small/1_walk/3_w.webp',
   ];
 
-  static IMAGE_DEAD = 'img/3_enemies_chicken/chicken_small/2_dead/dead.png';
+  static IMAGE_DEAD = 'img/3_enemies_chicken/chicken_small/2_dead/dead.webp';
 
 
   /** Smaller than a normal chicken, still standing on the same ground line (y + height = 430). */
@@ -18,11 +18,13 @@ class SmallChicken extends Chicken {
   }
 
 
+  /** @returns {string[]} the walking images of a chick */
   walkingImages() {
     return SmallChicken.IMAGES_WALKING;
   }
 
 
+  /** @returns {string} the image of a defeated chick */
   deadImage() {
     return SmallChicken.IMAGE_DEAD;
   }

@@ -6,81 +6,86 @@ class Character extends MovableObject {
   hasFrame = true;
 
   IMAGES_WALKING = [
-    'img/2_character_pepe/2_walk/W-21.png',
-    'img/2_character_pepe/2_walk/W-22.png',
-    'img/2_character_pepe/2_walk/W-23.png',
-    'img/2_character_pepe/2_walk/W-24.png',
-    'img/2_character_pepe/2_walk/W-25.png',
-    'img/2_character_pepe/2_walk/W-26.png',
+    'img/2_character_pepe/2_walk/W-21.webp',
+    'img/2_character_pepe/2_walk/W-22.webp',
+    'img/2_character_pepe/2_walk/W-23.webp',
+    'img/2_character_pepe/2_walk/W-24.webp',
+    'img/2_character_pepe/2_walk/W-25.webp',
+    'img/2_character_pepe/2_walk/W-26.webp',
   ];
 
   IMAGES_JUMPING = [
-    'img/2_character_pepe/3_jump/J-31.png',
-    'img/2_character_pepe/3_jump/J-32.png',
-    'img/2_character_pepe/3_jump/J-33.png',
-    'img/2_character_pepe/3_jump/J-34.png',
-    'img/2_character_pepe/3_jump/J-35.png',
-    'img/2_character_pepe/3_jump/J-36.png',
-    'img/2_character_pepe/3_jump/J-37.png',
-    'img/2_character_pepe/3_jump/J-38.png',
-    'img/2_character_pepe/3_jump/J-39.png',
+    'img/2_character_pepe/3_jump/J-31.webp',
+    'img/2_character_pepe/3_jump/J-32.webp',
+    'img/2_character_pepe/3_jump/J-33.webp',
+    'img/2_character_pepe/3_jump/J-34.webp',
+    'img/2_character_pepe/3_jump/J-35.webp',
+    'img/2_character_pepe/3_jump/J-36.webp',
+    'img/2_character_pepe/3_jump/J-37.webp',
+    'img/2_character_pepe/3_jump/J-38.webp',
+    'img/2_character_pepe/3_jump/J-39.webp',
   ];
 
   IMAGES_HURT = [
-    'img/2_character_pepe/4_hurt/H-41.png',
-    'img/2_character_pepe/4_hurt/H-42.png',
-    'img/2_character_pepe/4_hurt/H-43.png',
+    'img/2_character_pepe/4_hurt/H-41.webp',
+    'img/2_character_pepe/4_hurt/H-42.webp',
+    'img/2_character_pepe/4_hurt/H-43.webp',
   ];
 
   IMAGES_DEAD = [
-    'img/2_character_pepe/5_dead/D-51.png',
-    'img/2_character_pepe/5_dead/D-52.png',
-    'img/2_character_pepe/5_dead/D-53.png',
-    'img/2_character_pepe/5_dead/D-54.png',
-    'img/2_character_pepe/5_dead/D-55.png',
-    'img/2_character_pepe/5_dead/D-56.png',
-    'img/2_character_pepe/5_dead/D-57.png',
+    'img/2_character_pepe/5_dead/D-51.webp',
+    'img/2_character_pepe/5_dead/D-52.webp',
+    'img/2_character_pepe/5_dead/D-53.webp',
+    'img/2_character_pepe/5_dead/D-54.webp',
+    'img/2_character_pepe/5_dead/D-55.webp',
+    'img/2_character_pepe/5_dead/D-56.webp',
+    'img/2_character_pepe/5_dead/D-57.webp',
   ];
 
   IMAGES_IDLE = [
-    'img/2_character_pepe/1_idle/idle/I-1.png',
-    'img/2_character_pepe/1_idle/idle/I-2.png',
-    'img/2_character_pepe/1_idle/idle/I-3.png',
-    'img/2_character_pepe/1_idle/idle/I-4.png',
-    'img/2_character_pepe/1_idle/idle/I-5.png',
-    'img/2_character_pepe/1_idle/idle/I-6.png',
-    'img/2_character_pepe/1_idle/idle/I-7.png',
-    'img/2_character_pepe/1_idle/idle/I-8.png',
-    'img/2_character_pepe/1_idle/idle/I-9.png',
-    'img/2_character_pepe/1_idle/idle/I-10.png',
+    'img/2_character_pepe/1_idle/idle/I-1.webp',
+    'img/2_character_pepe/1_idle/idle/I-2.webp',
+    'img/2_character_pepe/1_idle/idle/I-3.webp',
+    'img/2_character_pepe/1_idle/idle/I-4.webp',
+    'img/2_character_pepe/1_idle/idle/I-5.webp',
+    'img/2_character_pepe/1_idle/idle/I-6.webp',
+    'img/2_character_pepe/1_idle/idle/I-7.webp',
+    'img/2_character_pepe/1_idle/idle/I-8.webp',
+    'img/2_character_pepe/1_idle/idle/I-9.webp',
+    'img/2_character_pepe/1_idle/idle/I-10.webp',
   ];
 
   IMAGES_LONG_IDLE = [
-    'img/2_character_pepe/1_idle/long_idle/I-11.png',
-    'img/2_character_pepe/1_idle/long_idle/I-12.png',
-    'img/2_character_pepe/1_idle/long_idle/I-13.png',
-    'img/2_character_pepe/1_idle/long_idle/I-14.png',
-    'img/2_character_pepe/1_idle/long_idle/I-15.png',
-    'img/2_character_pepe/1_idle/long_idle/I-16.png',
-    'img/2_character_pepe/1_idle/long_idle/I-17.png',
-    'img/2_character_pepe/1_idle/long_idle/I-18.png',
-    'img/2_character_pepe/1_idle/long_idle/I-19.png',
-    'img/2_character_pepe/1_idle/long_idle/I-20.png',
+    'img/2_character_pepe/1_idle/long_idle/I-11.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-12.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-13.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-14.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-15.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-16.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-17.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-18.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-19.webp',
+    'img/2_character_pepe/1_idle/long_idle/I-20.webp',
   ];
 
-  longIdleAfter = 5000; // ms of doing nothing until the long idle animation starts
+  /** Ms of doing nothing until the long idle animation starts. */
+  longIdleAfter = 5000;
   lastAction = Date.now();
   lives = 5;
   bottles = 0;
   maxBottles = 5;
   coins = 0;
   maxCoins = 5;
-  hasJumped = false; // true from the jump until the landing, so the drop at the start has no landing sound
+  /** True from the jump until the landing, so the drop at the start has no landing sound. */
+  hasJumped = false;
   isAirborne = false;
-  invulnerableUntil = 0; // after a respawn nothing can hurt Pepe until this time
-  invulnerableTime = 3000; // ms
+  /** After a respawn nothing can hurt Pepe until this time. */
+  invulnerableUntil = 0;
+  /** Ms. */
+  invulnerableTime = 3000;
 
 
+  /** Creates Pepe: loads his images, sets his hitbox and starts the gravity and the loops. */
   constructor() {
     super().loadImage(this.IMAGES_IDLE[0]);
     this.loadAllImages();
@@ -97,11 +102,11 @@ class Character extends MovableObject {
   }
 
 
-  /** Starts the loops for control, images, idle and death. */
+  /** Starts the loops for control (60 times a second), images (20 a second), idle (5 a second, it runs slower) and death. */
   animate() {
     setGameInterval(() => this.handleJump(), 1000 / 60);
-    setGameInterval(() => this.updateImage(), 50); // 20 frames per second
-    setGameInterval(() => this.playIdleAnimation(), 200); // idle runs slower
+    setGameInterval(() => this.updateImage(), 50);
+    setGameInterval(() => this.playIdleAnimation(), 200);
     setGameInterval(() => this.updateDeathAnimation(), 150);
   }
 
@@ -146,6 +151,7 @@ class Character extends MovableObject {
   }
 
 
+  /** Pepe jumps and the jump sound plays; hasJumped makes the landing sound play later. */
   jump() {
     super.jump();
     this.hasJumped = true;
@@ -240,6 +246,7 @@ class Character extends MovableObject {
   }
 
 
+  /** Hurt images come first, then the jump images in the air, then the walking images while a key is pressed. */
   playMovementAnimation() {
     if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
@@ -277,11 +284,12 @@ class Character extends MovableObject {
 
   /**
    * Plays the landing sound once after a jump, not at the start when Pepe drops to the ground.
+   * The gravity needs a moment to lift him, so the flag isAirborne waits until he is really in the air.
    * @param {boolean} isOnGround
    */
   playLandingSound(isOnGround) {
     if (this.hasJumped && !isOnGround) {
-      this.isAirborne = true; // the gravity needs a moment to lift him, so wait until he is really in the air
+      this.isAirborne = true;
     } else if (this.isAirborne && isOnGround) {
       soundManager.play('landing');
       this.hasJumped = false;
@@ -344,13 +352,16 @@ class Character extends MovableObject {
   }
 
 
-  /** Pepe falls from the sky at the place where he died, with full health and a short time of invulnerability. */
+  /**
+   * Pepe falls from the sky at the place where he died, with full health and a short time of invulnerability.
+   * He starts above the top edge of the screen (the gravity pulls him down); hasJumped makes the landing sound play.
+   */
   respawn() {
     this.energy = 100;
     this.deathFrame = 0;
-    this.y = -this.height; // above the top edge of the screen, the gravity pulls him down
+    this.y = -this.height;
     this.speedY = 0;
-    this.hasJumped = true; // so the landing sound plays when he touches the ground
+    this.hasJumped = true;
     this.lastAction = Date.now();
     this.invulnerableUntil = Date.now() + this.invulnerableTime;
     this.world.hud.updateHealth(this.energy);

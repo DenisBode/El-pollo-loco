@@ -4,9 +4,12 @@
  */
 class Enemy extends MovableObject {
   bottleDamage = 100;
-  stompDamage = 100; // damage when Pepe jumps onto the enemy from above
-  canBeStomped = false; // only small enemies can be defeated by a jump
-  viewDistance = 620; // Pepe stands 100 px from the left edge, so an enemy enters the screen at 620 px
+  /** Damage when Pepe jumps onto the enemy from above. */
+  stompDamage = 100;
+  /** Only small enemies can be defeated by a jump. */
+  canBeStomped = false;
+  /** Pepe stands 100 px from the left edge, so an enemy enters the screen at 620 px. */
+  viewDistance = 620;
   animationInterval = 200;
 
 

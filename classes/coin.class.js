@@ -2,16 +2,18 @@
 class Coin extends Collectable {
   width = 80;
   height = 80;
-  spinOffset = Math.random() * Math.PI; // so the coins don't all spin in sync
+  /** So the coins don't all spin in sync. */
+  spinOffset = Math.random() * Math.PI;
 
-  IMAGES_COIN = ['img/8_coin/coin_1.png', 'img/8_coin/coin_2.png'];
+  IMAGES_COIN = ['img/8_coin/coin_1.webp', 'img/8_coin/coin_2.webp'];
 
 
+  /** Creates a coin in the air, at a height that Pepe reaches with a jump. */
   constructor() {
-    super('img/8_coin/coin_1.png');
+    super('img/8_coin/coin_1.webp');
     this.loadImages(this.IMAGES_COIN);
     this.setOffset(20, 20, 20, 20);
-    this.y = 150 + Math.random() * 100; // in the air, reachable with a jump
+    this.y = 150 + Math.random() * 100;
   }
 
 
