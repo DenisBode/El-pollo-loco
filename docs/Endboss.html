@@ -194,7 +194,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line46">line 46</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -274,13 +274,13 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 
         
             
-<h4 class="name" id="arenaRight"><span class="type-signature"></span>arenaRight<span class="type-signature"></span></h4>
+<h4 class="name" id="airBottomOffset"><span class="type-signature"></span>airBottomOffset<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The most he moves to the right and to the left (px), so he stays near the end of the level.
+    In the air the hitbox ends higher, at his body: the dangling feet do not hurt Pepe (offset at the bottom, px).
 </div>
 
 
@@ -318,7 +318,70 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line26">line 26</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line44">line 44</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="arenaLeft"><span class="type-signature"></span>arenaLeft<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The most he moves to the left and to the right (px): the last screen, where the camera stops (see Level.cameraEndX).
+On the right he stays fully inside the screen.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line29">line 29</a>
     </li></ul></dd>
     
 
@@ -380,7 +443,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line29">line 29</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -628,7 +691,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line40">line 40</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line53">line 53</a>
     </li></ul></dd>
     
 
@@ -646,13 +709,13 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 
         
             
-<h4 class="name" id="jumpHeight"><span class="type-signature"></span>jumpHeight<span class="type-signature"></span></h4>
+<h4 class="name" id="immuneTime"><span class="type-signature"></span>immuneTime<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    How high a jump lifts him (px).
+    After a hit he cannot be hurt for this time (ms) and blinks, so a series of bottles cannot kill him at once.
 </div>
 
 
@@ -690,7 +753,70 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line31">line 31</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="jumpHeight"><span class="type-signature"></span>jumpHeight<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    How high a jump lifts him (px). It has to be high enough that his feet are above Pepe's head
+(the top of Pepe's hitbox is 110 px below the top of his image), so Pepe can run underneath.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -752,7 +878,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line36">line 36</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -814,7 +940,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line38">line 38</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -1000,6 +1126,68 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="turnZone"><span class="type-signature"></span>turnZone<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Pepe must be further than this from his middle (px) before he turns around or moves towards him.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
         <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line34">line 34</a>
     </li></ul></dd>
     
@@ -1080,7 +1268,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line156">line 156</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line186">line 186</a>
     </li></ul></dd>
     
 
@@ -1164,7 +1352,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line140">line 140</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line169">line 169</a>
     </li></ul></dd>
     
 
@@ -1193,7 +1381,8 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 
         
 <div class="param-desc">
-    1 to the right, -1 to the left: towards Pepe, or away from him while he backs off
+    1 to the right, -1 to the left: towards Pepe, or away from him while he backs off;
+0 while Pepe is in the middle of him, so he does not shake from side to side
 </div>
 
 
@@ -1323,7 +1512,144 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line266">line 266</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line311">line 311</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="drawBlinking"><span class="type-signature"></span>drawBlinking<span class="signature">(ctx)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    He is half see-through every other moment while he is immune, so the player sees that the bottles pass.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ctx</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">CanvasRenderingContext2D</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line324">line 324</a>
     </li></ul></dd>
     
 
@@ -1460,7 +1786,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line290">line 290</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line346">line 346</a>
     </li></ul></dd>
     
 
@@ -1597,7 +1923,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line134">line 134</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line147">line 147</a>
     </li></ul></dd>
     
 
@@ -1644,6 +1970,94 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="faceTarget"><span class="type-signature"></span>faceTarget<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    He looks at Pepe. Only when Pepe is clearly on the other side, so he does not flicker while Pepe runs through him.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line159">line 159</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1756,7 +2170,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line233">line 233</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line264">line 264</a>
     </li></ul></dd>
     
 
@@ -1799,6 +2213,94 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="hit"><span class="type-signature"></span>hit<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    A hit hurts him only if he is not immune; after it he is immune for a moment.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line294">line 294</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1858,7 +2360,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line257">line 257</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line288">line 288</a>
     </li></ul></dd>
     
 
@@ -1888,6 +2390,112 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
         
 <div class="param-desc">
     true when the death animation is over and he starts to tumble
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isImmune"><span class="type-signature"></span>isImmune<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line302">line 302</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    true for a short time after a hit
 </div>
 
 
@@ -2013,7 +2621,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line150">line 150</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line180">line 180</a>
     </li></ul></dd>
     
 
@@ -2123,7 +2731,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line307">line 307</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line363">line 363</a>
     </li></ul></dd>
     
 
@@ -2229,7 +2837,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line108">line 108</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -2254,6 +2862,112 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="offsetToPepe"><span class="type-signature"></span>offsetToPepe<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line153">line 153</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    how far Pepe's middle is from the middle of the endboss in px; positive when Pepe is on the right
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -2366,7 +3080,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line167">line 167</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line197">line 197</a>
     </li></ul></dd>
     
 
@@ -2476,7 +3190,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line217">line 217</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line248">line 248</a>
     </li></ul></dd>
     
 
@@ -2564,7 +3278,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line239">line 239</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line270">line 270</a>
     </li></ul></dd>
     
 
@@ -2652,7 +3366,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line249">line 249</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -2740,7 +3454,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line197">line 197</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line228">line 228</a>
     </li></ul></dd>
     
 
@@ -2828,7 +3542,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line124">line 124</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line137">line 137</a>
     </li></ul></dd>
     
 
@@ -2979,7 +3693,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line176">line 176</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line206">line 206</a>
     </li></ul></dd>
     
 
@@ -3067,7 +3781,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line209">line 209</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line240">line 240</a>
     </li></ul></dd>
     
 
@@ -3155,7 +3869,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line279">line 279</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line335">line 335</a>
     </li></ul></dd>
     
 
@@ -3261,7 +3975,7 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line185">line 185</a>
+        <a href="classes_endboss.class.js.html">classes/endboss.class.js</a>, <a href="classes_endboss.class.js.html#line216">line 216</a>
     </li></ul></dd>
     
 
@@ -3307,13 +4021,13 @@ Charging is slower than Pepe (10 px per step), so he can always run away.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupFullscreen">setupFullscreen</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="BottleStatusBar.html">BottleStatusBar</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinStatusBar.html">CoinStatusBar</a></li><li><a href="Collectable.html">Collectable</a></li><li><a href="CounterIcon.html">CounterIcon</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossStatusBar.html">EndbossStatusBar</a></li><li><a href="Enemy.html">Enemy</a></li><li><a href="GameOverScreen.html">GameOverScreen</a></li><li><a href="HealthStatusBar.html">HealthStatusBar</a></li><li><a href="Hud.html">Hud</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="SmallChicken.html">SmallChicken</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="StartScreen.html">StartScreen</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="WinScreen.html">WinScreen</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKGROUND_WIDTH">BACKGROUND_WIDTH</a></li><li><a href="global.html#LAST_TILE_INDEX">LAST_TILE_INDEX</a></li><li><a href="global.html#START_SOUNDS">START_SOUNDS</a></li><li><a href="global.html#applyLanguage">applyLanguage</a></li><li><a href="global.html#areAssetsReady">areAssetsReady</a></li><li><a href="global.html#beginGame">beginGame</a></li><li><a href="global.html#bindTouchButtons">bindTouchButtons</a></li><li><a href="global.html#clearGameIntervals">clearGameIntervals</a></li><li><a href="global.html#closeInfo">closeInfo</a></li><li><a href="global.html#closeInfoOnBackdrop">closeInfoOnBackdrop</a></li><li><a href="global.html#createBackgroundObjects">createBackgroundObjects</a></li><li><a href="global.html#createBackgroundTile">createBackgroundTile</a></li><li><a href="global.html#createChickens">createChickens</a></li><li><a href="global.html#drawStartScreen">drawStartScreen</a></li><li><a href="global.html#flashThrowButton">flashThrowButton</a></li><li><a href="global.html#flipCanvas">flipCanvas</a></li><li><a href="global.html#gameNow">gameNow</a></li><li><a href="global.html#getFlipOrigin">getFlipOrigin</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initLevel">initLevel</a></li><li><a href="global.html#intervalIds">intervalIds</a></li><li><a href="global.html#isPreloaded">isPreloaded</a></li><li><a href="global.html#leaveGame">leaveGame</a></li><li><a href="global.html#loadLanguage">loadLanguage</a></li><li><a href="global.html#loadMuted">loadMuted</a></li><li><a href="global.html#openInfo">openInfo</a></li><li><a href="global.html#pausedTotal">pausedTotal</a></li><li><a href="global.html#preloadAssets">preloadAssets</a></li><li><a href="global.html#releaseFocus">releaseFocus</a></li><li><a href="global.html#resetPause">resetPause</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setGameInterval">setGameInterval</a></li><li><a href="global.html#setKey">setKey</a></li><li><a href="global.html#setLanguage">setLanguage</a></li><li><a href="global.html#setupLayout">setupLayout</a></li><li><a href="global.html#showEndButtons">showEndButtons</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#stopGame">stopGame</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleStory">toggleStory</a></li><li><a href="global.html#turn">turn</a></li><li><a href="global.html#updateLayout">updateLayout</a></li><li><a href="global.html#updateMuteButton">updateMuteButton</a></li><li><a href="global.html#updatePauseButton">updatePauseButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 10:20:48 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Oct 22 2026 13:13:36 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>
