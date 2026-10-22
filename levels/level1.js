@@ -55,6 +55,6 @@ function initLevel() {
     [new Cloud()],
     createBackgroundObjects(),
     Array.from({ length: 8 }, () => new Bottle()),
-    Array.from({ length: 8 }, () => new Coin()),
+    Array.from({ length: 15 }, () => new Coin()),
   );
 }

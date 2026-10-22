@@ -71,7 +71,7 @@ class Character extends MovableObject {
   /** How long Pepe does nothing until the long idle animation starts, in milliseconds (ms). */
   longIdleAfter = 5000;
   lastAction = gameNow();
-  lives = 5;
+  lives = 3;
   bottles = 0;
   maxBottles = 5;
   coins = 0;
