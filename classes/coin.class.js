@@ -1,7 +1,7 @@
 /** A coin floating in the air; it spins and glows. */
 class Coin extends Collectable {
-  width = 80;
-  height = 80;
+  width = 100;
+  height = 100;
   /** So the coins don't all spin in sync. */
   spinOffset = Math.random() * Math.PI;
 
@@ -11,7 +11,7 @@ class Coin extends Collectable {
   constructor() {
     super('img/8_coin/coin_1.webp');
     this.loadImages(this.IMAGES_COIN);
-    this.setOffset(25, 25, 25, 25);
+    this.setOffset(31, 31, 31, 31);
     this.y = 150 + Math.random() * 100;
   }
 

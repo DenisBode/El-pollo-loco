@@ -249,21 +249,23 @@ class World {
   }
 
 
-  /** Collects coins; a full coin bar refills the health and starts again. */
+  /** Collects coins; a full coin bar gives Pepe a life and full health and starts again. */
   checkCoinCollisions() {
     this.level.coins = this.collectItems(this.level.coins, () => !this.character.isDead(), () => {
       soundManager.playRandomOverlapping(['getCoin1', 'getCoin2']);
       let isFull = this.character.collectCoin();
       this.hud.updateCoins(this.character.coins, this.character.maxCoins);
-      if (isFull) this.refillHealth();
+      if (isFull) this.rewardFullCoinBar();
     });
   }
 
 
-  /** Gives Pepe full health and empties the coin bar after a short moment. */
-  refillHealth() {
+  /** Gives Pepe an extra life and full health and empties the coin bar after a short moment. */
+  rewardFullCoinBar() {
     this.character.energy = 100;
+    this.character.lives++;
     this.hud.updateHealth(100);
+    this.hud.updateLives(this.character.lives);
     this.character.coins = 0;
     intervalIds.push(setTimeout(() => this.hud.updateCoins(0, this.character.maxCoins), 500));
   }
