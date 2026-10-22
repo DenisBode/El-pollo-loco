@@ -48,11 +48,13 @@ class World {
   }
 
 
-  /** Checks that must be quick: Pepe falls fast, so a stomp would be missed at five checks a second. */
+  /** Checks that must be quick: Pepe falls and runs fast, so a stomp or a coin would be missed at five checks a second. */
   runFastChecks() {
     this.checkThrowObjects();
     this.checkStomp();
     this.checkSelfHit();
+    this.checkBottleCollisions();
+    this.checkCoinCollisions();
   }
 
 
@@ -104,8 +106,6 @@ class World {
   /** All checks that need to run only five times a second. */
   runChecks() {
     this.checkEnemyCollisions();
-    this.checkBottleCollisions();
-    this.checkCoinCollisions();
     this.checkEndboss();
     this.checkChickensInView();
     this.checkGameEnd();
